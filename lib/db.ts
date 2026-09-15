@@ -333,7 +333,7 @@ export async function getSlots(): Promise<Slot[]> {
   }
 
   if (baseSlots.length === 0) {
-    baseSlots = executeWithLock(() => {
+    baseSlots = await executeWithLock(() => {
       const db = ensureDbFile();
       return db.slots;
     });
@@ -520,6 +520,12 @@ export async function createRegistrationAtomic(
   // Try Supabase first if available
   if (supabase) {
     try {
+      const { data: slotData, error: slotErr } = await supabase
+        .from('slots')
+        .select('*')
+        .eq('id', regData.slotId)
+        .single();
+
       let slotDataObj: any = slotData;
       if (slotErr || !slotData) {
         const fallbackSlot = await getSlotById(regData.slotId);

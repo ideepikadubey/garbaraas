@@ -38,7 +38,7 @@ export interface Registration {
   mobile: string;
   whatsapp: string;
   email: string;
-  age: number;
+  age?: number;
   gender: string;
   city: string;
   address: string;

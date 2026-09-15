@@ -1,8 +1,14 @@
 {
-  "/api/admin/metrics/route": "app/api/admin/metrics/route.js",
-  "/api/admin/settings/route": "app/api/admin/settings/route.js",
-  "/admin/page": "app/admin/page.js",
   "/page": "app/page.js",
+  "/admin/page": "app/admin/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/admin/auth/route": "app/api/admin/auth/route.js",
+  "/api/admin/metrics/route": "app/api/admin/metrics/route.js",
+  "/api/admin/export/route": "app/api/admin/export/route.js",
+  "/api/payment/razorpay/create-order/route": "app/api/payment/razorpay/create-order/route.js",
+  "/api/payment/razorpay/verify-payment/route": "app/api/payment/razorpay/verify-payment/route.js",
+  "/api/admin/settings/route": "app/api/admin/settings/route.js",
   "/api/slots/route": "app/api/slots/route.js",
-  "/api/registrations/route": "app/api/registrations/route.js"
+  "/api/registrations/route": "app/api/registrations/route.js",
+  "/api/registrations/[id]/route": "app/api/registrations/[id]/route.js"
 }
