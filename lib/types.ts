@@ -53,10 +53,17 @@ export interface Registration {
 
   // Old Student / Group specific
   isOldStudent: boolean;
+  fatherOrHusbandName?: string;
   isGroup: boolean;
   membersCount: number;
   groupLeaderName?: string;
   groupLeaderPhone?: string;
+  groupMembers?: Array<{
+    name: string;
+    age?: string | number;
+    mobile?: string;
+    fatherOrHusbandName?: string;
+  }>;
 
   // Slot details
   slotId: string;

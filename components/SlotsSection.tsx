@@ -46,39 +46,39 @@ export default function SlotsSection({ onSelectSlot }: SlotsSectionProps) {
   });
 
   return (
-    <section id="slots" className="relative py-10 md:py-16 bg-white border-b border-pink-100">
+    <section id="slots" className="relative py-10 md:py-16 bg-white border-b border-amber-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-10">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-pink-50 border border-pink-200 text-xs text-garba-pink-800 uppercase tracking-widest font-bold mb-2 shadow-sm">
-            <Clock className="w-3.5 h-3.5 text-garba-pink-600" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-50 border border-amber-200 text-xs text-amber-900 uppercase tracking-widest font-bold mb-2 shadow-sm">
+            <Clock className="w-3.5 h-3.5 text-amber-600" />
             Live Real-Time Seat Availability
           </div>
           <h2 className="text-2xl sm:text-4xl md:text-5xl font-serif font-black text-maroon-950 tracking-tight">
             WORKSHOP <span className="garba-gradient-text">LOCATIONS & TIMINGS</span>
           </h2>
-          <div className="h-[3px] w-24 sm:w-32 mx-auto my-3 rounded-full bg-gradient-to-r from-pink-500 via-rose-500 to-pink-500"></div>
+          <div className="h-[3px] w-24 sm:w-32 mx-auto my-3 rounded-full bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500"></div>
           <p className="text-xs sm:text-base text-stone-700 font-medium">
             Pick your preferred location and timing batch below. Seats are allocated on a verified first-come, first-served basis.
           </p>
         </div>
 
         {/* Location Filter Tabs & Refresh with Garba Color Badges */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 mb-8">
-          <div className="flex flex-nowrap overflow-x-auto gap-2 pb-1 sm:pb-0 scrollbar-none">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 mb-6 sm:mb-8">
+          <div className="flex flex-nowrap overflow-x-auto gap-2 pb-2 sm:pb-0 no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
             {locations.map((loc) => {
               const isSelected = selectedLocation === loc.id;
-              const activeClass = 'bg-gradient-to-r from-garba-pink-600 via-rose-500 to-pink-500 text-white shadow-md font-bold';
+              const activeClass = 'bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-950 shadow-md font-black ring-1 ring-amber-300';
 
               return (
                 <button
                   key={loc.id}
                   onClick={() => setSelectedLocation(loc.id)}
-                  className={`px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
+                  className={`px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer flex-shrink-0 ${
                     isSelected
                       ? activeClass
-                      : 'bg-white border-2 border-stone-200 text-maroon-900 hover:border-garba-pink-400 shadow-sm'
+                      : 'bg-white border-2 border-stone-200 text-stone-800 hover:border-amber-400 shadow-sm'
                   }`}
                 >
                   {loc.name}
@@ -89,7 +89,7 @@ export default function SlotsSection({ onSelectSlot }: SlotsSectionProps) {
 
           <button
             onClick={fetchSlots}
-            className="flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-white border-2 border-pink-200 text-xs font-bold text-garba-pink-800 hover:bg-pink-50 transition shadow-sm cursor-pointer self-end sm:self-auto"
+            className="flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-white border-2 border-amber-200 text-xs font-bold text-amber-900 hover:bg-amber-50 transition shadow-sm cursor-pointer self-end sm:self-auto"
             title="Refresh availability"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
@@ -100,8 +100,8 @@ export default function SlotsSection({ onSelectSlot }: SlotsSectionProps) {
         {/* Slots Grid */}
         {loading && slots.length === 0 ? (
           <div className="py-16 text-center">
-            <div className="w-10 h-10 border-3 border-garba-orange-500 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
-            <p className="text-sm font-bold text-garba-orange-800">Loading live workshop batches...</p>
+            <div className="w-10 h-10 border-3 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+            <p className="text-sm font-bold text-amber-800">Loading live workshop batches...</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -111,23 +111,23 @@ export default function SlotsSection({ onSelectSlot }: SlotsSectionProps) {
               const isFewLeft = !isFull && (slot.status === 'ALMOST_FULL' || remaining <= 5);
               const percentFilled = Math.min(100, Math.round((slot.bookedSeats / slot.capacity) * 100));
 
-              // Location-based theme matching Poster 4
+              // Location-based theme matching
               const isTFN = slot.locationName.includes('TFN');
               const isCricket = slot.locationName.includes('Cricket');
               const isNightBang = slot.locationName.includes('Bang') && slot.startTime.includes('8:00');
 
-              let themeCard = 'bg-white border-2 border-rose-300 hover:border-rose-500 shadow-sm hover:shadow-md';
-              let themeIconColor = 'text-rose-600';
-              let themeBatchBg = 'bg-rose-50/70 border border-rose-200';
-              let themeBatchText = 'text-rose-800';
-              let themeProgressGradient = 'bg-gradient-to-r from-rose-500 to-orange-500';
+              let themeCard = 'bg-white border-2 border-amber-300 hover:border-amber-500 shadow-sm hover:shadow-md';
+              let themeIconColor = 'text-amber-600';
+              let themeBatchBg = 'bg-amber-50/70 border border-amber-200';
+              let themeBatchText = 'text-amber-900';
+              let themeProgressGradient = 'bg-gradient-to-r from-amber-500 to-yellow-400';
 
               if (isTFN) {
-                themeCard = 'bg-white border-2 border-garba-teal-300 hover:border-garba-teal-500 shadow-sm hover:shadow-md';
-                themeIconColor = 'text-garba-teal-600';
-                themeBatchBg = 'bg-garba-teal-50/70 border border-garba-teal-200';
-                themeBatchText = 'text-garba-teal-800';
-                themeProgressGradient = 'bg-gradient-to-r from-cyan-600 to-garba-teal-500';
+                themeCard = 'bg-white border-2 border-yellow-300 hover:border-yellow-500 shadow-sm hover:shadow-md';
+                themeIconColor = 'text-amber-600';
+                themeBatchBg = 'bg-yellow-50/70 border border-yellow-200';
+                themeBatchText = 'text-amber-950';
+                themeProgressGradient = 'bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600';
               } else if (isCricket) {
                 themeCard = 'bg-white border-2 border-emerald-300 hover:border-emerald-500 shadow-sm hover:shadow-md';
                 themeIconColor = 'text-emerald-600';
@@ -139,7 +139,7 @@ export default function SlotsSection({ onSelectSlot }: SlotsSectionProps) {
                 themeIconColor = 'text-garba-purple-600';
                 themeBatchBg = 'bg-garba-purple-50/70 border border-garba-purple-200';
                 themeBatchText = 'text-garba-purple-800';
-                themeProgressGradient = 'bg-gradient-to-r from-garba-purple-600 to-pink-500';
+                themeProgressGradient = 'bg-gradient-to-r from-garba-purple-600 to-amber-500';
               }
 
               return (
@@ -185,7 +185,7 @@ export default function SlotsSection({ onSelectSlot }: SlotsSectionProps) {
                       <div className={`text-xs uppercase font-extrabold ${themeBatchText} tracking-wider`}>
                         {slot.batchName}
                       </div>
-                      <div className="text-lg sm:text-xl font-serif font-bold text-maroon-950 flex items-center gap-2 mt-0.5">
+                      <div className="text-lg sm:text-xl font-serif font-bold text-stone-950 flex items-center gap-2 mt-0.5">
                         <Clock className={`w-4 h-4 ${themeIconColor}`} />
                         <span>{slot.startTime} – {slot.endTime}</span>
                       </div>
@@ -194,11 +194,11 @@ export default function SlotsSection({ onSelectSlot }: SlotsSectionProps) {
                     {/* Capacity Progress Bar */}
                     <div className="mt-3">
                       <div className="flex items-center justify-between text-xs mb-1">
-                        <span className="text-maroon-900 font-medium">
+                        <span className="text-stone-900 font-medium">
                           {isFull ? (
                             <span className="text-red-600 font-bold">Housefull</span>
                           ) : (
-                            <span className="text-garba-orange-700 font-bold">{remaining} seats left</span>
+                            <span className="text-amber-800 font-bold">{remaining} seats left</span>
                           )}
                         </span>
                         <span className="text-stone-500 text-[11px] font-semibold">
@@ -225,17 +225,17 @@ export default function SlotsSection({ onSelectSlot }: SlotsSectionProps) {
                     <button
                       onClick={() => !isFull && onSelectSlot(slot)}
                       disabled={isFull}
-                      className={`w-full py-2.5 px-4 rounded-xl font-extrabold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                      className={`w-full py-2.5 px-4 rounded-xl font-black text-xs sm:text-sm transition-all flex items-center justify-center gap-2 cursor-pointer ${
                         isFull
                           ? 'bg-stone-200 text-stone-500 border border-stone-300 cursor-not-allowed'
-                          : 'bg-gradient-to-r from-garba-pink-600 via-rose-500 to-pink-500 text-white shadow-md hover:scale-[1.02]'
+                          : 'bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-950 shadow-md ring-1 ring-amber-300 hover:scale-[1.02]'
                       }`}
                     >
                       {isFull ? (
                         <span>Slot Completely Full</span>
                       ) : (
                         <>
-                          <Sparkles className="w-4 h-4 text-pink-200" />
+                          <Sparkles className="w-4 h-4 text-stone-950" />
                           <span>Select & Book This Batch</span>
                         </>
                       )}
@@ -251,4 +251,3 @@ export default function SlotsSection({ onSelectSlot }: SlotsSectionProps) {
     </section>
   );
 }
-

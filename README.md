@@ -76,7 +76,7 @@ NEXT_PUBLIC_UPI_ID=thefrozennight@upi
 NEXT_PUBLIC_UPI_MERCHANT_NAME=The Frozen Night Events
 
 # Support phone numbers displayed on site and receipts
-NEXT_PUBLIC_SUPPORT_PHONE_1=8432223222
+NEXT_PUBLIC_SUPPORT_PHONE_1=8385969285
 NEXT_PUBLIC_SUPPORT_PHONE_2=8385969285
 
 # ==========================================

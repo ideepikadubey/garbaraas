@@ -47,10 +47,12 @@ CREATE TABLE IF NOT EXISTS registrations (
     
     -- Old Student / Group specific
     is_old_student BOOLEAN DEFAULT FALSE,
+    father_or_husband_name VARCHAR(128),
     is_group BOOLEAN DEFAULT FALSE,
     members_count INT DEFAULT 1,
     group_leader_name VARCHAR(128),
     group_leader_phone VARCHAR(16),
+    group_members JSONB,
     
     -- Workshop Slot
     slot_id VARCHAR(64) NOT NULL REFERENCES slots(id),

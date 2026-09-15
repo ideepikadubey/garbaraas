@@ -273,19 +273,19 @@ export default function AdminPage() {
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-stone-100 flex items-center justify-center p-4">
-        <div className="w-full max-w-md bg-white border-2 border-pink-300 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+        <div className="w-full max-w-md bg-white border-2 border-amber-300 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
           
-          <div className="w-full h-[3px] bg-gradient-to-r from-pink-500 via-rose-500 to-pink-500 absolute top-0 left-0 right-0"></div>
+          <div className="w-full h-[3px] bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 absolute top-0 left-0 right-0"></div>
 
           <div className="text-center mb-6 pt-2">
-            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-pink-600 to-rose-600 flex items-center justify-center mx-auto mb-3 shadow-md text-white">
+            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-amber-500 to-yellow-500 flex items-center justify-center mx-auto mb-3 shadow-md text-stone-950">
               <ShieldCheck className="w-8 h-8" />
             </div>
-            <h2 className="text-2xl font-serif font-bold text-maroon-950">
+            <h2 className="text-2xl font-serif font-bold text-stone-950">
               TFN Organizer Portal
             </h2>
-            <p className="text-xs text-pink-700 font-semibold mt-1">
-              The Frozen Night – Event and Entertainments • Kishangarh
+            <p className="text-xs text-amber-800 font-semibold mt-1">
+              The Frozen Night – Event and Entertainment • Kishangarh
             </p>
           </div>
 
@@ -305,7 +305,7 @@ export default function AdminPage() {
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl px-4 py-2.5 text-maroon-950 text-xs focus:outline-none focus:border-pink-500 font-medium"
+                className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl px-4 py-2.5 text-stone-950 text-xs focus:outline-none focus:border-amber-500 font-medium"
                 required
               />
             </div>
@@ -319,21 +319,21 @@ export default function AdminPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter admin password"
-                className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl px-4 py-2.5 text-maroon-950 text-xs focus:outline-none focus:border-pink-500 font-medium"
+                className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl px-4 py-2.5 text-stone-950 text-xs focus:outline-none focus:border-amber-500 font-medium"
                 required
               />
               <p className="text-[11px] text-stone-500 mt-1 font-medium">
-                Admin credentials: <code className="text-pink-700 font-bold">tfnkishangarh2026</code>
+                Admin credentials: <code className="text-amber-800 font-bold">tfnkishangarh2026</code>
               </p>
             </div>
 
             <button
               type="submit"
               disabled={loginLoading}
-              className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-pink-600 via-rose-500 to-pink-500 text-white font-extrabold text-sm hover:brightness-105 transition shadow-md flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-950 font-black text-sm ring-1 ring-amber-300 hover:brightness-105 transition shadow-md flex items-center justify-center gap-2 cursor-pointer"
             >
               {loginLoading ? (
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-4 h-4 border-2 border-stone-950 border-t-transparent rounded-full animate-spin"></div>
               ) : (
                 <Lock className="w-4 h-4" />
               )}
@@ -342,7 +342,7 @@ export default function AdminPage() {
           </form>
 
           <div className="mt-6 text-center">
-            <Link href="/" className="text-xs text-pink-700 hover:text-pink-900 font-bold">
+            <Link href="/" className="text-xs text-amber-800 hover:text-amber-950 font-bold">
               ← Return to Workshop Website
             </Link>
           </div>
@@ -359,14 +359,12 @@ export default function AdminPage() {
       {/* Top Admin Header */}
       <header className="bg-white border-b border-stone-200 sticky top-0 z-30 px-4 sm:px-8 py-3.5 flex items-center justify-between shadow-2xs">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-pink-600 to-rose-600 text-white flex items-center justify-center font-serif font-black text-xs shadow-sm">
-            TFN
-          </div>
+          <img src="/images/TFN.png" alt="TFN Logo" className="w-9 h-9 object-contain flex-shrink-0" />
           <div>
-            <h1 className="text-base sm:text-lg font-serif font-bold text-maroon-950 leading-tight">
+            <h1 className="text-base sm:text-lg font-serif font-bold text-stone-950 leading-tight">
               TFN Garba Workshop Admin
             </h1>
-            <p className="text-[11px] text-pink-700 font-semibold">
+            <p className="text-[11px] text-amber-800 font-semibold">
               Kishangarh, Rajasthan • Live Database Management
             </p>
           </div>
@@ -383,7 +381,7 @@ export default function AdminPage() {
 
           <a
             href="/api/admin/export"
-            className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-pink-600 to-rose-600 text-white font-bold text-xs hover:brightness-105 transition shadow-2xs cursor-pointer"
+            className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-400 text-stone-950 ring-1 ring-amber-300 font-bold text-xs hover:brightness-105 transition shadow-2xs cursor-pointer"
             download
           >
             <Download className="w-3.5 h-3.5" />
@@ -393,7 +391,7 @@ export default function AdminPage() {
           <Link
             href="/"
             target="_blank"
-            className="text-xs text-stone-700 hover:text-pink-700 font-bold px-3 py-1.5 rounded-xl bg-stone-100 border border-stone-300"
+            className="text-xs text-stone-700 hover:text-amber-800 font-bold px-3 py-1.5 rounded-xl bg-stone-100 border border-stone-300"
           >
             View Live Site ↗
           </Link>
@@ -415,14 +413,14 @@ export default function AdminPage() {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
           
           {/* Total Registrations */}
-          <div className="bg-white border-2 border-stone-200 hover:border-pink-300 rounded-2xl p-4 shadow-2xs transition">
+          <div className="bg-white border-2 border-stone-200 hover:border-amber-300 rounded-2xl p-4 shadow-2xs transition">
             <span className="text-[10px] uppercase font-bold tracking-wider text-stone-500">
               Total Registrations
             </span>
-            <div className="text-2xl sm:text-3xl font-serif font-black text-maroon-950 mt-1">
+            <div className="text-2xl sm:text-3xl font-serif font-black text-stone-950 mt-1">
               {metrics ? metrics.totalRegistrations : '...'}
             </div>
-            <div className="text-[11px] text-pink-700 font-semibold mt-0.5">All categories</div>
+            <div className="text-[11px] text-amber-800 font-semibold mt-0.5">All categories</div>
           </div>
 
           {/* Paid Registrations */}
@@ -448,22 +446,22 @@ export default function AdminPage() {
           </div>
 
           {/* Today's Bookings */}
-          <div className="bg-white border-2 border-pink-200 hover:border-pink-400 rounded-2xl p-4 shadow-2xs transition">
-            <span className="text-[10px] uppercase font-bold tracking-wider text-pink-700">
+          <div className="bg-white border-2 border-amber-200 hover:border-amber-400 rounded-2xl p-4 shadow-2xs transition">
+            <span className="text-[10px] uppercase font-bold tracking-wider text-amber-800">
               Today's Bookings
             </span>
-            <div className="text-2xl sm:text-3xl font-serif font-black text-pink-700 mt-1">
+            <div className="text-2xl sm:text-3xl font-serif font-black text-amber-800 mt-1">
               {metrics ? metrics.todayBookings : '...'}
             </div>
             <div className="text-[11px] text-stone-500 font-semibold mt-0.5">Past 24 hours</div>
           </div>
 
           {/* Total Revenue */}
-          <div className="bg-white border-2 border-rose-300 hover:border-rose-500 rounded-2xl p-4 shadow-2xs transition bg-gradient-to-br from-white to-pink-50/50">
-            <span className="text-[10px] uppercase font-bold tracking-wider text-rose-700">
+          <div className="bg-white border-2 border-amber-300 hover:border-amber-500 rounded-2xl p-4 shadow-2xs transition bg-gradient-to-br from-white to-amber-50/50">
+            <span className="text-[10px] uppercase font-bold tracking-wider text-amber-900">
               Total Revenue
             </span>
-            <div className="text-2xl sm:text-3xl font-serif font-black text-rose-700 mt-1">
+            <div className="text-2xl sm:text-3xl font-serif font-black text-amber-800 mt-1">
               ₹{metrics ? metrics.totalRevenue : '0'}
             </div>
             <div className="text-[10px] text-stone-500 font-medium mt-0.5">
@@ -476,7 +474,7 @@ export default function AdminPage() {
             <span className="text-[10px] uppercase font-bold tracking-wider text-stone-500">
               Available Seats
             </span>
-            <div className="text-2xl sm:text-3xl font-serif font-black text-maroon-950 mt-1">
+            <div className="text-2xl sm:text-3xl font-serif font-black text-stone-950 mt-1">
               {metrics ? metrics.totalAvailableSeats : '...'}
             </div>
             <div className="text-[11px] text-emerald-700 font-bold mt-0.5">
@@ -492,7 +490,7 @@ export default function AdminPage() {
             onClick={() => setActiveTab('registrations')}
             className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition flex items-center gap-2 cursor-pointer ${
               activeTab === 'registrations'
-                ? 'bg-gradient-to-r from-pink-600 to-rose-600 text-white shadow-md'
+                ? 'bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-950 shadow-md ring-1 ring-amber-300'
                 : 'bg-white text-stone-700 border border-stone-200 hover:bg-stone-100'
             }`}
           >
@@ -504,7 +502,7 @@ export default function AdminPage() {
             onClick={() => setActiveTab('slots')}
             className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition flex items-center gap-2 cursor-pointer ${
               activeTab === 'slots'
-                ? 'bg-gradient-to-r from-pink-600 to-rose-600 text-white shadow-md'
+                ? 'bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-950 shadow-md ring-1 ring-amber-300'
                 : 'bg-white text-stone-700 border border-stone-200 hover:bg-stone-100'
             }`}
           >
@@ -516,7 +514,7 @@ export default function AdminPage() {
             onClick={() => setActiveTab('settings')}
             className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition flex items-center gap-2 cursor-pointer ${
               activeTab === 'settings'
-                ? 'bg-gradient-to-r from-pink-600 to-rose-600 text-white shadow-md'
+                ? 'bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-950 shadow-md ring-1 ring-amber-300'
                 : 'bg-white text-stone-700 border border-stone-200 hover:bg-stone-100'
             }`}
           >
@@ -539,7 +537,7 @@ export default function AdminPage() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search by Name, Mobile, ID (TFN-XXXX), or UTR..."
-                  className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl pl-9 pr-4 py-2 text-xs text-maroon-950 placeholder-stone-400 focus:outline-none focus:border-pink-500 font-medium"
+                  className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl pl-9 pr-4 py-2 text-xs text-stone-950 placeholder-stone-400 focus:outline-none focus:border-amber-500 font-medium"
                 />
               </div>
 
@@ -548,7 +546,7 @@ export default function AdminPage() {
                 <select
                   value={categoryFilter}
                   onChange={(e) => setCategoryFilter(e.target.value)}
-                  className="bg-stone-50 border-2 border-stone-200 rounded-xl px-3 py-2 text-stone-800 focus:outline-none focus:border-pink-500 font-semibold"
+                  className="bg-stone-50 border-2 border-stone-200 rounded-xl px-3 py-2 text-stone-800 focus:outline-none focus:border-amber-500 font-semibold"
                 >
                   <option value="ALL">All Categories</option>
                   <option value="FEMALE">Female (₹2500)</option>
@@ -561,7 +559,7 @@ export default function AdminPage() {
                 <select
                   value={locationFilter}
                   onChange={(e) => setLocationFilter(e.target.value)}
-                  className="bg-stone-50 border-2 border-stone-200 rounded-xl px-3 py-2 text-stone-800 focus:outline-none focus:border-pink-500 font-semibold"
+                  className="bg-stone-50 border-2 border-stone-200 rounded-xl px-3 py-2 text-stone-800 focus:outline-none focus:border-amber-500 font-semibold"
                 >
                   <option value="ALL">All Locations</option>
                   <option value="TFN Studio">TFN Studio</option>
@@ -573,7 +571,7 @@ export default function AdminPage() {
                 <select
                   value={paymentStatusFilter}
                   onChange={(e) => setPaymentStatusFilter(e.target.value)}
-                  className="bg-stone-50 border-2 border-stone-200 rounded-xl px-3 py-2 text-stone-800 focus:outline-none focus:border-pink-500 font-semibold"
+                  className="bg-stone-50 border-2 border-stone-200 rounded-xl px-3 py-2 text-stone-800 focus:outline-none focus:border-amber-500 font-semibold"
                 >
                   <option value="ALL">All Payment Statuses</option>
                   <option value="PAYMENT_VERIFIED">Verified (Paid)</option>
@@ -584,7 +582,7 @@ export default function AdminPage() {
 
                 <a
                   href="/api/admin/export"
-                  className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-pink-600 to-rose-600 text-white font-bold flex items-center gap-1 hover:brightness-105 transition shadow-2xs"
+                  className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-400 text-stone-950 ring-1 ring-amber-300 font-bold flex items-center gap-1 hover:brightness-105 transition shadow-2xs"
                   download
                 >
                   <Download className="w-3.5 h-3.5" />
@@ -614,10 +612,10 @@ export default function AdminPage() {
                       const isSubmitted = reg.paymentStatus === 'PAYMENT_SUBMITTED';
 
                       return (
-                        <tr key={reg.id} className="hover:bg-pink-50/40 transition">
+                        <tr key={reg.id} className="hover:bg-amber-50/40 transition">
                           {/* ID & Date */}
                           <td className="p-3.5">
-                            <span className="font-mono font-bold text-pink-700 block">
+                            <span className="font-mono font-bold text-amber-800 block">
                               {reg.id}
                             </span>
                             <span className="text-[10px] text-stone-500">
@@ -630,12 +628,17 @@ export default function AdminPage() {
 
                           {/* Participant */}
                           <td className="p-3.5">
-                            <div className="font-bold text-maroon-950">{reg.participantName}</div>
+                            <div className="font-bold text-stone-950">{reg.participantName}</div>
                             <div className="text-[11px] text-stone-600 font-mono">
                               +91 {reg.mobile}
                             </div>
+                            {reg.fatherOrHusbandName && (
+                              <div className="text-[10px] text-amber-800 font-semibold">
+                                S/O, W/O: {reg.fatherOrHusbandName}
+                              </div>
+                            )}
                             {reg.isKids && reg.guardianName && (
-                              <div className="text-[10px] text-pink-700 font-semibold">
+                              <div className="text-[10px] text-amber-800 font-semibold">
                                 Guardian: {reg.guardianName}
                               </div>
                             )}
@@ -647,7 +650,7 @@ export default function AdminPage() {
                               {reg.category}
                             </span>
                             {reg.isGroup && (
-                              <span className="text-[10px] text-pink-700 font-bold">
+                              <span className="text-[10px] text-amber-800 font-bold">
                                 {reg.membersCount} members
                               </span>
                             )}
@@ -656,14 +659,14 @@ export default function AdminPage() {
                           {/* Location & Batch */}
                           <td className="p-3.5">
                             <div className="font-bold text-stone-900">{reg.locationName}</div>
-                            <div className="text-[11px] text-pink-800 font-semibold">
+                            <div className="text-[11px] text-amber-900 font-semibold">
                               {reg.batchTime}
                             </div>
                           </td>
 
                           {/* Amount / UTR */}
                           <td className="p-3.5">
-                            <div className="font-black text-maroon-950 text-sm">₹{reg.totalAmount}</div>
+                            <div className="font-black text-stone-950 text-sm">₹{reg.totalAmount}</div>
                             <div className="text-[10px] text-stone-500 font-mono truncate max-w-[130px]">
                               {reg.utrNumber ? `UTR: ${reg.utrNumber}` : 'No UTR yet'}
                             </div>
@@ -704,7 +707,7 @@ export default function AdminPage() {
                             {/* View Screenshot / Details */}
                             <button
                               onClick={() => setViewingRegistration(reg)}
-                              className="p-1.5 rounded-lg bg-stone-100 border border-stone-300 text-stone-700 hover:text-pink-700 transition cursor-pointer"
+                              className="p-1.5 rounded-lg bg-stone-100 border border-stone-300 text-stone-700 hover:text-amber-800 transition cursor-pointer"
                               title="View Registration Pass Details & UTR"
                             >
                               <Eye className="w-3.5 h-3.5" />
@@ -713,7 +716,7 @@ export default function AdminPage() {
                             {/* Download PDF Receipt */}
                             <button
                               onClick={() => downloadRegistrationReceipt(reg)}
-                              className="p-1.5 rounded-lg bg-stone-100 border border-stone-300 text-stone-700 hover:text-pink-700 transition cursor-pointer"
+                              className="p-1.5 rounded-lg bg-stone-100 border border-stone-300 text-stone-700 hover:text-amber-800 transition cursor-pointer"
                               title="Download PDF Receipt"
                             >
                               <Download className="w-3.5 h-3.5" />
@@ -757,7 +760,7 @@ export default function AdminPage() {
             
             <div className="flex justify-between items-center">
               <div>
-                <h3 className="text-base font-serif font-bold text-maroon-950">
+                <h3 className="text-base font-serif font-bold text-stone-950">
                   Workshop Locations & Batches Capacity
                 </h3>
                 <p className="text-xs text-stone-600 font-medium">
@@ -767,7 +770,7 @@ export default function AdminPage() {
 
               <button
                 onClick={() => setNewSlotModalOpen(true)}
-                className="px-4 py-2 rounded-xl bg-gradient-to-r from-pink-600 to-rose-600 text-white font-bold text-xs hover:brightness-105 transition flex items-center gap-1.5 shadow-sm cursor-pointer"
+                className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-400 text-stone-950 font-bold text-xs ring-1 ring-amber-300 hover:brightness-105 transition flex items-center gap-1.5 shadow-sm cursor-pointer"
               >
                 <Plus className="w-4 h-4" />
                 <span>Add New Batch</span>
@@ -783,12 +786,12 @@ export default function AdminPage() {
                 return (
                   <div
                     key={slot.id}
-                    className="p-5 rounded-2xl bg-white border-2 border-stone-200 hover:border-pink-300 flex flex-col justify-between space-y-3 shadow-2xs hover:shadow-md transition"
+                    className="p-5 rounded-2xl bg-white border-2 border-stone-200 hover:border-amber-300 flex flex-col justify-between space-y-3 shadow-2xs hover:shadow-md transition"
                   >
                     <div>
                       <div className="flex justify-between items-start mb-1">
-                        <span className="text-xs font-bold text-maroon-950 flex items-center gap-1">
-                          <MapPin className="w-3.5 h-3.5 text-pink-600" />
+                        <span className="text-xs font-bold text-stone-950 flex items-center gap-1">
+                          <MapPin className="w-3.5 h-3.5 text-amber-600" />
                           <span>{slot.locationName}</span>
                         </span>
                         <span
@@ -804,8 +807,8 @@ export default function AdminPage() {
                         </span>
                       </div>
 
-                      <div className="text-base font-serif font-bold text-pink-700 flex items-center gap-1 my-1">
-                        <Clock className="w-4 h-4 text-pink-600" />
+                      <div className="text-base font-serif font-bold text-amber-800 flex items-center gap-1 my-1">
+                        <Clock className="w-4 h-4 text-amber-600" />
                         <span>{slot.batchName}: {slot.startTime} – {slot.endTime}</span>
                       </div>
 
@@ -813,11 +816,11 @@ export default function AdminPage() {
                       <div className="mt-3 p-3.5 rounded-xl bg-stone-50 border border-stone-200 text-xs space-y-2">
                         <div className="flex justify-between text-stone-700 font-semibold">
                           <span>Max Capacity:</span>
-                          <strong className="text-maroon-950">{slot.capacity} seats</strong>
+                          <strong className="text-stone-950">{slot.capacity} seats</strong>
                         </div>
                         <div className="flex justify-between text-stone-700 font-semibold">
                           <span>Booked Seats:</span>
-                          <strong className="text-pink-700 font-bold">{slot.bookedSeats} seats</strong>
+                          <strong className="text-amber-800 font-bold">{slot.bookedSeats} seats</strong>
                         </div>
                         <div className="flex justify-between text-stone-700 font-semibold">
                           <span>Remaining Seats:</span>
@@ -834,7 +837,7 @@ export default function AdminPage() {
                                 ? 'bg-red-500'
                                 : remaining <= 5
                                 ? 'bg-amber-500'
-                                : 'bg-gradient-to-r from-pink-500 to-rose-500'
+                                : 'bg-gradient-to-r from-amber-500 to-yellow-400'
                             }`}
                             style={{ width: `${percentBooked}%` }}
                           ></div>
@@ -848,7 +851,7 @@ export default function AdminPage() {
                     <div className="flex items-center justify-between pt-2 border-t border-stone-200 text-xs">
                       <button
                         onClick={() => setEditingSlot(slot)}
-                        className="text-pink-700 hover:text-pink-900 flex items-center gap-1 font-bold cursor-pointer"
+                        className="text-amber-800 hover:text-amber-950 flex items-center gap-1 font-bold cursor-pointer"
                       >
                         <Edit2 className="w-3.5 h-3.5" />
                         <span>Edit Capacity</span>
@@ -878,7 +881,7 @@ export default function AdminPage() {
         {activeTab === 'settings' && settings && (
           <div className="max-w-2xl bg-white p-6 rounded-3xl border-2 border-stone-200 shadow-sm space-y-4">
             <div>
-              <h3 className="text-lg font-serif font-bold text-maroon-950">
+              <h3 className="text-lg font-serif font-bold text-stone-950">
                 Event Pricing & Payment Settings
               </h3>
               <p className="text-xs text-stone-600 font-medium">
@@ -902,7 +905,7 @@ export default function AdminPage() {
                     type="text"
                     value={settings.upiId}
                     onChange={(e) => setSettings({ ...settings, upiId: e.target.value })}
-                    className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl px-3.5 py-2.5 text-maroon-950 font-mono text-xs focus:outline-none focus:border-pink-500"
+                    className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl px-3.5 py-2.5 text-stone-950 font-mono text-xs focus:outline-none focus:border-amber-500"
                     required
                   />
                 </div>
@@ -915,20 +918,20 @@ export default function AdminPage() {
                     type="text"
                     value={settings.merchantName}
                     onChange={(e) => setSettings({ ...settings, merchantName: e.target.value })}
-                    className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl px-3.5 py-2.5 text-maroon-950 text-xs focus:outline-none focus:border-pink-500"
+                    className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl px-3.5 py-2.5 text-stone-950 text-xs focus:outline-none focus:border-amber-500"
                     required
                   />
                 </div>
 
                 <div>
                   <label className="block text-stone-700 font-bold mb-1">
-                    Helpline Number 1 (Manish Sir)
+                    Helpline / WhatsApp (Neel Sir)
                   </label>
                   <input
                     type="text"
                     value={settings.supportPhone1}
                     onChange={(e) => setSettings({ ...settings, supportPhone1: e.target.value })}
-                    className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl px-3.5 py-2.5 text-maroon-950 font-mono text-xs focus:outline-none focus:border-pink-500"
+                    className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl px-3.5 py-2.5 text-stone-950 font-mono text-xs focus:outline-none focus:border-amber-500"
                   />
                 </div>
 
@@ -940,7 +943,7 @@ export default function AdminPage() {
                     type="text"
                     value={settings.supportPhone2}
                     onChange={(e) => setSettings({ ...settings, supportPhone2: e.target.value })}
-                    className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl px-3.5 py-2.5 text-maroon-950 font-mono text-xs focus:outline-none focus:border-pink-500"
+                    className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl px-3.5 py-2.5 text-stone-950 font-mono text-xs focus:outline-none focus:border-amber-500"
                   />
                 </div>
 
@@ -954,7 +957,7 @@ export default function AdminPage() {
                     onChange={(e) =>
                       setSettings({ ...settings, priceFemale: parseInt(e.target.value, 10) || 0 })
                     }
-                    className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl px-3.5 py-2.5 text-maroon-950 text-xs focus:outline-none focus:border-pink-500"
+                    className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl px-3.5 py-2.5 text-stone-950 text-xs focus:outline-none focus:border-amber-500"
                   />
                 </div>
 
@@ -971,7 +974,7 @@ export default function AdminPage() {
                         priceOldStudentGroup: parseInt(e.target.value, 10) || 0,
                       })
                     }
-                    className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl px-3.5 py-2.5 text-maroon-950 text-xs focus:outline-none focus:border-pink-500"
+                    className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl px-3.5 py-2.5 text-stone-950 text-xs focus:outline-none focus:border-amber-500"
                   />
                 </div>
 
@@ -985,7 +988,7 @@ export default function AdminPage() {
                     onChange={(e) =>
                       setSettings({ ...settings, priceKids: parseInt(e.target.value, 10) || 0 })
                     }
-                    className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl px-3.5 py-2.5 text-maroon-950 text-xs focus:outline-none focus:border-pink-500"
+                    className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl px-3.5 py-2.5 text-stone-950 text-xs focus:outline-none focus:border-amber-500"
                   />
                 </div>
 
@@ -997,7 +1000,7 @@ export default function AdminPage() {
                     type="text"
                     value={settings.workshopDates}
                     onChange={(e) => setSettings({ ...settings, workshopDates: e.target.value })}
-                    className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl px-3.5 py-2.5 text-maroon-950 text-xs focus:outline-none focus:border-pink-500"
+                    className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl px-3.5 py-2.5 text-stone-950 text-xs focus:outline-none focus:border-amber-500"
                   />
                 </div>
               </div>
@@ -1006,10 +1009,10 @@ export default function AdminPage() {
                 <button
                   type="submit"
                   disabled={savingSettings}
-                  className="px-6 py-3 rounded-xl bg-gradient-to-r from-pink-600 via-rose-500 to-pink-500 text-white font-extrabold text-xs sm:text-sm hover:brightness-105 transition shadow-md flex items-center gap-2 cursor-pointer"
+                  className="px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-950 font-black text-xs sm:text-sm ring-1 ring-amber-300 hover:brightness-105 transition shadow-md flex items-center gap-2 cursor-pointer"
                 >
                   {savingSettings ? (
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <div className="w-4 h-4 border-2 border-stone-950 border-t-transparent rounded-full animate-spin"></div>
                   ) : (
                     <Settings className="w-4 h-4" />
                   )}
@@ -1025,8 +1028,8 @@ export default function AdminPage() {
       {/* ================= EDIT CAPACITY MODAL (Light Theme) ================= */}
       {editingSlot && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="bg-white border-2 border-pink-300 rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl relative">
-            <h4 className="text-base font-serif font-bold text-maroon-950">
+          <div className="bg-white border-2 border-amber-300 rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl relative">
+            <h4 className="text-base font-serif font-bold text-stone-950">
               Edit Batch Capacity
             </h4>
             <p className="text-xs text-stone-600 font-medium">
@@ -1045,7 +1048,7 @@ export default function AdminPage() {
                       capacity: parseInt(e.target.value, 10) || 0,
                     })
                   }
-                  className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl p-2.5 text-maroon-950 text-xs focus:outline-none focus:border-pink-500 font-bold"
+                  className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl p-2.5 text-stone-950 text-xs focus:outline-none focus:border-amber-500 font-bold"
                 />
               </div>
 
@@ -1059,7 +1062,7 @@ export default function AdminPage() {
                       status: e.target.value as any,
                     })
                   }
-                  className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl p-2.5 text-maroon-950 text-xs focus:outline-none focus:border-pink-500 font-semibold"
+                  className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl p-2.5 text-stone-950 text-xs focus:outline-none focus:border-amber-500 font-semibold"
                 >
                   <option value="AVAILABLE">Available</option>
                   <option value="ALMOST_FULL">Almost Full</option>
@@ -1077,7 +1080,7 @@ export default function AdminPage() {
               </button>
               <button
                 onClick={() => handleSaveSlot(editingSlot)}
-                className="px-5 py-2 rounded-xl bg-gradient-to-r from-pink-600 to-rose-600 text-white font-extrabold text-xs hover:brightness-105 transition shadow-sm cursor-pointer"
+                className="px-5 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-400 text-stone-950 font-black text-xs ring-1 ring-amber-300 hover:brightness-105 transition shadow-sm cursor-pointer"
               >
                 Save Changes
               </button>
@@ -1091,9 +1094,9 @@ export default function AdminPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
           <form
             onSubmit={handleAddSlot}
-            className="bg-white border-2 border-pink-300 rounded-3xl p-6 max-w-md w-full space-y-4 shadow-2xl text-xs"
+            className="bg-white border-2 border-amber-300 rounded-3xl p-6 max-w-md w-full space-y-4 shadow-2xl text-xs"
           >
-            <h4 className="text-base font-serif font-bold text-maroon-950">
+            <h4 className="text-base font-serif font-bold text-stone-950">
               Add New Workshop Batch
             </h4>
 
@@ -1103,7 +1106,7 @@ export default function AdminPage() {
                 <input
                   name="locationName"
                   placeholder="e.g. Bang Marriage Hall"
-                  className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl p-2.5 text-maroon-950 text-xs focus:outline-none focus:border-pink-500"
+                  className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl p-2.5 text-stone-950 text-xs focus:outline-none focus:border-amber-500"
                   required
                 />
               </div>
@@ -1113,7 +1116,7 @@ export default function AdminPage() {
                 <input
                   name="locationAddress"
                   placeholder="e.g. Near City Station, Kishangarh"
-                  className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl p-2.5 text-maroon-950 text-xs focus:outline-none focus:border-pink-500"
+                  className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl p-2.5 text-stone-950 text-xs focus:outline-none focus:border-amber-500"
                 />
               </div>
 
@@ -1123,7 +1126,7 @@ export default function AdminPage() {
                   <input
                     name="batchName"
                     placeholder="Batch 6"
-                    className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl p-2.5 text-maroon-950 text-xs focus:outline-none focus:border-pink-500"
+                    className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl p-2.5 text-stone-950 text-xs focus:outline-none focus:border-amber-500"
                     required
                   />
                 </div>
@@ -1132,7 +1135,7 @@ export default function AdminPage() {
                   <input
                     name="startTime"
                     placeholder="05:00 PM"
-                    className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl p-2.5 text-maroon-950 text-xs focus:outline-none focus:border-pink-500"
+                    className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl p-2.5 text-stone-950 text-xs focus:outline-none focus:border-amber-500"
                     required
                   />
                 </div>
@@ -1141,7 +1144,7 @@ export default function AdminPage() {
                   <input
                     name="endTime"
                     placeholder="06:00 PM"
-                    className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl p-2.5 text-maroon-950 text-xs focus:outline-none focus:border-pink-500"
+                    className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl p-2.5 text-stone-950 text-xs focus:outline-none focus:border-amber-500"
                     required
                   />
                 </div>
@@ -1153,7 +1156,7 @@ export default function AdminPage() {
                   name="capacity"
                   type="number"
                   defaultValue={50}
-                  className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl p-2.5 text-maroon-950 text-xs focus:outline-none focus:border-pink-500 font-bold"
+                  className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl p-2.5 text-stone-950 text-xs focus:outline-none focus:border-amber-500 font-bold"
                   required
                 />
               </div>
@@ -1169,7 +1172,7 @@ export default function AdminPage() {
               </button>
               <button
                 type="submit"
-                className="px-5 py-2 rounded-xl bg-gradient-to-r from-pink-600 to-rose-600 text-white font-extrabold text-xs hover:brightness-105 transition shadow-sm cursor-pointer"
+                className="px-5 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-400 text-stone-950 font-black text-xs ring-1 ring-amber-300 hover:brightness-105 transition shadow-sm cursor-pointer"
               >
                 Create Batch
               </button>
@@ -1181,13 +1184,13 @@ export default function AdminPage() {
       {/* ================= VIEW REGISTRATION & SCREENSHOT MODAL (Light Theme) ================= */}
       {viewingRegistration && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="bg-white border-2 border-pink-300 rounded-3xl p-6 max-w-lg w-full space-y-4 shadow-2xl relative">
+          <div className="bg-white border-2 border-amber-300 rounded-3xl p-6 max-w-lg w-full space-y-4 shadow-2xl relative">
             <div className="flex justify-between items-start pb-3 border-b border-stone-200">
               <div>
-                <span className="text-xs font-mono font-bold text-pink-700">
+                <span className="text-xs font-mono font-bold text-amber-800">
                   {viewingRegistration.id}
                 </span>
-                <h4 className="text-lg font-bold text-maroon-950">
+                <h4 className="text-lg font-bold text-stone-950">
                   {viewingRegistration.participantName}
                 </h4>
               </div>
@@ -1202,31 +1205,74 @@ export default function AdminPage() {
             <div className="grid grid-cols-2 gap-3 text-xs bg-stone-50 p-4 rounded-2xl border border-stone-200">
               <div>
                 <span className="text-stone-500 block text-[11px] font-semibold">Mobile:</span>
-                <strong className="text-maroon-950 font-mono">+91 {viewingRegistration.mobile}</strong>
+                <strong className="text-stone-950 font-mono">+91 {viewingRegistration.mobile}</strong>
               </div>
               <div>
                 <span className="text-stone-500 block text-[11px] font-semibold">Category:</span>
-                <strong className="text-maroon-950">{viewingRegistration.categoryLabel}</strong>
+                <strong className="text-stone-950">{viewingRegistration.categoryLabel}</strong>
               </div>
+              {viewingRegistration.fatherOrHusbandName && (
+                <div className="col-span-2">
+                  <span className="text-stone-500 block text-[11px] font-semibold">Father's / Husband's Name:</span>
+                  <strong className="text-amber-900 font-bold">{viewingRegistration.fatherOrHusbandName}</strong>
+                </div>
+              )}
+              {viewingRegistration.isKids && viewingRegistration.guardianName && (
+                <div className="col-span-2">
+                  <span className="text-stone-500 block text-[11px] font-semibold">Parent / Guardian:</span>
+                  <strong className="text-stone-950">{viewingRegistration.guardianName} ({viewingRegistration.guardianPhone})</strong>
+                </div>
+              )}
               <div>
                 <span className="text-stone-500 block text-[11px] font-semibold">Location:</span>
-                <strong className="text-maroon-950">{viewingRegistration.locationName}</strong>
+                <strong className="text-stone-950">{viewingRegistration.locationName}</strong>
               </div>
               <div>
                 <span className="text-stone-500 block text-[11px] font-semibold">Timing:</span>
-                <strong className="text-pink-700 font-bold">{viewingRegistration.batchTime}</strong>
+                <strong className="text-amber-800 font-bold">{viewingRegistration.batchTime}</strong>
               </div>
               <div>
                 <span className="text-stone-500 block text-[11px] font-semibold">Amount:</span>
-                <strong className="text-maroon-950 font-bold">₹{viewingRegistration.totalAmount}</strong>
+                <strong className="text-stone-950 font-bold">₹{viewingRegistration.totalAmount}</strong>
               </div>
               <div>
                 <span className="text-stone-500 block text-[11px] font-semibold">UTR / Txn Ref:</span>
-                <strong className="text-pink-700 font-mono font-bold">
+                <strong className="text-amber-800 font-mono font-bold">
                   {viewingRegistration.utrNumber || 'None'}
                 </strong>
               </div>
             </div>
+
+            {/* Group Members Breakdown if Group Registration */}
+            {viewingRegistration.groupMembers && viewingRegistration.groupMembers.length > 0 && (
+              <div className="bg-amber-50/70 p-3.5 rounded-2xl border border-amber-300 space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-xs font-bold text-amber-950 uppercase tracking-wide">
+                    Enrolled Group Members ({viewingRegistration.groupMembers.length} Members)
+                  </span>
+                </div>
+                <div className="divide-y divide-amber-200 text-xs max-h-44 overflow-y-auto pr-1">
+                  {viewingRegistration.groupMembers.map((mem, idx) => (
+                    <div key={idx} className="py-2 flex justify-between items-center">
+                      <div>
+                        <div className="font-bold text-stone-950">
+                          {idx + 1}. {mem.name} {idx === 0 && <span className="text-[10px] bg-amber-200 text-amber-900 px-1.5 py-0.5 rounded font-extrabold ml-1">LEADER</span>}
+                        </div>
+                        {mem.fatherOrHusbandName && (
+                          <div className="text-[10px] text-stone-600">
+                            Father/Husband: {mem.fatherOrHusbandName}
+                          </div>
+                        )}
+                      </div>
+                      <div className="text-right text-[11px] text-stone-700">
+                        {mem.mobile ? <span className="font-mono block">+91 {mem.mobile}</span> : null}
+                        {mem.age ? <span className="text-stone-500 block">Age: {mem.age}</span> : null}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Payment Screenshot View if present */}
             {viewingRegistration.paymentScreenshot && (
@@ -1245,7 +1291,7 @@ export default function AdminPage() {
             <div className="flex justify-between items-center pt-3 border-t border-stone-200">
               <button
                 onClick={() => downloadRegistrationReceipt(viewingRegistration)}
-                className="px-4 py-2 rounded-xl bg-gradient-to-r from-pink-600 to-rose-600 text-white font-extrabold text-xs hover:brightness-105 flex items-center gap-1.5 shadow-2xs cursor-pointer"
+                className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-400 text-stone-950 font-black text-xs ring-1 ring-amber-300 hover:brightness-105 flex items-center gap-1.5 shadow-2xs cursor-pointer"
               >
                 <Download className="w-3.5 h-3.5" />
                 <span>Download PDF Receipt</span>

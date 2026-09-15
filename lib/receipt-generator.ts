@@ -141,26 +141,35 @@ export function generateRegistrationPDF(registration: Registration): jsPDF {
 
   addField('Participant Name:', registration.participantName, leftColX, y);
   addField('Admission Category:', registration.categoryLabel, rightColX, y);
-  y += 12;
+  y += 11;
 
-  addField('Primary Mobile:', `+91 ${registration.mobile}`, leftColX, y);
-  addField('WhatsApp Number:', registration.whatsapp ? `+91 ${registration.whatsapp}` : `+91 ${registration.mobile}`, rightColX, y);
-  y += 12;
+  if (registration.fatherOrHusbandName) {
+    addField("Father's / Husband's Name:", registration.fatherOrHusbandName, leftColX, y);
+    addField('Primary Mobile:', `+91 ${registration.mobile}`, rightColX, y);
+    y += 11;
+  } else {
+    addField('Primary Mobile:', `+91 ${registration.mobile}`, leftColX, y);
+    addField('WhatsApp Number:', registration.whatsapp ? `+91 ${registration.whatsapp}` : `+91 ${registration.mobile}`, rightColX, y);
+    y += 11;
+  }
 
   addField('Age & Gender:', `${registration.age ? `${registration.age} Years` : 'N/A'} | ${registration.gender}`, leftColX, y);
   addField('City / Address:', `${registration.city} ${registration.address ? `(${registration.address})` : ''}`, rightColX, y);
-  y += 12;
+  y += 11;
 
   if (registration.isKids && registration.guardianName) {
     addField('Guardian / Parent:', registration.guardianName, leftColX, y);
     addField('Guardian Contact:', registration.guardianPhone ? `+91 ${registration.guardianPhone}` : 'N/A', rightColX, y);
-    y += 12;
+    y += 11;
   }
 
   if (registration.isGroup) {
+    const membersSummary = registration.groupMembers && registration.groupMembers.length > 0
+      ? registration.groupMembers.map((m, i) => `${i + 1}. ${m.name}`).join(', ')
+      : `${registration.membersCount} Participants`;
     addField('Group Leader:', registration.groupLeaderName || registration.participantName, leftColX, y);
-    addField('Total Group Members:', `${registration.membersCount} Participants`, rightColX, y);
-    y += 12;
+    addField('Group Members:', membersSummary.length > 40 ? `${membersSummary.substring(0, 37)}...` : membersSummary, rightColX, y);
+    y += 11;
   }
 
   // Workshop & Slot Section
@@ -266,7 +275,7 @@ export function generateRegistrationPDF(registration: Registration): jsPDF {
   doc.setTextColor(120, 100, 100);
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(7);
-  doc.text('The Frozen Night - Event and Entertainments • Kishangarh, Rajasthan • Helpline: +91 8432223222, +91 8385969285', pageWidth / 2, footerY + 7.5, { align: 'center' });
+  doc.text('The Frozen Night - Event and Entertainment • Kishangarh, Rajasthan • Helpline: +91 8385969285', pageWidth / 2, footerY + 7.5, { align: 'center' });
 
   return doc;
 }

@@ -2,19 +2,19 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Garba & Dandiya Classes in Kishangarh | TFN – The Frozen Night',
-  description: "Join TFN's one-month Garba & Dandiya workshop in Kishangarh. Choose your batch, book your slot and register online.",
-  keywords: 'Garba classes Kishangarh, Dandiya workshop Kishangarh, TFN The Frozen Night, Navratri dance Kishangarh, Manish Neel sir garba',
+  title: 'Garba Raas Dandiya Mahotsav | Namo Club Kishangarh & TFN',
+  description: "Namo Club Kishangarh Presents, Co Powered By The Frozen Night Event and Entertainment: Garba Raas Dandiya Mahotsav 2026. Book your slot online.",
+  keywords: 'Garba Raas Dandiya Mahotsav, Namo Club Kishangarh, TFN The Frozen Night, Garba classes Kishangarh, Dandiya workshop Kishangarh, Manish Neel sir garba',
   openGraph: {
-    title: 'Garba & Dandiya Classes in Kishangarh | TFN – The Frozen Night',
-    description: "Join TFN's one-month Garba & Dandiya workshop in Kishangarh. Choose your batch, book your slot and register online.",
+    title: 'Garba Raas Dandiya Mahotsav | Namo Club Kishangarh & TFN',
+    description: "Namo Club Kishangarh Presents, Co Powered By The Frozen Night Event and Entertainment: Garba Raas Dandiya Mahotsav 2026. Book your slot online.",
     type: 'website',
     locale: 'en_IN',
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: '#22060c',
+  themeColor: '#eab308',
   width: 'device-width',
   initialScale: 1,
 };
@@ -34,7 +34,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="bg-white text-[#1a080e] min-h-screen selection:bg-pink-100 selection:text-pink-900 font-sans antialiased">
+      <body className="bg-white text-[#1a080e] min-h-screen selection:bg-amber-100 selection:text-amber-950 font-sans antialiased">
         {children}
       </body>
     </html>

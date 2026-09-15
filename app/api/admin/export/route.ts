@@ -8,6 +8,7 @@ export async function GET() {
     const headers = [
       'Registration ID',
       'Participant Name',
+      'Father / Husband Name',
       'Category',
       'Mobile',
       'WhatsApp',
@@ -19,6 +20,7 @@ export async function GET() {
       'Location',
       'Batch Timing',
       'Participants Count',
+      'Group Members Details',
       'Fee Per Person',
       'Total Amount',
       'Payment Status',
@@ -38,32 +40,40 @@ export async function GET() {
       return `"${str}"`;
     };
 
-    const rows = list.map((r) => [
-      escapeCsv(r.id),
-      escapeCsv(r.participantName),
-      escapeCsv(r.categoryLabel),
-      escapeCsv(r.mobile),
-      escapeCsv(r.whatsapp),
-      escapeCsv(r.email),
-      escapeCsv(r.age),
-      escapeCsv(r.gender),
-      escapeCsv(r.city),
-      escapeCsv(r.address),
-      escapeCsv(r.locationName),
-      escapeCsv(r.batchTime),
-      escapeCsv(r.membersCount),
-      escapeCsv(r.feePerPerson),
-      escapeCsv(r.totalAmount),
-      escapeCsv(r.paymentStatus),
-      escapeCsv(r.bookingStatus),
-      escapeCsv(r.utrNumber || ''),
-      escapeCsv(r.paymentDate || ''),
-      escapeCsv(r.guardianName || ''),
-      escapeCsv(r.guardianPhone || ''),
-      escapeCsv(r.groupLeaderName || ''),
-      escapeCsv(r.groupLeaderPhone || ''),
-      escapeCsv(r.createdAt),
-    ]);
+    const rows = list.map((r) => {
+      const groupMembersStr = r.groupMembers && r.groupMembers.length > 0
+        ? r.groupMembers.map((m, i) => `[${i + 1}] ${m.name}${m.fatherOrHusbandName ? ` (S/O,W/O: ${m.fatherOrHusbandName})` : ''}${m.mobile ? ` Mob: ${m.mobile}` : ''}${m.age ? ` Age: ${m.age}` : ''}`).join('; ')
+        : '';
+
+      return [
+        escapeCsv(r.id),
+        escapeCsv(r.participantName),
+        escapeCsv(r.fatherOrHusbandName || ''),
+        escapeCsv(r.categoryLabel),
+        escapeCsv(r.mobile),
+        escapeCsv(r.whatsapp),
+        escapeCsv(r.email),
+        escapeCsv(r.age),
+        escapeCsv(r.gender),
+        escapeCsv(r.city),
+        escapeCsv(r.address),
+        escapeCsv(r.locationName),
+        escapeCsv(r.batchTime),
+        escapeCsv(r.membersCount),
+        escapeCsv(groupMembersStr),
+        escapeCsv(r.feePerPerson),
+        escapeCsv(r.totalAmount),
+        escapeCsv(r.paymentStatus),
+        escapeCsv(r.bookingStatus),
+        escapeCsv(r.utrNumber || ''),
+        escapeCsv(r.paymentDate || ''),
+        escapeCsv(r.guardianName || ''),
+        escapeCsv(r.guardianPhone || ''),
+        escapeCsv(r.groupLeaderName || ''),
+        escapeCsv(r.groupLeaderPhone || ''),
+        escapeCsv(r.createdAt),
+      ];
+    });
 
     const csvContent = [headers.join(','), ...rows.map((row) => row.join(','))].join('\n');
 

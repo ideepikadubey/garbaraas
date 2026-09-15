@@ -47,6 +47,22 @@ export default function RegistrationModal({
   const [membersCount, setMembersCount] = useState<number>(5);
   const [groupLeaderName, setGroupLeaderName] = useState('');
   const [groupLeaderPhone, setGroupLeaderPhone] = useState('');
+  const [fatherOrHusbandName, setFatherOrHusbandName] = useState('');
+
+  // Group Members Details state (dynamic array for 5+ members)
+  interface GroupMemberItem {
+    name: string;
+    age: string;
+    mobile: string;
+    fatherOrHusbandName: string;
+  }
+  const [groupMembers, setGroupMembers] = useState<GroupMemberItem[]>([
+    { name: '', age: '', mobile: '', fatherOrHusbandName: '' },
+    { name: '', age: '', mobile: '', fatherOrHusbandName: '' },
+    { name: '', age: '', mobile: '', fatherOrHusbandName: '' },
+    { name: '', age: '', mobile: '', fatherOrHusbandName: '' },
+    { name: '', age: '', mobile: '', fatherOrHusbandName: '' },
+  ]);
 
   // Participant details
   const [participantName, setParticipantName] = useState('');
@@ -344,21 +360,95 @@ export default function RegistrationModal({
     setStep(2);
   };
 
+  const handleMembersCountChange = (newCount: number) => {
+    const count = Math.max(5, newCount);
+    setMembersCount(count);
+    setGroupMembers((prev) => {
+      const updated = [...prev];
+      while (updated.length < count) {
+        updated.push({ name: '', age: '', mobile: '', fatherOrHusbandName: '' });
+      }
+      return updated.slice(0, count);
+    });
+  };
+
+  const handleGroupMemberChange = (index: number, field: 'name' | 'age' | 'mobile' | 'fatherOrHusbandName', value: string) => {
+    setGroupMembers((prev) => {
+      const updated = [...prev];
+      updated[index] = { ...updated[index], [field]: value };
+      if (index === 0) {
+        if (field === 'name') {
+          setParticipantName(value);
+          setGroupLeaderName(value);
+        } else if (field === 'mobile') {
+          setMobile(value);
+          setGroupLeaderPhone(value);
+        } else if (field === 'fatherOrHusbandName') {
+          setFatherOrHusbandName(value);
+        }
+      }
+      return updated;
+    });
+  };
+
   // Step 2 validation
   const validateStep2 = () => {
     setErrorMessage('');
-    if (!participantName.trim()) {
-      setErrorMessage('Please enter the participant full name');
-      return false;
+
+    if (category === 'OLD_STUDENT' || isOldStudent) {
+      if (!participantName.trim()) {
+        setErrorMessage('Please enter the participant full name');
+        return false;
+      }
+      if (!fatherOrHusbandName.trim()) {
+        setErrorMessage("Please enter Father's or Husband's Name for Alumni verification");
+        return false;
+      }
+      const cleanMob = mobile.replace(/\D/g, '');
+      if (cleanMob.length !== 10) {
+        setErrorMessage('Please enter a valid 10-digit Indian mobile number');
+        return false;
+      }
+      return true;
     }
 
-    const cleanMob = mobile.replace(/\D/g, '');
-    if (cleanMob.length !== 10) {
-      setErrorMessage('Please enter a valid 10-digit Indian mobile number');
-      return false;
+    if (isGroup) {
+      if (membersCount < 5) {
+        setErrorMessage('Group admission requires a minimum of 5 members');
+        return false;
+      }
+
+      // Check Member 1 (Lead)
+      const mem1 = groupMembers[0];
+      const mem1Name = mem1?.name?.trim() || groupLeaderName.trim() || participantName.trim();
+      if (!mem1Name) {
+        setErrorMessage('Please enter the full name for Member 1 (Group Leader)');
+        return false;
+      }
+
+      const mem1Mob = (mem1?.mobile || mobile || groupLeaderPhone).replace(/\D/g, '');
+      if (mem1Mob.length !== 10) {
+        setErrorMessage('Please enter a valid 10-digit mobile number for Member 1 (Group Leader)');
+        return false;
+      }
+
+      // Validate all group members from index 0 to membersCount - 1
+      for (let i = 0; i < membersCount; i++) {
+        const member = groupMembers[i];
+        if (!member || !member.name.trim()) {
+          setErrorMessage(`Please enter the full name for Member ${i + 1}`);
+          return false;
+        }
+      }
+
+      return true;
     }
 
     if (category === 'KIDS') {
+      if (!participantName.trim()) {
+        setErrorMessage("Please enter the child's full name");
+        return false;
+      }
       if (!guardianName.trim()) {
         setErrorMessage("Please enter the parent or guardian's full name");
         return false;
@@ -368,17 +458,19 @@ export default function RegistrationModal({
         setErrorMessage("Please enter a valid 10-digit parent/guardian mobile number");
         return false;
       }
+      return true;
     }
 
-    if (isGroup) {
-      if (membersCount < 5) {
-        setErrorMessage('Group admission requires a minimum of 5 members');
-        return false;
-      }
-      if (!groupLeaderName.trim()) {
-        setErrorMessage('Please enter group leader name');
-        return false;
-      }
+    // Default FEMALE
+    if (!participantName.trim()) {
+      setErrorMessage('Please enter the participant full name');
+      return false;
+    }
+
+    const cleanMob = mobile.replace(/\D/g, '');
+    if (cleanMob.length !== 10) {
+      setErrorMessage('Please enter a valid 10-digit Indian mobile number');
+      return false;
     }
 
     return true;
@@ -407,17 +499,21 @@ export default function RegistrationModal({
     setErrorMessage('');
 
     try {
+      const primaryName = isGroup ? (groupMembers[0]?.name || participantName || groupLeaderName) : participantName;
+      const primaryMobile = isGroup ? (groupMembers[0]?.mobile || mobile || groupLeaderPhone) : mobile;
+      const primaryFatherHusband = isGroup ? (groupMembers[0]?.fatherOrHusbandName || fatherOrHusbandName) : fatherOrHusbandName;
+
       // Reserve slot on server atomically
       const res = await fetch('/api/registrations', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           category,
-          participantName,
-          mobile,
-          whatsapp: whatsapp || mobile,
+          participantName: primaryName,
+          mobile: primaryMobile,
+          whatsapp: whatsapp || primaryMobile,
           email,
-          age,
+          age: isGroup ? (groupMembers[0]?.age || age) : age,
           gender: category === 'KIDS' || category === 'FEMALE' ? 'Female' : gender,
           city,
           address,
@@ -427,11 +523,13 @@ export default function RegistrationModal({
           guardianName,
           guardianPhone,
           childAge: category === 'KIDS' ? childAge : undefined,
-          isOldStudent,
+          isOldStudent: category === 'OLD_STUDENT' || isOldStudent,
+          fatherOrHusbandName: primaryFatherHusband,
           isGroup,
           membersCount: count,
-          groupLeaderName,
-          groupLeaderPhone,
+          groupLeaderName: isGroup ? primaryName : undefined,
+          groupLeaderPhone: isGroup ? primaryMobile : undefined,
+          groupMembers: isGroup ? groupMembers.slice(0, count) : undefined,
           slotId: selectedSlot?.id,
           locationName: selectedSlot?.locationName,
           batchTime: `${selectedSlot?.batchName}: ${selectedSlot?.startTime} – ${selectedSlot?.endTime}`,
@@ -555,24 +653,24 @@ export default function RegistrationModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/60 backdrop-blur-md overflow-y-auto">
-      <div className="relative w-full max-w-3xl bg-white border-2 border-pink-300 rounded-3xl p-3.5 sm:p-7 shadow-2xl my-4 max-h-[94vh] flex flex-col justify-between overflow-hidden">
+      <div className="relative w-full max-w-3xl bg-white border-2 border-amber-300 rounded-3xl p-3.5 sm:p-7 shadow-2xl my-4 max-h-[94vh] flex flex-col justify-between overflow-hidden">
         
         {/* Top Garba Accent Ribbon */}
-        <div className="w-full h-[3px] bg-gradient-to-r from-pink-500 via-rose-500 to-pink-500 absolute top-0 left-0 right-0"></div>
+        <div className="w-full h-[3px] bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 absolute top-0 left-0 right-0"></div>
 
         {/* Top Ornate Bar */}
         <div className="flex items-center justify-between pb-3 pt-2 mb-2 border-b border-stone-200">
           <div className="flex items-center gap-2 sm:gap-2.5">
-            <div className="p-[2px] rounded-full bg-gradient-to-tr from-garba-pink-600 via-rose-500 to-pink-400 shadow-sm">
-              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white border border-pink-200 flex items-center justify-center text-maroon-950 font-serif font-black text-xs">
-                TFN
+            <div className="p-[2px] rounded-full bg-gradient-to-tr from-amber-500 via-yellow-400 to-amber-300 shadow-sm">
+              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white border border-amber-200 flex items-center justify-center p-0.5 overflow-hidden">
+                <img src="/images/TFN.png" alt="TFN Logo" className="w-full h-full object-contain" />
               </div>
             </div>
             <div>
-              <h3 className="text-xs sm:text-base font-serif font-bold text-maroon-950 truncate max-w-[220px] sm:max-w-none">
-                TFN Garba & Dandiya Registration
+              <h3 className="text-xs sm:text-base font-serif font-bold text-stone-950 truncate max-w-[220px] sm:max-w-none">
+                TFN Garba Raas Dandiya Registration
               </h3>
-              <p className="text-[10px] sm:text-[11px] text-garba-pink-800 font-semibold">
+              <p className="text-[10px] sm:text-[11px] text-amber-800 font-semibold">
                 13th Sept – 11th Oct • Kishangarh, Rajasthan
               </p>
             </div>
@@ -580,7 +678,7 @@ export default function RegistrationModal({
 
           <button
             onClick={onClose}
-            className="p-1.5 text-stone-500 hover:text-maroon-950 hover:bg-pink-50 rounded-full transition cursor-pointer"
+            className="p-1.5 text-stone-500 hover:text-stone-950 hover:bg-amber-50 rounded-full transition cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -601,7 +699,7 @@ export default function RegistrationModal({
                 <div
                   className={`w-5 h-5 sm:w-7 sm:h-7 rounded-full flex items-center justify-center font-bold mb-1 transition-all text-[10px] sm:text-xs ${
                     step === s.num
-                      ? 'bg-gradient-to-r from-garba-pink-600 via-rose-500 to-pink-500 text-white shadow-md scale-105'
+                      ? 'bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-950 shadow-md ring-1 ring-amber-300 scale-105'
                       : step > s.num
                       ? 'bg-emerald-600 text-white'
                       : 'bg-stone-100 text-stone-500 border border-stone-300'
@@ -611,7 +709,7 @@ export default function RegistrationModal({
                 </div>
                 <span
                   className={`hidden sm:inline-block truncate ${
-                    step === s.num ? 'text-garba-orange-800 font-bold' : 'text-stone-500'
+                    step === s.num ? 'text-amber-800 font-bold' : 'text-stone-500'
                   }`}
                 >
                   {s.label}
@@ -651,15 +749,15 @@ export default function RegistrationModal({
                   onClick={() => handleCategorySelect('FEMALE')}
                   className={`p-4 rounded-2xl border-2 cursor-pointer transition-all ${
                     category === 'FEMALE' && !isOldStudent && !isGroup
-                      ? 'bg-garba-pink-50/80 border-garba-pink-500 shadow-md'
-                      : 'bg-white border-garba-pink-200 hover:border-garba-pink-400'
+                      ? 'bg-amber-50/80 border-amber-500 shadow-md'
+                      : 'bg-white border-amber-200 hover:border-amber-400'
                   }`}
                 >
                   <div className="flex justify-between items-start">
-                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-garba-pink-700">Category A</span>
-                    <span className="text-xl font-black font-serif text-garba-pink-600">₹2500</span>
+                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-amber-800">Category A</span>
+                    <span className="text-xl font-black font-serif text-amber-600">₹2500</span>
                   </div>
-                  <h5 className="text-base font-bold text-maroon-950 mt-1">Female Admission</h5>
+                  <h5 className="text-base font-bold text-stone-950 mt-1">Female Admission</h5>
                   <p className="text-xs text-stone-600 mt-0.5 font-medium">(Only Females • Open Age)</p>
                   <div className="mt-3 pt-2 border-t border-stone-200 text-[11px] text-stone-700 space-y-1 font-medium">
                     <div>✓ All 8 Dance Styles</div>
@@ -670,9 +768,9 @@ export default function RegistrationModal({
 
                 {/* Old TFN / Group */}
                 <div
-                  onClick={() => handleCategorySelect('GROUP')}
+                  onClick={() => handleCategorySelect(isOldStudent ? 'OLD_STUDENT' : 'GROUP')}
                   className={`p-4 rounded-2xl border-2 cursor-pointer transition-all ${
-                    isGroup || isOldStudent
+                    isGroup || isOldStudent || category === 'OLD_STUDENT' || category === 'GROUP'
                       ? 'bg-garba-orange-50/80 border-garba-orange-500 shadow-md'
                       : 'bg-white border-garba-orange-200 hover:border-garba-orange-400'
                   }`}
@@ -687,6 +785,28 @@ export default function RegistrationModal({
                     <div>✓ ₹300 Discount per member</div>
                     <div>✓ Free Family Pass for all</div>
                     <div>✓ Group choreography formation</div>
+                  </div>
+
+                  {/* Sub category selection buttons */}
+                  <div className="mt-3 pt-2 border-t border-garba-orange-200 flex gap-1.5" onClick={(e) => e.stopPropagation()}>
+                    <button
+                      type="button"
+                      onClick={() => handleCategorySelect('GROUP')}
+                      className={`flex-1 py-1.5 px-2 rounded-lg text-[10px] font-extrabold transition cursor-pointer ${
+                        isGroup && !isOldStudent ? 'bg-garba-orange-600 text-white shadow-sm' : 'bg-white border border-garba-orange-300 text-stone-800 hover:bg-garba-orange-100'
+                      }`}
+                    >
+                      Group (5+)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleCategorySelect('OLD_STUDENT')}
+                      className={`flex-1 py-1.5 px-2 rounded-lg text-[10px] font-extrabold transition cursor-pointer ${
+                        category === 'OLD_STUDENT' || isOldStudent ? 'bg-garba-orange-600 text-white shadow-sm' : 'bg-white border border-garba-orange-300 text-stone-800 hover:bg-garba-orange-100'
+                      }`}
+                    >
+                      Old Student (Alumni)
+                    </button>
                   </div>
                 </div>
 
@@ -715,20 +835,20 @@ export default function RegistrationModal({
               </div>
 
               {/* Group Configuration if Group chosen */}
-              {isGroup && (
+              {isGroup && !isOldStudent && (
                 <div className="p-4 rounded-xl bg-garba-orange-50 border-2 border-garba-orange-300 mt-4 space-y-3">
                   <div className="flex items-center justify-between">
                     <div>
                       <h6 className="text-xs font-bold text-garba-orange-900 uppercase tracking-wide">
                         Group Booking: Number of Members (Minimum 5)
                       </h6>
-                      <p className="text-[11px] text-stone-600 font-medium">₹2200 per member automatically calculated</p>
+                      <p className="text-[11px] text-stone-600 font-medium">₹2200 per member • All member details collected in next step</p>
                     </div>
                     <div className="flex items-center gap-2">
                       <button
                         type="button"
-                        onClick={() => setMembersCount((prev) => Math.max(5, prev - 1))}
-                        className="w-8 h-8 rounded-lg bg-white border border-garba-orange-300 text-garba-orange-900 font-bold shadow-sm cursor-pointer"
+                        onClick={() => handleMembersCountChange(membersCount - 1)}
+                        className="w-8 h-8 rounded-lg bg-white border border-garba-orange-300 text-garba-orange-900 font-bold shadow-sm cursor-pointer hover:bg-garba-orange-100"
                       >
                         -
                       </button>
@@ -737,8 +857,8 @@ export default function RegistrationModal({
                       </span>
                       <button
                         type="button"
-                        onClick={() => setMembersCount((prev) => prev + 1)}
-                        className="w-8 h-8 rounded-lg bg-white border border-garba-orange-300 text-garba-orange-900 font-bold shadow-sm cursor-pointer"
+                        onClick={() => handleMembersCountChange(membersCount + 1)}
+                        className="w-8 h-8 rounded-lg bg-white border border-garba-orange-300 text-garba-orange-900 font-bold shadow-sm cursor-pointer hover:bg-garba-orange-100"
                       >
                         +
                       </button>
@@ -746,7 +866,7 @@ export default function RegistrationModal({
                   </div>
 
                   <div className="pt-2 border-t border-garba-orange-200 flex justify-between items-center text-xs">
-                    <span className="text-stone-700 font-medium">Total Group Payable:</span>
+                    <span className="text-stone-700 font-medium">Total Group Payable ({membersCount} Members):</span>
                     <span className="text-sm font-black text-garba-orange-800">₹{2200 * membersCount}</span>
                   </div>
                 </div>
@@ -759,243 +879,390 @@ export default function RegistrationModal({
             <div className="space-y-4">
               <div className="text-center mb-3">
                 <h4 className="text-lg font-serif font-bold text-maroon-950">
-                  Step 2: Participant Information
+                  {isGroup
+                    ? `Step 2: Group Member Details (${membersCount} Members)`
+                    : (category === 'OLD_STUDENT' || isOldStudent)
+                    ? 'Step 2: Alumni Participant Information'
+                    : category === 'KIDS'
+                    ? 'Step 2: Kids Participant & Parent Details'
+                    : 'Step 2: Participant Information'}
                 </h4>
                 <p className="text-xs text-stone-600 font-medium">
-                  Please enter participant details accurately for the official entry pass.
+                  {isGroup
+                    ? `Please enter the individual details of each member (${membersCount} members) in your group.`
+                    : (category === 'OLD_STUDENT' || isOldStudent)
+                    ? "Please enter your name and Father's / Husband's Name for TFN alumni verification."
+                    : 'Please enter participant details accurately for the official entry pass.'}
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 text-xs">
-                
-                {/* Full Name */}
-                <div className="sm:col-span-2">
-                  <label className="block text-maroon-950 font-bold mb-1">
-                    Participant Full Name <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={participantName}
-                    onChange={(e) => setParticipantName(e.target.value)}
-                    placeholder="e.g. Pooja Sharma"
-                    className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl px-3.5 py-2.5 text-maroon-950 placeholder-stone-400 text-xs focus:outline-none focus:border-garba-orange-500"
-                    required
-                  />
-                </div>
+              {/* ================= GROUP (5+ MEMBERS) DYNAMIC FORM ================= */}
+              {isGroup ? (
+                <div className="space-y-4">
+                  {/* Group Coordinator Info Banner */}
+                  <div className="p-3.5 rounded-2xl bg-garba-orange-50 border-2 border-garba-orange-300 space-y-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs font-bold text-garba-orange-900 uppercase tracking-wide">
+                        Group Coordinator & Address Info
+                      </span>
+                      <span className="text-[11px] font-bold text-garba-orange-800 bg-white px-2.5 py-0.5 rounded-full border border-garba-orange-300">
+                        {membersCount} Members Total
+                      </span>
+                    </div>
 
-                {/* Mobile */}
-                <div>
-                  <label className="block text-maroon-950 font-bold mb-1">
-                    Primary Mobile Number (10 digits) <span className="text-red-500">*</span>
-                  </label>
-                  <div className="flex">
-                    <span className="inline-flex items-center px-3 bg-stone-100 border-2 border-r-0 border-stone-200 rounded-l-xl text-maroon-950 font-mono font-bold text-xs">
-                      +91
-                    </span>
-                    <input
-                      type="tel"
-                      maxLength={10}
-                      value={mobile}
-                      onChange={(e) => setMobile(e.target.value.replace(/\D/g, ''))}
-                      placeholder="9829012345"
-                      className="w-full bg-stone-50 border-2 border-stone-200 rounded-r-xl px-3.5 py-2.5 text-maroon-950 placeholder-stone-400 text-xs focus:outline-none focus:border-garba-orange-500 font-mono"
-                      required
-                    />
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                      <div>
+                        <label className="block text-maroon-950 font-bold mb-1">
+                          Group WhatsApp (For Updates)
+                        </label>
+                        <div className="flex">
+                          <span className="inline-flex items-center px-2.5 bg-stone-100 border-2 border-r-0 border-stone-200 rounded-l-xl text-maroon-950 font-mono font-bold text-xs">
+                            +91
+                          </span>
+                          <input
+                            type="tel"
+                            maxLength={10}
+                            value={whatsapp}
+                            onChange={(e) => setWhatsapp(e.target.value.replace(/\D/g, ''))}
+                            placeholder="WhatsApp Number"
+                            className="w-full bg-white border-2 border-stone-200 rounded-r-xl px-3 py-2 text-maroon-950 text-xs focus:outline-none focus:border-garba-orange-500 font-mono"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-maroon-950 font-bold mb-1">City</label>
+                        <input
+                          type="text"
+                          value={city}
+                          onChange={(e) => setCity(e.target.value)}
+                          placeholder="Kishangarh"
+                          className="w-full bg-white border-2 border-stone-200 rounded-xl px-3 py-2 text-maroon-950 text-xs focus:outline-none focus:border-garba-orange-500"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-maroon-950 font-bold mb-1">Local Address / Area</label>
+                        <input
+                          type="text"
+                          value={address}
+                          onChange={(e) => setAddress(e.target.value)}
+                          placeholder="e.g. Madanganj, Kishangarh"
+                          className="w-full bg-white border-2 border-stone-200 rounded-xl px-3 py-2 text-maroon-950 text-xs focus:outline-none focus:border-garba-orange-500"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Individual Member Cards */}
+                  <div className="space-y-3 max-h-[48vh] overflow-y-auto pr-1">
+                    {Array.from({ length: membersCount }).map((_, idx) => {
+                      const member = groupMembers[idx] || { name: '', age: '', mobile: '', fatherOrHusbandName: '' };
+                      const isLead = idx === 0;
+
+                      return (
+                        <div
+                          key={idx}
+                          className={`p-3.5 rounded-2xl border-2 transition-all ${
+                            isLead
+                              ? 'bg-amber-50/60 border-amber-400 shadow-sm'
+                              : 'bg-stone-50 border-stone-200'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between mb-2.5">
+                            <span className="text-xs font-black text-maroon-950 flex items-center gap-1.5">
+                              <span className="w-5 h-5 rounded-full bg-amber-500 text-stone-950 flex items-center justify-center text-[10px] font-black">
+                                {idx + 1}
+                              </span>
+                              <span>Member {idx + 1}</span>
+                              {isLead && (
+                                <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-200 text-amber-900 font-extrabold uppercase tracking-wide">
+                                  Group Leader / Primary
+                                </span>
+                              )}
+                            </span>
+                          </div>
+
+                          <div className="grid grid-cols-1 sm:grid-cols-4 gap-2.5 text-xs">
+                            {/* Member Name */}
+                            <div className="sm:col-span-2">
+                              <label className="block text-maroon-950 font-bold mb-1">
+                                Member Full Name <span className="text-red-500">*</span>
+                              </label>
+                              <input
+                                type="text"
+                                value={member.name}
+                                onChange={(e) => handleGroupMemberChange(idx, 'name', e.target.value)}
+                                placeholder={`e.g. ${isLead ? 'Pooja Sharma (Leader)' : `Member ${idx + 1} Name`}`}
+                                className="w-full bg-white border-2 border-stone-200 rounded-xl px-3 py-2 text-maroon-950 placeholder-stone-400 text-xs focus:outline-none focus:border-garba-orange-500"
+                                required
+                              />
+                            </div>
+
+                            {/* Father's or Husband's Name */}
+                            <div className="sm:col-span-2">
+                              <label className="block text-maroon-950 font-bold mb-1">
+                                Father's / Husband's Name
+                              </label>
+                              <input
+                                type="text"
+                                value={member.fatherOrHusbandName}
+                                onChange={(e) => handleGroupMemberChange(idx, 'fatherOrHusbandName', e.target.value)}
+                                placeholder="Father or Husband Name"
+                                className="w-full bg-white border-2 border-stone-200 rounded-xl px-3 py-2 text-maroon-950 placeholder-stone-400 text-xs focus:outline-none focus:border-garba-orange-500"
+                              />
+                            </div>
+
+                            {/* Mobile */}
+                            <div className="sm:col-span-2">
+                              <label className="block text-maroon-950 font-bold mb-1">
+                                Mobile Number {isLead ? <span className="text-red-500">*</span> : <span className="text-stone-500 font-normal">(Optional)</span>}
+                              </label>
+                              <div className="flex">
+                                <span className="inline-flex items-center px-2.5 bg-stone-100 border-2 border-r-0 border-stone-200 rounded-l-xl text-maroon-950 font-mono font-bold text-xs">
+                                  +91
+                                </span>
+                                <input
+                                  type="tel"
+                                  maxLength={10}
+                                  value={member.mobile}
+                                  onChange={(e) => handleGroupMemberChange(idx, 'mobile', e.target.value.replace(/\D/g, ''))}
+                                  placeholder={isLead ? '9829012345 (Leader Phone)' : 'Mobile (optional)'}
+                                  className="w-full bg-white border-2 border-stone-200 rounded-r-xl px-3 py-2 text-maroon-950 placeholder-stone-400 text-xs focus:outline-none focus:border-garba-orange-500 font-mono"
+                                  required={isLead}
+                                />
+                              </div>
+                            </div>
+
+                            {/* Age */}
+                            <div className="sm:col-span-2">
+                              <label className="block text-maroon-950 font-bold mb-1">Age</label>
+                              <input
+                                type="number"
+                                min={10}
+                                max={80}
+                                value={member.age}
+                                onChange={(e) => handleGroupMemberChange(idx, 'age', e.target.value)}
+                                placeholder="e.g. 22"
+                                className="w-full bg-white border-2 border-stone-200 rounded-xl px-3 py-2 text-maroon-950 text-xs focus:outline-none focus:border-garba-orange-500"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
-
-                {/* WhatsApp */}
-                <div>
-                  <label className="block text-maroon-950 font-bold mb-1">
-                    WhatsApp Number (for slot updates)
-                  </label>
-                  <div className="flex">
-                    <span className="inline-flex items-center px-3 bg-stone-100 border-2 border-r-0 border-stone-200 rounded-l-xl text-maroon-950 font-mono font-bold text-xs">
-                      +91
-                    </span>
-                    <input
-                      type="tel"
-                      maxLength={10}
-                      value={whatsapp}
-                      onChange={(e) => setWhatsapp(e.target.value.replace(/\D/g, ''))}
-                      placeholder="Same as mobile if blank"
-                      className="w-full bg-stone-50 border-2 border-stone-200 rounded-r-xl px-3.5 py-2.5 text-maroon-950 placeholder-stone-400 text-xs focus:outline-none focus:border-garba-orange-500 font-mono"
-                    />
-                  </div>
-                </div>
-
-                {/* Email */}
-                <div>
-                  <label className="block text-maroon-950 font-bold mb-1">
-                    Email Address (for PDF receipt)
-                  </label>
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="pooja@example.com"
-                    className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl px-3.5 py-2.5 text-maroon-950 placeholder-stone-400 text-xs focus:outline-none focus:border-garba-orange-500"
-                  />
-                </div>
-
-                {/* Age & Gender */}
-                <div className="grid grid-cols-2 gap-2">
-                  <div>
+              ) : (
+                /* ================= SINGLE PARTICIPANT (ALUMNI / FEMALE / KIDS) FORM ================= */
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 text-xs">
+                  
+                  {/* Full Name */}
+                  <div className="sm:col-span-2">
                     <label className="block text-maroon-950 font-bold mb-1">
-                      Age <span className="text-red-500">*</span>
+                      {category === 'KIDS' ? 'Child Full Name (Girl)' : 'Participant Full Name'} <span className="text-red-500">*</span>
                     </label>
                     <input
-                      type="number"
-                      min={category === 'KIDS' ? 7 : 14}
-                      max={category === 'KIDS' ? 16 : 80}
-                      value={category === 'KIDS' ? childAge : age}
-                      onChange={(e) => {
-                        if (category === 'KIDS') setChildAge(e.target.value);
-                        else setAge(e.target.value);
-                      }}
-                      className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl px-3 py-2.5 text-maroon-950 text-xs focus:outline-none focus:border-garba-orange-500 font-bold"
+                      type="text"
+                      value={participantName}
+                      onChange={(e) => setParticipantName(e.target.value)}
+                      placeholder="e.g. Pooja Sharma"
+                      className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl px-3.5 py-2.5 text-maroon-950 placeholder-stone-400 text-xs focus:outline-none focus:border-amber-500 font-medium"
                       required
                     />
                   </div>
+
+                  {/* Father's or Husband's Name (PROMINENT & MANDATORY FOR ALUMNI) */}
+                  {(category === 'OLD_STUDENT' || isOldStudent) && (
+                    <div className="sm:col-span-2 p-3 rounded-2xl bg-amber-50/90 border-2 border-amber-400 space-y-1">
+                      <div className="flex items-center justify-between">
+                        <label className="block text-amber-950 font-black text-xs">
+                          Father's or Husband's Name <span className="text-red-600">*</span>
+                        </label>
+                        <span className="text-[10px] uppercase font-bold text-amber-800 bg-white px-2 py-0.5 rounded-full border border-amber-300">
+                          Alumni Verification
+                        </span>
+                      </div>
+                      <input
+                        type="text"
+                        value={fatherOrHusbandName}
+                        onChange={(e) => setFatherOrHusbandName(e.target.value)}
+                        placeholder="e.g. Shri Rajesh Sharma / Manoj Sharma"
+                        className="w-full bg-white border-2 border-amber-300 rounded-xl px-3.5 py-2 text-stone-950 placeholder-stone-400 text-xs focus:outline-none focus:border-amber-600 font-semibold"
+                        required
+                      />
+                      <p className="text-[10px] text-stone-600 font-medium">
+                        Please enter father's or husband's name for matching past TFN workshop records.
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Father's or Husband's Name (Optional for General Female) */}
+                  {category === 'FEMALE' && !isOldStudent && (
+                    <div className="sm:col-span-2">
+                      <label className="block text-maroon-950 font-bold mb-1">
+                        Father's or Husband's Name <span className="text-stone-500 font-normal">(Optional)</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={fatherOrHusbandName}
+                        onChange={(e) => setFatherOrHusbandName(e.target.value)}
+                        placeholder="e.g. Shri Rajesh Sharma"
+                        className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl px-3.5 py-2.5 text-maroon-950 placeholder-stone-400 text-xs focus:outline-none focus:border-amber-500 font-medium"
+                      />
+                    </div>
+                  )}
+
+                  {/* Primary Mobile */}
                   <div>
-                    <label className="block text-maroon-950 font-bold mb-1">Gender</label>
-                    <select
-                      value={gender}
-                      onChange={(e) => setGender(e.target.value)}
-                      className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl px-3 py-2.5 text-maroon-950 text-xs focus:outline-none focus:border-garba-orange-500 font-medium"
-                    >
-                      <option value="Female">Female</option>
-                      {category !== 'KIDS' && category !== 'FEMALE' && <option value="Male">Male</option>}
-                    </select>
-                  </div>
-                </div>
-
-                {/* City & Address */}
-                <div>
-                  <label className="block text-maroon-950 font-bold mb-1">City</label>
-                  <input
-                    type="text"
-                    value={city}
-                    onChange={(e) => setCity(e.target.value)}
-                    placeholder="Kishangarh"
-                    className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl px-3.5 py-2.5 text-maroon-950 placeholder-stone-400 text-xs focus:outline-none focus:border-garba-orange-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-maroon-950 font-bold mb-1">Local Address</label>
-                  <input
-                    type="text"
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
-                    placeholder="e.g. Madanganj, Kishangarh"
-                    className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl px-3.5 py-2.5 text-maroon-950 placeholder-stone-400 text-xs focus:outline-none focus:border-garba-orange-500"
-                  />
-                </div>
-
-                {/* CONDITIONAL: KIDS SPECIFIC */}
-                {category === 'KIDS' && (
-                  <div className="sm:col-span-2 p-3.5 rounded-xl bg-garba-teal-50 border-2 border-garba-teal-300 space-y-3">
-                    <div className="text-xs font-bold text-garba-teal-900 uppercase tracking-wide">
-                      Parent / Guardian Information (Mandatory for Kids 7-16)
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      <div>
-                        <label className="block text-stone-700 font-medium text-xs mb-1">
-                          Parent / Guardian Name <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          value={guardianName}
-                          onChange={(e) => setGuardianName(e.target.value)}
-                          placeholder="e.g. Sunita Sharma"
-                          className="w-full bg-white border border-garba-teal-300 rounded-lg px-3 py-2 text-maroon-950 text-xs focus:outline-none focus:border-garba-teal-500"
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-stone-700 font-medium text-xs mb-1">
-                          Parent Mobile Number <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                          type="tel"
-                          maxLength={10}
-                          value={guardianPhone}
-                          onChange={(e) => setGuardianPhone(e.target.value.replace(/\D/g, ''))}
-                          placeholder="9829012345"
-                          className="w-full bg-white border border-garba-teal-300 rounded-lg px-3 py-2 text-maroon-950 text-xs focus:outline-none focus:border-garba-teal-500 font-mono"
-                          required
-                        />
-                      </div>
+                    <label className="block text-maroon-950 font-bold mb-1">
+                      Primary Mobile Number (10 digits) <span className="text-red-500">*</span>
+                    </label>
+                    <div className="flex">
+                      <span className="inline-flex items-center px-3 bg-stone-100 border-2 border-r-0 border-stone-200 rounded-l-xl text-maroon-950 font-mono font-bold text-xs">
+                        +91
+                      </span>
+                      <input
+                        type="tel"
+                        maxLength={10}
+                        value={mobile}
+                        onChange={(e) => setMobile(e.target.value.replace(/\D/g, ''))}
+                        placeholder="9829012345"
+                        className="w-full bg-stone-50 border-2 border-stone-200 rounded-r-xl px-3.5 py-2.5 text-maroon-950 placeholder-stone-400 text-xs focus:outline-none focus:border-amber-500 font-mono"
+                        required
+                      />
                     </div>
                   </div>
-                )}
 
-                {/* CONDITIONAL: OLD TFN STUDENT */}
-                {category === 'OLD_STUDENT' && (
-                  <div className="sm:col-span-2 p-3.5 rounded-xl bg-garba-orange-50 border border-garba-orange-300 flex items-center justify-between">
+                  {/* WhatsApp */}
+                  <div>
+                    <label className="block text-maroon-950 font-bold mb-1">
+                      WhatsApp Number (for slot updates)
+                    </label>
+                    <div className="flex">
+                      <span className="inline-flex items-center px-3 bg-stone-100 border-2 border-r-0 border-stone-200 rounded-l-xl text-maroon-950 font-mono font-bold text-xs">
+                        +91
+                      </span>
+                      <input
+                        type="tel"
+                        maxLength={10}
+                        value={whatsapp}
+                        onChange={(e) => setWhatsapp(e.target.value.replace(/\D/g, ''))}
+                        placeholder="Same as mobile if blank"
+                        className="w-full bg-stone-50 border-2 border-stone-200 rounded-r-xl px-3.5 py-2.5 text-maroon-950 placeholder-stone-400 text-xs focus:outline-none focus:border-amber-500 font-mono"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Email */}
+                  <div>
+                    <label className="block text-maroon-950 font-bold mb-1">
+                      Email Address (for PDF receipt)
+                    </label>
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="pooja@example.com"
+                      className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl px-3.5 py-2.5 text-maroon-950 placeholder-stone-400 text-xs focus:outline-none focus:border-amber-500"
+                    />
+                  </div>
+
+                  {/* Age & Gender */}
+                  <div className="grid grid-cols-2 gap-2">
                     <div>
-                      <span className="text-xs font-bold text-garba-orange-900">Are you an old TFN student?</span>
-                      <p className="text-[11px] text-stone-600 font-medium">Eligible for alumni discount rate of ₹2200</p>
+                      <label className="block text-maroon-950 font-bold mb-1">
+                        Age <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="number"
+                        min={category === 'KIDS' ? 7 : 14}
+                        max={category === 'KIDS' ? 16 : 80}
+                        value={category === 'KIDS' ? childAge : age}
+                        onChange={(e) => {
+                          if (category === 'KIDS') setChildAge(e.target.value);
+                          else setAge(e.target.value);
+                        }}
+                        className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl px-3 py-2.5 text-maroon-950 text-xs focus:outline-none focus:border-amber-500 font-bold"
+                        required
+                      />
                     </div>
-                    <div className="flex gap-2">
-                      <button
-                        type="button"
-                        onClick={() => setIsOldStudent(true)}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer ${
-                          isOldStudent ? 'bg-garba-orange-500 text-white' : 'bg-white text-stone-700 border border-stone-300'
-                        }`}
+                    <div>
+                      <label className="block text-maroon-950 font-bold mb-1">Gender</label>
+                      <select
+                        value={gender}
+                        onChange={(e) => setGender(e.target.value)}
+                        className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl px-3 py-2.5 text-maroon-950 text-xs focus:outline-none focus:border-amber-500 font-medium"
                       >
-                        Yes
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setIsOldStudent(false)}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer ${
-                          !isOldStudent ? 'bg-garba-orange-500 text-white' : 'bg-white text-stone-700 border border-stone-300'
-                        }`}
-                      >
-                        No
-                      </button>
+                        <option value="Female">Female</option>
+                        {category !== 'KIDS' && category !== 'FEMALE' && <option value="Male">Male</option>}
+                      </select>
                     </div>
                   </div>
-                )}
 
-                {/* CONDITIONAL: GROUP SPECIFIC */}
-                {isGroup && (
-                  <div className="sm:col-span-2 p-3.5 rounded-xl bg-garba-orange-50 border border-garba-orange-300 space-y-3">
-                    <div className="text-xs font-bold text-garba-orange-900 uppercase tracking-wide">
-                      Group Coordinator Details
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      <div>
-                        <label className="block text-stone-700 font-medium text-xs mb-1">Group Leader Name *</label>
-                        <input
-                          type="text"
-                          value={groupLeaderName}
-                          onChange={(e) => setGroupLeaderName(e.target.value)}
-                          placeholder="Leader Name"
-                          className="w-full bg-white border border-garba-orange-300 rounded-lg px-3 py-2 text-maroon-950 text-xs focus:outline-none focus:border-garba-orange-500"
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-stone-700 font-medium text-xs mb-1">Group Leader Mobile *</label>
-                        <input
-                          type="tel"
-                          maxLength={10}
-                          value={groupLeaderPhone}
-                          onChange={(e) => setGroupLeaderPhone(e.target.value.replace(/\D/g, ''))}
-                          placeholder="Leader Mobile"
-                          className="w-full bg-white border border-garba-orange-300 rounded-lg px-3 py-2 text-maroon-950 text-xs focus:outline-none focus:border-garba-orange-500 font-mono"
-                          required
-                        />
-                      </div>
-                    </div>
+                  {/* City & Address */}
+                  <div>
+                    <label className="block text-maroon-950 font-bold mb-1">City</label>
+                    <input
+                      type="text"
+                      value={city}
+                      onChange={(e) => setCity(e.target.value)}
+                      placeholder="Kishangarh"
+                      className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl px-3.5 py-2.5 text-maroon-950 placeholder-stone-400 text-xs focus:outline-none focus:border-amber-500"
+                    />
                   </div>
-                )}
 
-              </div>
+                  <div>
+                    <label className="block text-maroon-950 font-bold mb-1">Local Address</label>
+                    <input
+                      type="text"
+                      value={address}
+                      onChange={(e) => setAddress(e.target.value)}
+                      placeholder="e.g. Madanganj, Kishangarh"
+                      className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl px-3.5 py-2.5 text-maroon-950 placeholder-stone-400 text-xs focus:outline-none focus:border-amber-500"
+                    />
+                  </div>
+
+                  {/* CONDITIONAL: KIDS SPECIFIC */}
+                  {category === 'KIDS' && (
+                    <div className="sm:col-span-2 p-3.5 rounded-xl bg-garba-teal-50 border-2 border-garba-teal-300 space-y-3">
+                      <div className="text-xs font-bold text-garba-teal-900 uppercase tracking-wide">
+                        Parent / Guardian Information (Mandatory for Kids 7-16)
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-stone-700 font-medium text-xs mb-1">
+                            Parent / Guardian Name <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            value={guardianName}
+                            onChange={(e) => setGuardianName(e.target.value)}
+                            placeholder="e.g. Sunita Sharma / Rajesh Sharma"
+                            className="w-full bg-white border border-garba-teal-300 rounded-lg px-3 py-2 text-maroon-950 text-xs focus:outline-none focus:border-garba-teal-500"
+                            required
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-stone-700 font-medium text-xs mb-1">
+                            Parent Mobile Number <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="tel"
+                            maxLength={10}
+                            value={guardianPhone}
+                            onChange={(e) => setGuardianPhone(e.target.value.replace(/\D/g, ''))}
+                            placeholder="9829012345"
+                            className="w-full bg-white border border-garba-teal-300 rounded-lg px-3 py-2 text-maroon-950 text-xs focus:outline-none focus:border-garba-teal-500 font-mono"
+                            required
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                </div>
+              )}
             </div>
           )}
 
@@ -1112,9 +1379,11 @@ export default function RegistrationModal({
                       REGISTRATION SUMMARY
                     </span>
                     <h5 className="text-lg font-serif font-bold text-maroon-950 mt-0.5">
-                      {participantName}
+                      {isGroup ? (groupMembers[0]?.name || participantName || 'Group Registration') : participantName}
                     </h5>
-                    <p className="text-xs text-stone-600 font-mono">+91 {mobile}</p>
+                    <p className="text-xs text-stone-600 font-mono">
+                      +91 {isGroup ? (groupMembers[0]?.mobile || mobile) : mobile}
+                    </p>
                   </div>
                   <button
                     onClick={() => setStep(2)}
@@ -1124,13 +1393,13 @@ export default function RegistrationModal({
                   </button>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3 text-xs">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 text-xs">
                   <div>
                     <span className="text-stone-500 block text-[11px] font-semibold">Category:</span>
                     <strong className="text-maroon-950">
                       {category === 'FEMALE' && 'Female Admission Fee'}
-                      {category === 'OLD_STUDENT' && 'Old TFN Student Admission'}
-                      {category === 'GROUP' && `Group Registration (${count} Members)`}
+                      {(category === 'OLD_STUDENT' || isOldStudent) && 'Old TFN Student (Alumni)'}
+                      {isGroup && `Group Registration (${count} Members)`}
                       {category === 'KIDS' && `Kids Girls (Age 7-16)`}
                     </strong>
                   </div>
@@ -1151,7 +1420,43 @@ export default function RegistrationModal({
                       {selectedSlot?.batchName} ({selectedSlot?.startTime} – {selectedSlot?.endTime})
                     </strong>
                   </div>
+
+                  {/* Show Father/Husband Name for Alumni */}
+                  {(category === 'OLD_STUDENT' || isOldStudent || fatherOrHusbandName) && (
+                    <div className="sm:col-span-2">
+                      <span className="text-stone-500 block text-[11px] font-semibold">Father's / Husband's Name:</span>
+                      <strong className="text-stone-950 font-bold">{fatherOrHusbandName || groupMembers[0]?.fatherOrHusbandName || 'N/A'}</strong>
+                    </div>
+                  )}
                 </div>
+
+                {/* Group Members List Summary */}
+                {isGroup && (
+                  <div className="p-3 bg-white rounded-xl border border-amber-200 space-y-2">
+                    <span className="text-[11px] font-bold text-amber-900 uppercase tracking-wide block">
+                      Enrolled Group Members ({count} Participants):
+                    </span>
+                    <div className="divide-y divide-stone-100 text-xs max-h-36 overflow-y-auto pr-1">
+                      {groupMembers.slice(0, count).map((mem, idx) => (
+                        <div key={idx} className="py-1.5 flex justify-between items-center">
+                          <div>
+                            <span className="font-bold text-stone-900">
+                              {idx + 1}. {mem.name || `Member ${idx + 1}`}
+                            </span>
+                            {mem.fatherOrHusbandName && (
+                              <span className="text-stone-500 text-[10px] block">
+                                S/O, D/O, W/O: {mem.fatherOrHusbandName}
+                              </span>
+                            )}
+                          </div>
+                          <div className="text-right text-[11px] text-stone-600">
+                            {mem.mobile ? `+91 ${mem.mobile}` : ''} {mem.age ? `(Age ${mem.age})` : ''}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 {/* Free Family Pass Banner */}
                 <div className="p-3 rounded-xl bg-amber-100/70 border border-amber-300 text-center">
@@ -1173,9 +1478,9 @@ export default function RegistrationModal({
                       <span>{count}</span>
                     </div>
                   )}
-                  <div className="flex justify-between text-base font-bold text-maroon-950 pt-2 border-t border-stone-200">
+                  <div className="flex justify-between text-base font-bold text-stone-950 pt-2 border-t border-stone-200">
                     <span>Total Payable Amount:</span>
-                    <span className="text-2xl font-serif font-black text-garba-pink-700">₹{total}</span>
+                    <span className="text-2xl font-serif font-black text-amber-800">₹{total}</span>
                   </div>
                 </div>
               </div>
@@ -1190,11 +1495,11 @@ export default function RegistrationModal({
                   <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
                   <span>Slot Temporarily Reserved (ID: {createdRegistration?.id})</span>
                 </div>
-                <h4 className="text-xl font-serif font-bold text-maroon-950">
+                <h4 className="text-xl font-serif font-bold text-stone-950">
                   Select Payment Method
                 </h4>
                 <p className="text-xs text-stone-600 font-medium">
-                  Total Amount Payable: <strong className="text-garba-pink-700 font-bold text-sm">₹{total}</strong>
+                  Total Amount Payable: <strong className="text-amber-800 font-bold text-sm">₹{total}</strong>
                 </p>
               </div>
 
@@ -1205,11 +1510,11 @@ export default function RegistrationModal({
                   onClick={() => setPaymentMethod('RAZORPAY')}
                   className={`py-2.5 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer ${
                     paymentMethod === 'RAZORPAY'
-                      ? 'bg-gradient-to-r from-pink-600 to-rose-600 text-white shadow-md'
-                      : 'text-stone-700 hover:text-maroon-950'
+                      ? 'bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-950 shadow-md ring-1 ring-amber-300'
+                      : 'text-stone-700 hover:text-stone-950'
                   }`}
                 >
-                  <Sparkles className="w-4 h-4" />
+                  <Sparkles className="w-4 h-4 text-stone-950" />
                   <span>Pay Online (Instant)</span>
                 </button>
 
@@ -1218,52 +1523,52 @@ export default function RegistrationModal({
                   onClick={() => setPaymentMethod('UPI_QR')}
                   className={`py-2.5 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer ${
                     paymentMethod === 'UPI_QR'
-                      ? 'bg-gradient-to-r from-pink-600 to-rose-600 text-white shadow-md'
-                      : 'text-stone-700 hover:text-maroon-950'
+                      ? 'bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-950 shadow-md ring-1 ring-amber-300'
+                      : 'text-stone-700 hover:text-stone-950'
                   }`}
                 >
-                  <Copy className="w-3.5 h-3.5" />
+                  <Copy className="w-4 h-4" />
                   <span>Scan UPI QR (Manual)</span>
                 </button>
               </div>
 
               {/* OPTION 1: RAZORPAY INSTANT PAYMENT */}
               {paymentMethod === 'RAZORPAY' && (
-                <div className="p-4 sm:p-5 rounded-2xl bg-white border-2 border-pink-300 shadow-sm space-y-4">
+                <div className="p-4 sm:p-5 rounded-2xl bg-white border-2 border-amber-300 shadow-sm space-y-4">
                   <div className="flex items-center justify-between pb-3 border-b border-stone-100">
                     <div>
-                      <span className="text-[10px] uppercase font-bold text-garba-pink-700 tracking-wider">
+                      <span className="text-[10px] uppercase font-bold text-amber-800 tracking-wider">
                         AUTOMATED SECURE PAYMENT
                       </span>
-                      <h5 className="text-base sm:text-lg font-serif font-bold text-maroon-950 mt-0.5">
+                      <h5 className="text-base sm:text-lg font-serif font-bold text-stone-950 mt-0.5">
                         UPI • Cards • NetBanking • Wallets
                       </h5>
                     </div>
                     <div className="text-right">
                       <span className="text-[10px] text-stone-500 block uppercase font-bold">Total Fee</span>
-                      <span className="text-2xl sm:text-3xl font-serif font-black text-garba-pink-700">₹{total}</span>
+                      <span className="text-2xl sm:text-3xl font-serif font-black text-amber-800">₹{total}</span>
                     </div>
                   </div>
 
                   {/* Feature Highlights */}
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
-                    <div className="p-2.5 rounded-xl bg-pink-50/70 border border-pink-200">
-                      <div className="font-bold text-garba-pink-900 flex items-center gap-1 mb-0.5">
-                        <Check className="w-3.5 h-3.5 text-garba-pink-600" /> Instant Activation
+                    <div className="p-2.5 rounded-xl bg-amber-50/70 border border-amber-200">
+                      <div className="font-bold text-amber-950 flex items-center gap-1 mb-0.5">
+                        <Check className="w-3.5 h-3.5 text-amber-600" /> Instant Activation
                       </div>
                       <p className="text-[11px] text-stone-600">Automated verification without waiting for manual confirmation.</p>
                     </div>
 
-                    <div className="p-2.5 rounded-xl bg-pink-50/70 border border-pink-200">
-                      <div className="font-bold text-garba-pink-900 flex items-center gap-1 mb-0.5">
-                        <Download className="w-3.5 h-3.5 text-garba-pink-600" /> Auto PDF Receipt
+                    <div className="p-2.5 rounded-xl bg-amber-50/70 border border-amber-200">
+                      <div className="font-bold text-amber-950 flex items-center gap-1 mb-0.5">
+                        <Download className="w-3.5 h-3.5 text-amber-600" /> Auto PDF Receipt
                       </div>
                       <p className="text-[11px] text-stone-600">Official Pass generated & downloaded instantly upon success.</p>
                     </div>
 
-                    <div className="p-2.5 rounded-xl bg-pink-50/70 border border-pink-200">
-                      <div className="font-bold text-garba-pink-900 flex items-center gap-1 mb-0.5">
-                        <ShieldCheck className="w-3.5 h-3.5 text-garba-pink-600" /> 100% Encrypted
+                    <div className="p-2.5 rounded-xl bg-amber-50/70 border border-amber-200">
+                      <div className="font-bold text-amber-950 flex items-center gap-1 mb-0.5">
+                        <ShieldCheck className="w-3.5 h-3.5 text-amber-600" /> 100% Encrypted
                       </div>
                       <p className="text-[11px] text-stone-600">Bank-grade 256-bit secure gateway powered by Razorpay.</p>
                     </div>
@@ -1286,12 +1591,12 @@ export default function RegistrationModal({
                     type="button"
                     onClick={handleRazorpayPayment}
                     disabled={isRazorpayLoading}
-                    className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-garba-pink-600 via-rose-500 to-pink-500 text-white font-extrabold text-sm sm:text-base hover:brightness-105 transition shadow-lg flex items-center justify-center gap-2 cursor-pointer"
+                    className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-950 font-black text-sm sm:text-base ring-1 ring-amber-300 hover:brightness-105 transition shadow-lg flex items-center justify-center gap-2 cursor-pointer"
                   >
                     {isRazorpayLoading ? (
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      <div className="w-5 h-5 border-2 border-stone-950 border-t-transparent rounded-full animate-spin"></div>
                     ) : (
-                      <Sparkles className="w-5 h-5" />
+                      <Sparkles className="w-5 h-5 text-stone-950" />
                     )}
                     <span>PAY ₹{total} SECURELY ONLINE</span>
                   </button>
@@ -1302,7 +1607,7 @@ export default function RegistrationModal({
               {paymentMethod === 'UPI_QR' && (
                 <form onSubmit={handleSubmitPayment} className="space-y-4">
                   {/* QR & UPI Section */}
-                  <div className="p-4 rounded-2xl bg-stone-50 border-2 border-pink-300 flex flex-col sm:flex-row items-center gap-4 shadow-sm">
+                  <div className="p-4 rounded-2xl bg-stone-50 border-2 border-amber-300 flex flex-col sm:flex-row items-center gap-4 shadow-sm">
                     
                     {/* QR Code */}
                     <div className="bg-white p-3 rounded-2xl shadow-md border border-stone-200 flex flex-col items-center flex-shrink-0">
@@ -1317,7 +1622,7 @@ export default function RegistrationModal({
                           Generating QR...
                         </div>
                       )}
-                      <span className="text-[9px] font-black text-maroon-950 tracking-wider mt-1 uppercase">
+                      <span className="text-[9px] font-black text-stone-950 tracking-wider mt-1 uppercase">
                         SCAN & PAY WITH ANY UPI APP
                       </span>
                     </div>
@@ -1325,10 +1630,10 @@ export default function RegistrationModal({
                     {/* Amount & UPI Details */}
                     <div className="flex-1 text-center sm:text-left space-y-2.5">
                       <div>
-                        <span className="text-xs uppercase tracking-wider text-garba-pink-800 font-bold">
+                        <span className="text-xs uppercase tracking-wider text-amber-800 font-bold">
                           Amount Payable
                         </span>
-                        <div className="text-2xl sm:text-3xl font-serif font-black text-garba-pink-700">
+                        <div className="text-2xl sm:text-3xl font-serif font-black text-amber-800">
                           ₹{total}
                         </div>
                       </div>
@@ -1339,13 +1644,13 @@ export default function RegistrationModal({
                           Pay directly to UPI ID:
                         </span>
                         <div className="flex items-center justify-between gap-2 mt-0.5">
-                          <span className="font-mono text-xs font-bold text-maroon-950 truncate">
+                          <span className="font-mono text-xs font-bold text-stone-950 truncate">
                             {upiId}
                           </span>
                           <button
                             type="button"
                             onClick={handleCopyUpi}
-                            className="px-2.5 py-1 rounded bg-pink-100 text-maroon-950 text-[11px] font-bold flex items-center gap-1 hover:bg-pink-200 transition cursor-pointer"
+                            className="px-2.5 py-1 rounded bg-amber-100 text-stone-950 text-[11px] font-bold flex items-center gap-1 hover:bg-amber-200 transition cursor-pointer"
                           >
                             {copiedUpi ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                             <span>{copiedUpi ? 'Copied' : 'Copy'}</span>
@@ -1364,7 +1669,7 @@ export default function RegistrationModal({
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                       {/* UTR / Transaction ID */}
                       <div>
-                        <label className="block text-maroon-950 font-bold mb-1">
+                        <label className="block text-stone-950 font-bold mb-1">
                           12-Digit UTR / Transaction ID <span className="text-red-500">*</span>
                         </label>
                         <input
@@ -1372,30 +1677,30 @@ export default function RegistrationModal({
                           value={utrNumber}
                           onChange={(e) => setUtrNumber(e.target.value)}
                           placeholder="e.g. 429182901842"
-                          className="w-full bg-white border-2 border-stone-200 rounded-xl px-3.5 py-2 text-maroon-950 placeholder-stone-400 text-xs focus:outline-none focus:border-pink-500 font-mono"
+                          className="w-full bg-white border-2 border-stone-200 rounded-xl px-3.5 py-2 text-stone-950 placeholder-stone-400 text-xs focus:outline-none focus:border-amber-500 font-mono"
                           required
                         />
                       </div>
 
                       {/* Payment Date */}
                       <div>
-                        <label className="block text-maroon-950 font-bold mb-1">Payment Date</label>
+                        <label className="block text-stone-950 font-bold mb-1">Payment Date</label>
                         <input
                           type="date"
                           value={paymentDate}
                           onChange={(e) => setPaymentDate(e.target.value)}
-                          className="w-full bg-white border-2 border-stone-200 rounded-xl px-3.5 py-2 text-maroon-950 text-xs focus:outline-none focus:border-pink-500 font-medium"
+                          className="w-full bg-white border-2 border-stone-200 rounded-xl px-3.5 py-2 text-stone-950 text-xs focus:outline-none focus:border-amber-500 font-medium"
                         />
                       </div>
 
                       {/* Screenshot upload */}
                       <div className="sm:col-span-2">
-                        <label className="block text-maroon-950 font-bold mb-1">
+                        <label className="block text-stone-950 font-bold mb-1">
                           Payment Screenshot (Optional / Recommended)
                         </label>
                         <div className="flex items-center gap-3">
-                          <label className="cursor-pointer px-3.5 py-1.5 rounded-xl bg-white border-2 border-stone-200 hover:border-pink-400 text-maroon-950 text-xs font-bold flex items-center gap-2 transition shadow-sm">
-                            <Upload className="w-3.5 h-3.5 text-garba-pink-600" />
+                          <label className="cursor-pointer px-3.5 py-1.5 rounded-xl bg-white border-2 border-stone-200 hover:border-amber-400 text-stone-950 text-xs font-bold flex items-center gap-2 transition shadow-sm">
+                            <Upload className="w-3.5 h-3.5 text-amber-600" />
                             <span>{screenshotData ? 'Change Screenshot' : 'Upload Receipt Screenshot'}</span>
                             <input
                               type="file"
@@ -1418,10 +1723,10 @@ export default function RegistrationModal({
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-garba-pink-600 via-rose-500 to-pink-500 text-white font-extrabold text-sm sm:text-base hover:brightness-105 transition shadow-md flex items-center justify-center gap-2 cursor-pointer"
+                    className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-950 font-black text-sm sm:text-base ring-1 ring-amber-300 hover:brightness-105 transition shadow-md flex items-center justify-center gap-2 cursor-pointer"
                   >
                     {submitting ? (
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      <div className="w-5 h-5 border-2 border-stone-950 border-t-transparent rounded-full animate-spin"></div>
                     ) : (
                       <Check className="w-5 h-5" />
                     )}
@@ -1441,18 +1746,18 @@ export default function RegistrationModal({
                 <CheckCircle2 className="w-10 h-10 sm:w-12 sm:h-12" />
               </div>
 
-              <h4 className="text-2xl sm:text-3xl font-serif font-black text-maroon-950">
+              <h4 className="text-2xl sm:text-3xl font-serif font-black text-stone-950">
                 REGISTRATION SUCCESSFUL!
               </h4>
-              <p className="text-xs sm:text-sm text-garba-orange-800 font-bold">
-                Welcome to the TFN Garba & Dandiya Workshop • Kishangarh
+              <p className="text-xs sm:text-sm text-amber-800 font-bold">
+                Welcome to the TFN Garba Raas Dandiya Workshop • Kishangarh
               </p>
 
               {/* Official Registration Badge Card */}
               <div className="p-5 rounded-2xl bg-stone-50 border-2 border-emerald-400 text-left max-w-lg mx-auto shadow-sm space-y-3">
                 <div className="flex justify-between items-center pb-2 border-b border-stone-200">
                   <span className="text-[10px] uppercase font-extrabold text-stone-500">Registration ID</span>
-                  <span className="text-lg font-mono font-black text-garba-pink-700">
+                  <span className="text-lg font-mono font-black text-amber-800">
                     {createdRegistration.id}
                   </span>
                 </div>
@@ -1460,23 +1765,35 @@ export default function RegistrationModal({
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   <div>
                     <span className="text-stone-500 text-[11px] font-semibold block">Participant:</span>
-                    <strong className="text-maroon-950">{createdRegistration.participantName}</strong>
+                    <strong className="text-stone-950">{createdRegistration.participantName}</strong>
                   </div>
                   <div>
                     <span className="text-stone-500 text-[11px] font-semibold block">Category:</span>
-                    <strong className="text-maroon-950">{createdRegistration.categoryLabel}</strong>
+                    <strong className="text-stone-950">{createdRegistration.categoryLabel}</strong>
                   </div>
+                  {createdRegistration.fatherOrHusbandName && (
+                    <div>
+                      <span className="text-stone-500 text-[11px] font-semibold block">Father's / Husband's Name:</span>
+                      <strong className="text-stone-950">{createdRegistration.fatherOrHusbandName}</strong>
+                    </div>
+                  )}
+                  {createdRegistration.isGroup && (
+                    <div>
+                      <span className="text-stone-500 text-[11px] font-semibold block">Group Size:</span>
+                      <strong className="text-amber-800 font-bold">{createdRegistration.membersCount} Members Enrolled</strong>
+                    </div>
+                  )}
                   <div>
                     <span className="text-stone-500 text-[11px] font-semibold block">Hall Location:</span>
-                    <strong className="text-maroon-950">{createdRegistration.locationName}</strong>
+                    <strong className="text-stone-950">{createdRegistration.locationName}</strong>
                   </div>
                   <div>
                     <span className="text-stone-500 text-[11px] font-semibold block">Batch Timing:</span>
-                    <strong className="text-garba-orange-800 font-extrabold">{createdRegistration.batchTime}</strong>
+                    <strong className="text-amber-800 font-extrabold">{createdRegistration.batchTime}</strong>
                   </div>
                   <div>
                     <span className="text-stone-500 text-[11px] font-semibold block">Amount Paid:</span>
-                    <strong className="text-maroon-950">₹{createdRegistration.totalAmount}</strong>
+                    <strong className="text-stone-950">₹{createdRegistration.totalAmount}</strong>
                   </div>
                   <div>
                     <span className="text-stone-500 text-[11px] font-semibold block">Status:</span>
@@ -1485,7 +1802,7 @@ export default function RegistrationModal({
                 </div>
 
                 <div className="pt-2 border-t border-stone-200 text-center">
-                  <span className="text-[11px] text-garba-orange-800 font-extrabold">
+                  <span className="text-[11px] text-amber-800 font-extrabold">
                     ★ FREE FAMILY PASS INCLUDED WITH THIS PASS ★
                   </span>
                 </div>
@@ -1495,7 +1812,7 @@ export default function RegistrationModal({
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2 max-w-md mx-auto">
                 <button
                   onClick={() => downloadRegistrationReceipt(createdRegistration)}
-                  className="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-garba-pink-600 via-garba-orange-500 to-garba-yellow-500 text-white font-extrabold text-xs sm:text-sm hover:brightness-105 transition shadow-sm flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-950 font-black text-xs sm:text-sm ring-1 ring-amber-300 hover:brightness-105 transition shadow-sm flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <Download className="w-4 h-4" />
                   <span>DOWNLOAD RECEIPT (PDF)</span>
@@ -1525,7 +1842,7 @@ export default function RegistrationModal({
               <button
                 type="button"
                 onClick={() => setStep((prev) => prev - 1)}
-                className="px-4 py-2 rounded-xl bg-stone-100 border border-stone-300 text-maroon-950 text-xs font-bold hover:bg-stone-200 transition flex items-center gap-1 cursor-pointer"
+                className="px-4 py-2 rounded-xl bg-stone-100 border border-stone-300 text-stone-950 text-xs font-bold hover:bg-stone-200 transition flex items-center gap-1 cursor-pointer"
               >
                 <ChevronLeft className="w-4 h-4" />
                 <span>Back</span>
@@ -1538,7 +1855,7 @@ export default function RegistrationModal({
               <button
                 type="button"
                 onClick={() => setStep(2)}
-                className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-garba-pink-600 via-garba-orange-500 to-garba-yellow-500 text-white text-xs sm:text-sm font-extrabold hover:brightness-105 transition flex items-center gap-1.5 shadow-sm cursor-pointer"
+                className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-950 text-xs sm:text-sm font-black ring-1 ring-amber-300 hover:brightness-105 transition flex items-center gap-1.5 shadow-sm cursor-pointer"
               >
                 <span>Continue</span>
                 <ChevronRight className="w-4 h-4" />
@@ -1551,7 +1868,7 @@ export default function RegistrationModal({
                 onClick={() => {
                   if (validateStep2()) setStep(3);
                 }}
-                className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-garba-pink-600 via-garba-orange-500 to-garba-yellow-500 text-white text-xs sm:text-sm font-extrabold hover:brightness-105 transition flex items-center gap-1.5 shadow-sm cursor-pointer"
+                className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-950 text-xs sm:text-sm font-black ring-1 ring-amber-300 hover:brightness-105 transition flex items-center gap-1.5 shadow-sm cursor-pointer"
               >
                 <span>Select Workshop Slot</span>
                 <ChevronRight className="w-4 h-4" />
@@ -1564,7 +1881,7 @@ export default function RegistrationModal({
                 onClick={() => {
                   if (validateStep3()) setStep(4);
                 }}
-                className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-garba-pink-600 via-garba-orange-500 to-garba-yellow-500 text-white text-xs sm:text-sm font-extrabold hover:brightness-105 transition flex items-center gap-1.5 shadow-sm cursor-pointer"
+                className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-950 text-xs sm:text-sm font-black ring-1 ring-amber-300 hover:brightness-105 transition flex items-center gap-1.5 shadow-sm cursor-pointer"
               >
                 <span>Review Summary</span>
                 <ChevronRight className="w-4 h-4" />
@@ -1576,10 +1893,10 @@ export default function RegistrationModal({
                 type="button"
                 onClick={handleProceedToPayment}
                 disabled={submitting}
-                className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-garba-pink-600 via-garba-orange-500 to-garba-yellow-500 text-white text-xs sm:text-sm font-extrabold hover:brightness-105 transition flex items-center gap-1.5 shadow-sm cursor-pointer"
+                className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-950 text-xs sm:text-sm font-black ring-1 ring-amber-300 hover:brightness-105 transition flex items-center gap-1.5 shadow-sm cursor-pointer"
               >
                 {submitting ? (
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <div className="w-4 h-4 border-2 border-stone-950 border-t-transparent rounded-full animate-spin"></div>
                 ) : (
                   <Sparkles className="w-4 h-4" />
                 )}
