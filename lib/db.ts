@@ -3,9 +3,6 @@ import path from 'path';
 import { Slot, Registration, AdminSettings, SlotStatus, PaymentStatus, BookingStatus } from './types';
 import { supabase } from './supabase';
 
-const DATA_DIR = path.join(process.cwd(), 'data');
-const DB_FILE = path.join(DATA_DIR, 'database.json');
-
 interface DatabaseSchema {
   slots: Slot[];
   registrations: Registration[];
@@ -242,8 +239,18 @@ function mapDbRegistration(row: any): Registration {
   };
 }
 
-// Local File Transaction Handling
+import os from 'os';
+
+const DB_FILE = path.join(os.tmpdir(), 'tfn_garba_db.json');
+
+// Local File & In-Memory Transaction Handling
 let transactionLock = Promise.resolve();
+
+let inMemoryDb: DatabaseSchema = {
+  slots: DEFAULT_SLOTS,
+  registrations: DEFAULT_REGISTRATIONS,
+  settings: DEFAULT_SETTINGS,
+};
 
 function executeWithLock<T>(operation: () => Promise<T> | T): Promise<T> {
   const result = transactionLock.then(async () => {
@@ -254,49 +261,31 @@ function executeWithLock<T>(operation: () => Promise<T> | T): Promise<T> {
 }
 
 function ensureDbFile(): DatabaseSchema {
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
-  }
-
-  if (!fs.existsSync(DB_FILE)) {
-    const initialData: DatabaseSchema = {
-      slots: DEFAULT_SLOTS,
-      registrations: DEFAULT_REGISTRATIONS,
-      settings: DEFAULT_SETTINGS,
-    };
-    fs.writeFileSync(DB_FILE, JSON.stringify(initialData, null, 2), 'utf-8');
-    return initialData;
-  }
-
   try {
-    const content = fs.readFileSync(DB_FILE, 'utf-8');
-    const data = JSON.parse(content) as DatabaseSchema;
-    if (!Array.isArray(data.slots) || data.slots.length === 0) {
-      data.slots = DEFAULT_SLOTS;
+    if (fs.existsSync(DB_FILE)) {
+      const content = fs.readFileSync(DB_FILE, 'utf-8');
+      const data = JSON.parse(content) as DatabaseSchema;
+      if (Array.isArray(data.slots) && data.slots.length > 0) {
+        inMemoryDb = data;
+        return inMemoryDb;
+      }
     }
-    if (!Array.isArray(data.registrations)) {
-      data.registrations = DEFAULT_REGISTRATIONS;
-    }
-    if (!data.settings) {
-      data.settings = DEFAULT_SETTINGS;
-    }
-    return data;
+    try {
+      fs.writeFileSync(DB_FILE, JSON.stringify(inMemoryDb, null, 2), 'utf-8');
+    } catch {}
+    return inMemoryDb;
   } catch {
-    const fallback: DatabaseSchema = {
-      slots: DEFAULT_SLOTS,
-      registrations: DEFAULT_REGISTRATIONS,
-      settings: DEFAULT_SETTINGS,
-    };
-    fs.writeFileSync(DB_FILE, JSON.stringify(fallback, null, 2), 'utf-8');
-    return fallback;
+    return inMemoryDb;
   }
 }
 
 function writeDbFile(data: DatabaseSchema): void {
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
+  inMemoryDb = data;
+  try {
+    fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), 'utf-8');
+  } catch (e) {
+    console.warn('File write fallback to memory storage:', e);
   }
-  fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), 'utf-8');
 }
 
 // ==========================================
