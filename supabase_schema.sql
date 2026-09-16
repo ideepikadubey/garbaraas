@@ -86,12 +86,15 @@ CREATE TABLE IF NOT EXISTS admin_settings (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- 5. Anti Double-Booking Concurrency Function & Stored Procedure
-CREATE OR REPLACE FUNCTION book_slot_atomic(
+-- 5. Anti Double-Booking Concurrency Function & Stored Procedure (Clean & Secure)
+CREATE OR REPLACE FUNCTION public.book_slot_atomic(
     p_slot_id VARCHAR(64),
     p_members_count INT
 )
-RETURNS JSONB AS $$
+RETURNS JSONB 
+LANGUAGE plpgsql
+SET search_path = public
+AS $$
 DECLARE
     v_capacity INT;
     v_booked INT;
@@ -129,7 +132,19 @@ BEGIN
     
     RETURN jsonb_build_object('success', true, 'remaining', v_remaining - p_members_count);
 END;
-$$ LANGUAGE plpgsql;
+$$;
+
+-- Revoke insecure public execute on rls_auto_enable if present
+DO $$
+BEGIN
+    IF EXISTS (
+        SELECT 1 FROM pg_proc p 
+        JOIN pg_namespace n ON p.pronamespace = n.oid 
+        WHERE n.nspname = 'public' AND p.proname = 'rls_auto_enable'
+    ) THEN
+        EXECUTE 'REVOKE EXECUTE ON FUNCTION public.rls_auto_enable() FROM PUBLIC, anon, authenticated;';
+    END IF;
+END $$;
 
 -- 6. Disable RLS or Allow Public Access for Anon API Key
 ALTER TABLE slots DISABLE ROW LEVEL SECURITY;

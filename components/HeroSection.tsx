@@ -136,16 +136,16 @@ export default function HeroSection({ onOpenRegister }: HeroSectionProps) {
           </div>
         </div>
 
-        {/* Presenter Logos: Symmetrical & Balanced */}
-        <div className="flex items-center justify-center gap-6 sm:gap-10 mb-6">
+        {/* Presenter Logos: Exactly Equal Sizing & Balanced Framing */}
+        <div className="flex items-center justify-center gap-6 sm:gap-12 mb-6">
           {/* Namo Club Logo (Glowing) */}
           <div className="flex flex-col items-center group">
-            <div className="relative">
+            <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 flex items-center justify-center">
               <div className="absolute -inset-1.5 rounded-full bg-gradient-to-r from-yellow-400 via-amber-500 to-yellow-300 opacity-80 blur-md group-hover:opacity-100 transition animate-pulse"></div>
               <img
                 src="/images/namo-club-logo.png"
                 alt="Namo Club Kishangarh Logo"
-                className="relative w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-contain rounded-full border-2 border-amber-300 shadow-[0_0_20px_rgba(250,204,21,0.6)] transform group-hover:scale-105 transition duration-300"
+                className="relative w-full h-full object-contain rounded-full border-2 border-amber-300 shadow-[0_0_20px_rgba(250,204,21,0.6)] transform group-hover:scale-105 transition duration-300"
               />
             </div>
             <span className="text-xs font-bold text-amber-300 mt-2 font-heading tracking-wide">
@@ -153,16 +153,16 @@ export default function HeroSection({ onOpenRegister }: HeroSectionProps) {
             </span>
           </div>
 
-          {/* Divider */}
-          <div className="h-10 w-px bg-gradient-to-b from-transparent via-slate-600 to-transparent"></div>
+          {/* Symmetrical Divider */}
+          <div className="h-12 w-px bg-gradient-to-b from-transparent via-slate-600 to-transparent"></div>
 
           {/* TFN Logo (Clean) */}
           <div className="flex flex-col items-center group">
-            <div className="relative">
+            <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 flex items-center justify-center">
               <img
                 src="/images/TFN.png"
                 alt="The Frozen Night Logo"
-                className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-contain rounded-full transform group-hover:scale-105 transition duration-300"
+                className="w-full h-full object-contain rounded-full transform group-hover:scale-105 transition duration-300"
               />
             </div>
             <span className="text-xs font-bold text-slate-200 mt-2 font-heading tracking-wide">

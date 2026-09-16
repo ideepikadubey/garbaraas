@@ -36,7 +36,7 @@ import { downloadRegistrationReceipt } from '@/lib/receipt-generator';
 export default function AdminPage() {
   // Authentication State
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [username, setUsername] = useState('admin');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState('');
   const [loginLoading, setLoginLoading] = useState(false);
@@ -272,19 +272,19 @@ export default function AdminPage() {
   // ================= LOGIN SCREEN (Light Theme) =================
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-stone-100 flex items-center justify-center p-4">
-        <div className="w-full max-w-md bg-white border-2 border-amber-300 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+        <div className="w-full max-w-md bg-white border-2 border-pink-200 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
           
-          <div className="w-full h-[3px] bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 absolute top-0 left-0 right-0"></div>
+          <div className="w-full h-1 bg-gradient-to-r from-pink-500 via-yellow-400 via-emerald-400 to-blue-600 absolute top-0 left-0 right-0"></div>
 
           <div className="text-center mb-6 pt-2">
-            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-amber-500 to-yellow-500 flex items-center justify-center mx-auto mb-3 shadow-md text-stone-950">
+            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-pink-500 to-amber-500 flex items-center justify-center mx-auto mb-3 shadow-md text-white">
               <ShieldCheck className="w-8 h-8" />
             </div>
-            <h2 className="text-2xl font-serif font-bold text-stone-950">
+            <h2 className="text-2xl font-heading font-black text-slate-900">
               TFN Organizer Portal
             </h2>
-            <p className="text-xs text-amber-800 font-semibold mt-1">
+            <p className="text-xs text-pink-600 font-semibold mt-1">
               The Frozen Night – Event and Entertainment • Kishangarh
             </p>
           </div>
@@ -298,20 +298,21 @@ export default function AdminPage() {
 
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <label className="block text-xs text-stone-700 font-bold mb-1">
+              <label className="block text-xs text-slate-700 font-bold mb-1">
                 Admin Username
               </label>
               <input
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl px-4 py-2.5 text-stone-950 text-xs focus:outline-none focus:border-amber-500 font-medium"
+                placeholder="Enter admin username"
+                className="w-full bg-slate-50 border-2 border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 placeholder-slate-400 text-xs focus:outline-none focus:border-pink-500 font-medium"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-xs text-stone-700 font-bold mb-1">
+              <label className="block text-xs text-slate-700 font-bold mb-1">
                 Admin Password
               </label>
               <input
@@ -319,21 +320,18 @@ export default function AdminPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter admin password"
-                className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl px-4 py-2.5 text-stone-950 text-xs focus:outline-none focus:border-amber-500 font-medium"
+                className="w-full bg-slate-50 border-2 border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 placeholder-slate-400 text-xs focus:outline-none focus:border-pink-500 font-medium"
                 required
               />
-              <p className="text-[11px] text-stone-500 mt-1 font-medium">
-                Admin credentials: <code className="text-amber-800 font-bold">tfnkishangarh2026</code>
-              </p>
             </div>
 
             <button
               type="submit"
               disabled={loginLoading}
-              className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-950 font-black text-sm ring-1 ring-amber-300 hover:brightness-105 transition shadow-md flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-pink-600 via-rose-500 to-amber-500 text-white font-black text-sm shadow-md hover:brightness-110 transition flex items-center justify-center gap-2 cursor-pointer"
             >
               {loginLoading ? (
-                <div className="w-4 h-4 border-2 border-stone-950 border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
               ) : (
                 <Lock className="w-4 h-4" />
               )}
@@ -342,7 +340,7 @@ export default function AdminPage() {
           </form>
 
           <div className="mt-6 text-center">
-            <Link href="/" className="text-xs text-amber-800 hover:text-amber-950 font-bold">
+            <Link href="/" className="text-xs text-pink-600 hover:text-pink-800 font-bold">
               ← Return to Workshop Website
             </Link>
           </div>

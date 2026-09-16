@@ -19,21 +19,23 @@ export default function Navbar({ onOpenRegister, onOpenLookup }: NavbarProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14 sm:h-16">
           
-          {/* Logo & Brand - Clean White & Vibrant Accents */}
+          {/* Logo & Brand - Equal Sized Logos with Clean Alignment */}
           <div className="flex items-center gap-2 sm:gap-2.5">
-            <img
-              src="/images/namo-club-logo.png"
-              alt="Namo Club Logo"
-              className="w-8 h-8 min-[360px]:w-9 min-[360px]:h-9 sm:w-10 sm:h-10 rounded-full object-contain flex-shrink-0 shadow-sm border border-amber-300 ring-2 ring-pink-100"
-            />
-            <img
-              src="/images/TFN.png"
-              alt="TFN Logo"
-              className="w-7 h-7 min-[360px]:w-8 min-[360px]:h-8 sm:w-9 sm:h-9 object-contain flex-shrink-0"
-            />
+            <div className="flex items-center gap-1.5 flex-shrink-0">
+              <img
+                src="/images/namo-club-logo.png"
+                alt="Namo Club Logo"
+                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-contain border border-amber-300 ring-2 ring-pink-100 shadow-xs"
+              />
+              <img
+                src="/images/TFN.png"
+                alt="TFN Logo"
+                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-contain"
+              />
+            </div>
             <div>
               <div className="flex items-center gap-1.5 sm:gap-2">
-                <h1 className="text-xs min-[360px]:text-sm sm:text-base md:text-lg font-serif font-black text-slate-900 tracking-tight leading-tight">
+                <h1 className="text-xs min-[360px]:text-sm sm:text-base md:text-lg font-heading font-black text-slate-900 tracking-tight leading-tight">
                   THE FROZEN NIGHT
                 </h1>
                 <span className="hidden sm:inline-block px-2 py-0.5 rounded-full bg-pink-50 border border-pink-200 text-[10px] uppercase font-bold text-pink-700 tracking-wider">
