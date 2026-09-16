@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Navbar from '@/components/Navbar';
 import HeroSection from '@/components/HeroSection';
+import WorkshopHighlightsSection from '@/components/WorkshopHighlightsSection';
 import WhatYouWillLearn from '@/components/WhatYouWillLearn';
 import UrgencyBannerSection from '@/components/UrgencyBannerSection';
 import SpecialWorkshopsSection from '@/components/SpecialWorkshopsSection';
@@ -54,6 +55,12 @@ export default function HomePage() {
 
       {/* Main Festive Hero Section */}
       <HeroSection
+        onOpenRegister={() => handleOpenRegister()}
+        onScrollToSlots={handleScrollToSlots}
+      />
+
+      {/* Workshop Highlights Strip (New Batches Announcement, Free Pass & 4 Info Cards) */}
+      <WorkshopHighlightsSection
         onOpenRegister={() => handleOpenRegister()}
         onScrollToSlots={handleScrollToSlots}
       />
