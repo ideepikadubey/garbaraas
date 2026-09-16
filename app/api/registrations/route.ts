@@ -83,6 +83,25 @@ export async function POST(req: Request) {
       }
     }
 
+    // Old Student / Alumni validations against Season 2 Excel Database
+    if (category === 'OLD_STUDENT' || isOldStudent) {
+      if (!fatherOrHusbandName || !fatherOrHusbandName.trim()) {
+        return NextResponse.json({
+          success: false,
+          error: "Father's or Husband's Name is required for Season 2 alumni verification",
+        }, { status: 400 });
+      }
+
+      const { verifyAlumni } = await import('@/lib/alumniVerifier');
+      const alumniCheck = verifyAlumni(participantName, fatherOrHusbandName);
+      if (!alumniCheck.verified) {
+        return NextResponse.json({
+          success: false,
+          error: alumniCheck.message || 'You are not listed in the Season 2 Alumni records. Please check spelling or contact Neel Sir (+91 8385969285).',
+        }, { status: 400 });
+      }
+    }
+
     // Group validations
     const numMembers = isGroup ? Math.max(5, parseInt(membersCount, 10) || 5) : 1;
     if (isGroup && numMembers < 5) {
@@ -94,7 +113,13 @@ export async function POST(req: Request) {
     let feePerPerson = settings.priceFemale; // Default 2500
     let categoryLabel = 'Female Admission Fee';
 
-    if (category === 'KIDS') {
+    if (category === 'FEMALE_15DAY') {
+      feePerPerson = 1500;
+      categoryLabel = 'Special Girls Garba (25 Sep–11 Oct)';
+    } else if (category === 'BOYS_DANDIYA') {
+      feePerPerson = settings.priceBoysDandiya || 1100;
+      categoryLabel = 'Boys Dandiya Workshop (22 Sep–2 Oct)';
+    } else if (category === 'KIDS') {
       feePerPerson = settings.priceKids; // 2000
       categoryLabel = 'Kids Girls (7–16 Years)';
     } else if (category === 'GROUP') {

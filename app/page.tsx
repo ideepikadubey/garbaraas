@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import Navbar from '@/components/Navbar';
 import HeroSection from '@/components/HeroSection';
 import WhatYouWillLearn from '@/components/WhatYouWillLearn';
+import UrgencyBannerSection from '@/components/UrgencyBannerSection';
+import SpecialWorkshopsSection from '@/components/SpecialWorkshopsSection';
 import SlotsSection from '@/components/SlotsSection';
 import PricingSection from '@/components/PricingSection';
 import PrizeCategoriesSection from '@/components/PrizeCategoriesSection';
@@ -59,8 +61,20 @@ export default function HomePage() {
       {/* 8 Learning Modules */}
       <WhatYouWillLearn />
 
+      {/* High-Converting Urgency / FOMO Banner ("बाद में? Baad Me Class Full Ho Jaati Hai!!") */}
+      <UrgencyBannerSection
+        onOpenRegister={() => handleOpenRegister()}
+        onScrollToSlots={handleScrollToSlots}
+      />
+
       {/* Real-time Workshop Locations & Slots Availability */}
       <SlotsSection onSelectSlot={handleSelectSlot} />
+
+      {/* Newly Announced Special Workshops (15-Day Female Garba & 15-Day Boys Dandiya) */}
+      <SpecialWorkshopsSection
+        onSelectCategory={handleOpenRegister}
+        onScrollToSlots={handleScrollToSlots}
+      />
 
       {/* Pricing Tiers & Free Family Pass Banner */}
       <PricingSection onSelectCategory={handleOpenRegister} />

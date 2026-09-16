@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import { CategoryType, Slot, Registration } from '@/lib/types';
 import { downloadRegistrationReceipt } from '@/lib/receipt-generator';
+import { verifyAlumni, AlumniRecord } from '@/lib/alumniVerifier';
 
 interface RegistrationModalProps {
   isOpen: boolean;
@@ -48,6 +49,11 @@ export default function RegistrationModal({
   const [groupLeaderName, setGroupLeaderName] = useState('');
   const [groupLeaderPhone, setGroupLeaderPhone] = useState('');
   const [fatherOrHusbandName, setFatherOrHusbandName] = useState('');
+
+  // Alumni Season 2 Verification State
+  const [alumniVerificationStatus, setAlumniVerificationStatus] = useState<'IDLE' | 'CHECKING' | 'VERIFIED' | 'FAILED'>('IDLE');
+  const [alumniVerificationMsg, setAlumniVerificationMsg] = useState('');
+  const [alumniMatchedRecord, setAlumniMatchedRecord] = useState<AlumniRecord | null>(null);
 
   // Group Members Details state (dynamic array for 5+ members)
   interface GroupMemberItem {
@@ -271,6 +277,15 @@ export default function RegistrationModal({
       } else if (preSelectedCategory === 'GROUP') {
         setIsGroup(true);
         setIsOldStudent(false);
+      } else if (preSelectedCategory === 'BOYS_DANDIYA') {
+        setIsOldStudent(false);
+        setIsGroup(false);
+        setGender('Male');
+        setAge('18');
+      } else if (preSelectedCategory === 'FEMALE_15DAY') {
+        setIsOldStudent(false);
+        setIsGroup(false);
+        setGender('Female');
       } else {
         setIsOldStudent(false);
         setIsGroup(false);
@@ -306,7 +321,11 @@ export default function RegistrationModal({
   // Pricing calculations
   const calculatePricing = () => {
     let pricePerPerson = 2500;
-    if (category === 'KIDS') {
+    if (category === 'BOYS_DANDIYA') {
+      pricePerPerson = 1100;
+    } else if (category === 'FEMALE_15DAY') {
+      pricePerPerson = 1500;
+    } else if (category === 'KIDS') {
       pricePerPerson = 2000;
     } else if (category === 'OLD_STUDENT' || category === 'GROUP') {
       pricePerPerson = 2200;
@@ -350,14 +369,52 @@ export default function RegistrationModal({
     if (selectedCat === 'OLD_STUDENT') {
       setIsOldStudent(true);
       setIsGroup(false);
+      setAlumniVerificationStatus('IDLE');
+      setAlumniVerificationMsg('');
+      setAlumniMatchedRecord(null);
     } else if (selectedCat === 'GROUP') {
       setIsGroup(true);
       setIsOldStudent(false);
+    } else if (selectedCat === 'BOYS_DANDIYA') {
+      setIsOldStudent(false);
+      setIsGroup(false);
+      setGender('Male');
+      setAge('18');
+    } else if (selectedCat === 'FEMALE_15DAY') {
+      setIsOldStudent(false);
+      setIsGroup(false);
+      setGender('Female');
     } else {
       setIsOldStudent(false);
       setIsGroup(false);
+      if (gender === 'Male') {
+        setGender('Female');
+      }
     }
     setStep(2);
+  };
+
+  // Direct manual check for Season 2 alumni
+  const handleCheckAlumni = () => {
+    setErrorMessage('');
+    if (!participantName.trim()) {
+      setErrorMessage('Please enter your full name');
+      return;
+    }
+    if (!fatherOrHusbandName.trim()) {
+      setErrorMessage("Please enter father's or husband's name for verification");
+      return;
+    }
+    const res = verifyAlumni(participantName, fatherOrHusbandName);
+    if (res.verified) {
+      setAlumniVerificationStatus('VERIFIED');
+      setAlumniVerificationMsg(res.message);
+      setAlumniMatchedRecord(res.matchedRecord || null);
+    } else {
+      setAlumniVerificationStatus('FAILED');
+      setAlumniVerificationMsg(res.message);
+      setErrorMessage(res.message);
+    }
   };
 
   const handleMembersCountChange = (newCount: number) => {
@@ -401,7 +458,7 @@ export default function RegistrationModal({
         return false;
       }
       if (!fatherOrHusbandName.trim()) {
-        setErrorMessage("Please enter Father's or Husband's Name for Alumni verification");
+        setErrorMessage("Please enter Father's or Husband's Name for Season 2 Alumni verification");
         return false;
       }
       const cleanMob = mobile.replace(/\D/g, '');
@@ -409,6 +466,19 @@ export default function RegistrationModal({
         setErrorMessage('Please enter a valid 10-digit Indian mobile number');
         return false;
       }
+
+      // Check Season 2 Database
+      const res = verifyAlumni(participantName, fatherOrHusbandName);
+      if (!res.verified) {
+        setAlumniVerificationStatus('FAILED');
+        setAlumniVerificationMsg(res.message);
+        setErrorMessage(res.message);
+        return false;
+      }
+
+      setAlumniVerificationStatus('VERIFIED');
+      setAlumniVerificationMsg(res.message);
+      setAlumniMatchedRecord(res.matchedRecord || null);
       return true;
     }
 
@@ -652,25 +722,25 @@ export default function RegistrationModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/60 backdrop-blur-md overflow-y-auto">
-      <div className="relative w-full max-w-3xl bg-white border-2 border-amber-300 rounded-3xl p-3.5 sm:p-7 shadow-2xl my-4 max-h-[94vh] flex flex-col justify-between overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-950/75 backdrop-blur-md overflow-y-auto">
+      <div className="relative w-full max-w-3xl bg-white border-2 border-pink-200 rounded-3xl p-3.5 sm:p-7 shadow-2xl my-4 max-h-[94vh] flex flex-col justify-between overflow-hidden">
         
-        {/* Top Garba Accent Ribbon */}
-        <div className="w-full h-[3px] bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 absolute top-0 left-0 right-0"></div>
+        {/* Top Multi-Color Accent Ribbon */}
+        <div className="w-full h-1 bg-gradient-to-r from-pink-500 via-yellow-400 via-emerald-400 to-blue-600 absolute top-0 left-0 right-0"></div>
 
         {/* Top Ornate Bar */}
-        <div className="flex items-center justify-between pb-3 pt-2 mb-2 border-b border-stone-200">
+        <div className="flex items-center justify-between pb-3 pt-2 mb-2 border-b border-slate-100">
           <div className="flex items-center gap-2 sm:gap-2.5">
-            <div className="p-[2px] rounded-full bg-gradient-to-tr from-amber-500 via-yellow-400 to-amber-300 shadow-sm">
-              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white border border-amber-200 flex items-center justify-center p-0.5 overflow-hidden">
+            <div className="p-[2px] rounded-full bg-gradient-to-tr from-pink-500 via-yellow-400 to-emerald-400 shadow-sm">
+              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white border border-pink-100 flex items-center justify-center p-0.5 overflow-hidden">
                 <img src="/images/TFN.png" alt="TFN Logo" className="w-full h-full object-contain" />
               </div>
             </div>
             <div>
-              <h3 className="text-xs sm:text-base font-serif font-bold text-stone-950 truncate max-w-[220px] sm:max-w-none">
+              <h3 className="text-xs sm:text-base font-heading font-bold text-slate-900 truncate max-w-[220px] sm:max-w-none">
                 TFN Garba Raas Dandiya Registration
               </h3>
-              <p className="text-[10px] sm:text-[11px] text-amber-800 font-semibold">
+              <p className="text-[10px] sm:text-[11px] text-pink-600 font-semibold">
                 13th Sept – 11th Oct • Kishangarh, Rajasthan
               </p>
             </div>
@@ -742,93 +812,154 @@ export default function RegistrationModal({
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 
-                {/* Female */}
+                {/* 1. Female Admission */}
                 <div
-                  onClick={() => handleCategorySelect('FEMALE')}
-                  className={`p-4 rounded-2xl border-2 cursor-pointer transition-all ${
-                    category === 'FEMALE' && !isOldStudent && !isGroup
-                      ? 'bg-amber-50/80 border-amber-500 shadow-md'
+                  onClick={() => handleCategorySelect(category === 'FEMALE_15DAY' ? 'FEMALE_15DAY' : 'FEMALE')}
+                  className={`p-3.5 rounded-2xl border-2 cursor-pointer transition-all flex flex-col justify-between ${
+                    (category === 'FEMALE' || category === 'FEMALE_15DAY') && !isOldStudent && !isGroup
+                      ? 'bg-amber-50/80 border-amber-500 shadow-md ring-1 ring-amber-400'
                       : 'bg-white border-amber-200 hover:border-amber-400'
                   }`}
                 >
-                  <div className="flex justify-between items-start">
-                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-amber-800">Category A</span>
-                    <span className="text-xl font-black font-serif text-amber-600">₹2500</span>
+                  <div>
+                    <div className="flex justify-between items-start">
+                      <span className="text-[10px] font-extrabold uppercase tracking-wider text-amber-800">Cat A</span>
+                      <span className="text-lg font-black font-serif text-amber-600">
+                        {category === 'FEMALE_15DAY' ? '₹1500' : '₹2500'}
+                      </span>
+                    </div>
+                    <h5 className="text-sm font-bold text-stone-950 mt-1">Female Admission</h5>
+                    <p className="text-[11px] text-stone-600 mt-0.5 font-medium">
+                      {category === 'FEMALE_15DAY' ? '(Girls Batch • 25 Sep–11 Oct)' : '(Full 1-Month Workshop)'}
+                    </p>
+                    <div className="mt-2.5 pt-2 border-t border-stone-200 text-[10px] text-stone-700 space-y-0.5 font-medium">
+                      <div>✓ 18 Oct Competition Included</div>
+                      <div>✓ Free 1-Day Family Pass</div>
+                    </div>
                   </div>
-                  <h5 className="text-base font-bold text-stone-950 mt-1">Female Admission</h5>
-                  <p className="text-xs text-stone-600 mt-0.5 font-medium">(Only Females • Open Age)</p>
-                  <div className="mt-3 pt-2 border-t border-stone-200 text-[11px] text-stone-700 space-y-1 font-medium">
-                    <div>✓ All 8 Dance Styles</div>
-                    <div>✓ Free Family Pass (1 Day)</div>
-                    <div>✓ Manish & Neel Sir Mentorship</div>
+
+                  {/* Toggle between Full Month and Girls Special */}
+                  <div className="mt-2 pt-2 border-t border-amber-200 flex gap-1" onClick={(e) => e.stopPropagation()}>
+                    <button
+                      type="button"
+                      onClick={() => handleCategorySelect('FEMALE')}
+                      className={`flex-1 py-1 px-1 rounded-md text-[9px] font-extrabold transition cursor-pointer ${
+                        category === 'FEMALE' && !isOldStudent && !isGroup ? 'bg-amber-500 text-stone-950 shadow-sm' : 'bg-white border border-amber-300 text-stone-800 hover:bg-amber-100'
+                      }`}
+                    >
+                      1-Mo (₹2500)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleCategorySelect('FEMALE_15DAY')}
+                      className={`flex-1 py-1 px-1 rounded-md text-[9px] font-extrabold transition cursor-pointer ${
+                        category === 'FEMALE_15DAY' ? 'bg-amber-500 text-stone-950 shadow-sm' : 'bg-white border border-amber-300 text-stone-800 hover:bg-amber-100'
+                      }`}
+                    >
+                      Girls (₹1500)
+                    </button>
                   </div>
                 </div>
 
-                {/* Old TFN / Group */}
+                {/* 2. Season 2 Alumni (Old Student) */}
                 <div
-                  onClick={() => handleCategorySelect(isOldStudent ? 'OLD_STUDENT' : 'GROUP')}
-                  className={`p-4 rounded-2xl border-2 cursor-pointer transition-all ${
-                    isGroup || isOldStudent || category === 'OLD_STUDENT' || category === 'GROUP'
-                      ? 'bg-garba-orange-50/80 border-garba-orange-500 shadow-md'
+                  onClick={() => handleCategorySelect('OLD_STUDENT')}
+                  className={`p-3.5 rounded-2xl border-2 cursor-pointer transition-all flex flex-col justify-between ${
+                    category === 'OLD_STUDENT' || (isOldStudent && !isGroup)
+                      ? 'bg-amber-100/90 border-amber-500 shadow-md ring-2 ring-amber-400'
+                      : 'bg-white border-amber-300 hover:border-amber-400'
+                  }`}
+                >
+                  <div>
+                    <div className="flex justify-between items-start">
+                      <span className="text-[10px] font-extrabold uppercase tracking-wider text-amber-900 bg-amber-200 px-2 py-0.5 rounded-full">Season 2 Alumni</span>
+                      <span className="text-lg font-black font-serif text-amber-900">₹2200</span>
+                    </div>
+                    <h5 className="text-sm font-bold text-stone-950 mt-1.5">Old TFN Student</h5>
+                    <p className="text-[11px] text-amber-800 font-bold mt-0.5">₹300 Alumni Discount</p>
+                    <div className="mt-2.5 pt-2 border-t border-stone-200 text-[10px] text-stone-700 space-y-0.5 font-medium">
+                      <div>✓ Season 2 Database Verified</div>
+                      <div>✓ Free 1-Day Family Pass</div>
+                      <div>✓ Full Workshop Access</div>
+                    </div>
+                  </div>
+                  <div className="mt-2 pt-2 border-t border-amber-200">
+                    <span className="text-[10px] font-bold text-amber-900 flex items-center gap-1">
+                      <Sparkles className="w-3 h-3 text-amber-600" />
+                      Requires Name & Guardian Check
+                    </span>
+                  </div>
+                </div>
+
+                {/* 3. Group Admission (5+ Members) */}
+                <div
+                  onClick={() => handleCategorySelect('GROUP')}
+                  className={`p-3.5 rounded-2xl border-2 cursor-pointer transition-all flex flex-col justify-between ${
+                    isGroup && !isOldStudent
+                      ? 'bg-garba-orange-50/80 border-garba-orange-500 shadow-md ring-1 ring-garba-orange-400'
                       : 'bg-white border-garba-orange-200 hover:border-garba-orange-400'
                   }`}
                 >
-                  <div className="flex justify-between items-start">
-                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-garba-orange-700">Category B</span>
-                    <span className="text-xl font-black font-serif text-garba-orange-600">₹2200</span>
-                  </div>
-                  <h5 className="text-base font-bold text-maroon-950 mt-1">Group (5+) / Old TFN</h5>
-                  <p className="text-xs text-garba-orange-800 font-bold mt-0.5">(Alumni or 5+ Members)</p>
-                  <div className="mt-3 pt-2 border-t border-stone-200 text-[11px] text-stone-700 space-y-1 font-medium">
-                    <div>✓ ₹300 Discount per member</div>
-                    <div>✓ Free Family Pass for all</div>
-                    <div>✓ Group choreography formation</div>
-                  </div>
-
-                  {/* Sub category selection buttons */}
-                  <div className="mt-3 pt-2 border-t border-garba-orange-200 flex gap-1.5" onClick={(e) => e.stopPropagation()}>
-                    <button
-                      type="button"
-                      onClick={() => handleCategorySelect('GROUP')}
-                      className={`flex-1 py-1.5 px-2 rounded-lg text-[10px] font-extrabold transition cursor-pointer ${
-                        isGroup && !isOldStudent ? 'bg-garba-orange-600 text-white shadow-sm' : 'bg-white border border-garba-orange-300 text-stone-800 hover:bg-garba-orange-100'
-                      }`}
-                    >
-                      Group (5+)
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleCategorySelect('OLD_STUDENT')}
-                      className={`flex-1 py-1.5 px-2 rounded-lg text-[10px] font-extrabold transition cursor-pointer ${
-                        category === 'OLD_STUDENT' || isOldStudent ? 'bg-garba-orange-600 text-white shadow-sm' : 'bg-white border border-garba-orange-300 text-stone-800 hover:bg-garba-orange-100'
-                      }`}
-                    >
-                      Old Student (Alumni)
-                    </button>
+                  <div>
+                    <div className="flex justify-between items-start">
+                      <span className="text-[10px] font-extrabold uppercase tracking-wider text-garba-orange-700">Group 5+</span>
+                      <span className="text-lg font-black font-serif text-garba-orange-600">₹2200</span>
+                    </div>
+                    <h5 className="text-sm font-bold text-maroon-950 mt-1">Group Booking</h5>
+                    <p className="text-[11px] text-garba-orange-800 font-bold mt-0.5">(Minimum 5 Members)</p>
+                    <div className="mt-2.5 pt-2 border-t border-stone-200 text-[10px] text-stone-700 space-y-0.5 font-medium">
+                      <div>✓ ₹300 Off per person</div>
+                      <div>✓ Free Family Pass for all</div>
+                    </div>
                   </div>
                 </div>
 
-                {/* Kids */}
+                {/* 4. Kids Girls */}
                 <div
                   onClick={() => handleCategorySelect('KIDS')}
-                  className={`p-4 rounded-2xl border-2 cursor-pointer transition-all ${
+                  className={`p-3.5 rounded-2xl border-2 cursor-pointer transition-all flex flex-col justify-between ${
                     category === 'KIDS'
-                      ? 'bg-garba-teal-50/80 border-garba-teal-500 shadow-md'
+                      ? 'bg-garba-teal-50/80 border-garba-teal-500 shadow-md ring-1 ring-teal-400'
                       : 'bg-white border-garba-teal-200 hover:border-garba-teal-400'
                   }`}
                 >
-                  <div className="flex justify-between items-start">
-                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-garba-teal-700">Category C</span>
-                    <span className="text-xl font-black font-serif text-garba-teal-700">₹2000</span>
+                  <div>
+                    <div className="flex justify-between items-start">
+                      <span className="text-[10px] font-extrabold uppercase tracking-wider text-garba-teal-700">Cat C</span>
+                      <span className="text-lg font-black font-serif text-garba-teal-700">₹2000</span>
+                    </div>
+                    <h5 className="text-sm font-bold text-maroon-950 mt-1">Kids Girls</h5>
+                    <p className="text-[11px] text-stone-600 mt-0.5 font-medium">(Age 7–16 Years)</p>
+                    <div className="mt-2.5 pt-2 border-t border-stone-200 text-[10px] text-stone-700 space-y-0.5 font-medium">
+                      <div>✓ Princess Title Eligibility</div>
+                      <div>✓ Safe & Supportive</div>
+                    </div>
                   </div>
-                  <h5 className="text-base font-bold text-maroon-950 mt-1">Kids Girls</h5>
-                  <p className="text-xs text-stone-600 mt-0.5 font-medium">(Age 7–16 Years • Girls Only)</p>
-                  <div className="mt-3 pt-2 border-t border-stone-200 text-[11px] text-stone-700 space-y-1 font-medium">
-                    <div>✓ Princess Title Eligibility</div>
-                    <div>✓ Free Family Pass for parents</div>
-                    <div>✓ Safe, supportive coaching</div>
+                </div>
+
+                {/* 5. Boys Dandiya Special */}
+                <div
+                  onClick={() => handleCategorySelect('BOYS_DANDIYA')}
+                  className={`p-3.5 rounded-2xl border-2 cursor-pointer transition-all flex flex-col justify-between ${
+                    category === 'BOYS_DANDIYA'
+                      ? 'bg-red-50/90 border-red-500 shadow-md ring-1 ring-red-400'
+                      : 'bg-white border-red-200 hover:border-red-400'
+                  }`}
+                >
+                  <div>
+                    <div className="flex justify-between items-start">
+                      <span className="text-[10px] font-extrabold uppercase tracking-wider text-red-700">Cat D • New</span>
+                      <span className="text-lg font-black font-serif text-red-600">₹1100</span>
+                    </div>
+                    <h5 className="text-sm font-bold text-maroon-950 mt-1">Boys Dandiya</h5>
+                    <p className="text-[11px] text-red-700 mt-0.5 font-bold">(Age 8–40 Years)</p>
+                    <div className="mt-2.5 pt-2 border-t border-stone-200 text-[10px] text-stone-700 space-y-0.5 font-medium">
+                      <div>✓ 5 Dandiya Patterns</div>
+                      <div>✓ 10 Days • 22 Sep–2 Oct</div>
+                      <div>✓ Bang & Crystal Park</div>
+                    </div>
                   </div>
                 </div>
 
@@ -1065,35 +1196,105 @@ export default function RegistrationModal({
                     <input
                       type="text"
                       value={participantName}
-                      onChange={(e) => setParticipantName(e.target.value)}
+                      onChange={(e) => {
+                        setParticipantName(e.target.value);
+                        if (category === 'OLD_STUDENT') setAlumniVerificationStatus('IDLE');
+                      }}
                       placeholder="e.g. Pooja Sharma"
                       className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl px-3.5 py-2.5 text-maroon-950 placeholder-stone-400 text-xs focus:outline-none focus:border-amber-500 font-medium"
                       required
                     />
                   </div>
 
-                  {/* Father's or Husband's Name (PROMINENT & MANDATORY FOR ALUMNI) */}
+                  {/* Father's or Husband's Name (PROMINENT & MANDATORY FOR ALUMNI WITH VERIFICATION) */}
                   {(category === 'OLD_STUDENT' || isOldStudent) && (
-                    <div className="sm:col-span-2 p-3 rounded-2xl bg-amber-50/90 border-2 border-amber-400 space-y-1">
+                    <div className="sm:col-span-2 p-3.5 sm:p-4 rounded-2xl bg-amber-50 border-2 border-amber-400 space-y-3 shadow-xs">
                       <div className="flex items-center justify-between">
                         <label className="block text-amber-950 font-black text-xs">
                           Father's or Husband's Name <span className="text-red-600">*</span>
                         </label>
-                        <span className="text-[10px] uppercase font-bold text-amber-800 bg-white px-2 py-0.5 rounded-full border border-amber-300">
-                          Alumni Verification
+                        <span className="text-[10px] uppercase font-extrabold text-amber-900 bg-amber-200 px-2.5 py-0.5 rounded-full border border-amber-300">
+                          Season 2 Alumni Check
                         </span>
                       </div>
-                      <input
-                        type="text"
-                        value={fatherOrHusbandName}
-                        onChange={(e) => setFatherOrHusbandName(e.target.value)}
-                        placeholder="e.g. Shri Rajesh Sharma / Manoj Sharma"
-                        className="w-full bg-white border-2 border-amber-300 rounded-xl px-3.5 py-2 text-stone-950 placeholder-stone-400 text-xs focus:outline-none focus:border-amber-600 font-semibold"
-                        required
-                      />
-                      <p className="text-[10px] text-stone-600 font-medium">
-                        Please enter father's or husband's name for matching past TFN workshop records.
-                      </p>
+
+                      <div className="flex flex-col sm:flex-row gap-2">
+                        <input
+                          type="text"
+                          value={fatherOrHusbandName}
+                          onChange={(e) => {
+                            setFatherOrHusbandName(e.target.value);
+                            setAlumniVerificationStatus('IDLE');
+                          }}
+                          placeholder="e.g. Mukesh Chhaparwal / Prakash Chand"
+                          className="flex-1 bg-white border-2 border-amber-300 rounded-xl px-3.5 py-2 text-stone-950 placeholder-stone-400 text-xs focus:outline-none focus:border-amber-600 font-semibold"
+                          required
+                        />
+                        <button
+                          type="button"
+                          onClick={handleCheckAlumni}
+                          className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-stone-950 text-xs font-black transition shadow-xs flex items-center justify-center gap-1.5 cursor-pointer flex-shrink-0"
+                        >
+                          <Sparkles className="w-3.5 h-3.5" />
+                          <span>Verify Record</span>
+                        </button>
+                      </div>
+
+                      {/* Verification Status Feedback Banners */}
+                      {alumniVerificationStatus === 'VERIFIED' && (
+                        <div className="p-3 rounded-xl bg-emerald-100/90 border-2 border-emerald-500 text-emerald-950 text-xs flex items-start gap-2.5 animate-in fade-in duration-200">
+                          <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
+                          <div className="space-y-0.5">
+                            <div className="font-extrabold text-emerald-900">
+                              ✓ Season 2 Alumni Verified!
+                            </div>
+                            <p className="text-[11px] text-emerald-800 font-medium">
+                              {alumniVerificationMsg}
+                            </p>
+                            <div className="text-[11px] font-bold text-emerald-900 pt-0.5">
+                              🎉 ₹300 Special Alumni Discount Applied (Payable Fee: ₹2200)
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {alumniVerificationStatus === 'FAILED' && (
+                        <div className="p-3.5 rounded-xl bg-red-50 border-2 border-red-400 text-red-950 text-xs space-y-2 animate-in fade-in duration-200">
+                          <div className="flex items-start gap-2">
+                            <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                            <div>
+                              <div className="font-black text-red-900">
+                                ⚠️ Not Listed in Season 2 Alumni Records
+                              </div>
+                              <p className="text-[11px] text-red-800 mt-0.5 leading-relaxed font-medium">
+                                We could not match "{participantName}" with Father/Husband "{fatherOrHusbandName}" in the Season 2 database.
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="pt-2 border-t border-red-200 flex flex-wrap items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={() => handleCategorySelect('FEMALE')}
+                              className="py-1.5 px-3 rounded-lg bg-red-600 hover:bg-red-700 text-white font-bold text-[11px] transition cursor-pointer shadow-xs"
+                            >
+                              Switch to Standard Female (₹2500)
+                            </button>
+                            <a
+                              href="tel:8385969285"
+                              className="py-1.5 px-3 rounded-lg bg-white border border-red-300 text-red-900 hover:bg-red-100 font-bold text-[11px] transition flex items-center gap-1"
+                            >
+                              Call Neel Sir for Help (+91 8385969285)
+                            </a>
+                          </div>
+                        </div>
+                      )}
+
+                      {alumniVerificationStatus === 'IDLE' && (
+                        <p className="text-[10px] text-stone-600 font-medium">
+                          ℹ️ Enter your name & father/husband name as recorded in Season 2. Matching unlocks the ₹2200 alumni rate.
+                        </p>
+                      )}
                     </div>
                   )}
 
@@ -1487,253 +1688,90 @@ export default function RegistrationModal({
             </div>
           )}
 
-          {/* ================= STEP 5: DEDICATED PAYMENT PAGE ================= */}
+          {/* ================= STEP 5: SECURE PAYMENT GATEWAY ================= */}
           {step === 5 && (
             <div className="space-y-4">
-              <div className="text-center mb-1">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-300 text-[11px] text-emerald-800 font-bold mb-1">
+              <div className="text-center mb-2">
+                <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-emerald-50 border border-emerald-300 text-[11px] text-emerald-900 font-bold mb-1">
                   <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
                   <span>Slot Temporarily Reserved (ID: {createdRegistration?.id})</span>
                 </div>
-                <h4 className="text-xl font-serif font-bold text-stone-950">
-                  Select Payment Method
+                <h4 className="text-xl font-serif font-black text-stone-950">
+                  Complete Online Payment
                 </h4>
                 <p className="text-xs text-stone-600 font-medium">
-                  Total Amount Payable: <strong className="text-amber-800 font-bold text-sm">₹{total}</strong>
+                  Total Amount Payable: <strong className="text-amber-800 font-black text-base">₹{total}</strong>
                 </p>
               </div>
 
-              {/* Payment Mode Selector Tabs */}
-              <div className="grid grid-cols-2 gap-2 p-1 bg-stone-100 rounded-2xl border border-stone-200">
-                <button
-                  type="button"
-                  onClick={() => setPaymentMethod('RAZORPAY')}
-                  className={`py-2.5 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer ${
-                    paymentMethod === 'RAZORPAY'
-                      ? 'bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-950 shadow-md ring-1 ring-amber-300'
-                      : 'text-stone-700 hover:text-stone-950'
-                  }`}
-                >
-                  <Sparkles className="w-4 h-4 text-stone-950" />
-                  <span>Pay Online (Instant)</span>
-                </button>
+              {/* Razorpay Instant Payment Card */}
+              <div className="p-4 sm:p-6 rounded-2xl bg-white border-2 border-amber-300 shadow-md space-y-4">
+                <div className="flex items-center justify-between pb-3 border-b border-stone-100">
+                  <div>
+                    <span className="text-[10px] uppercase font-black text-amber-800 tracking-wider">
+                      OFFICIAL SECURE PAYMENT GATEWAY
+                    </span>
+                    <h5 className="text-base sm:text-lg font-serif font-bold text-stone-950 mt-0.5">
+                      GPay • PhonePe • Paytm • UPI • Cards • NetBanking
+                    </h5>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-[10px] text-stone-500 block uppercase font-bold">Total Fee</span>
+                    <span className="text-2xl sm:text-3xl font-serif font-black text-amber-800">₹{total}</span>
+                  </div>
+                </div>
 
+                {/* Feature Highlights */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
+                  <div className="p-2.5 rounded-xl bg-amber-50/70 border border-amber-200">
+                    <div className="font-bold text-amber-950 flex items-center gap-1 mb-0.5">
+                      <Check className="w-3.5 h-3.5 text-amber-600" /> Instant Confirmation
+                    </div>
+                    <p className="text-[11px] text-stone-600">Automated verification without waiting for manual approval.</p>
+                  </div>
+
+                  <div className="p-2.5 rounded-xl bg-amber-50/70 border border-amber-200">
+                    <div className="font-bold text-amber-950 flex items-center gap-1 mb-0.5">
+                      <Download className="w-3.5 h-3.5 text-amber-600" /> Auto PDF Receipt
+                    </div>
+                    <p className="text-[11px] text-stone-600">Official Pass generated & downloaded instantly upon success.</p>
+                  </div>
+
+                  <div className="p-2.5 rounded-xl bg-amber-50/70 border border-amber-200">
+                    <div className="font-bold text-amber-950 flex items-center gap-1 mb-0.5">
+                      <ShieldCheck className="w-3.5 h-3.5 text-amber-600" /> 100% Encrypted
+                    </div>
+                    <p className="text-[11px] text-stone-600">Bank-grade 256-bit secure gateway powered by Razorpay.</p>
+                  </div>
+                </div>
+
+                {/* Accepted Payment Modes Badges */}
+                <div className="p-3 rounded-xl bg-stone-50 border border-stone-200 flex flex-wrap items-center justify-between gap-2 text-xs">
+                  <span className="text-stone-600 font-semibold text-[11px]">All Payment Modes Supported:</span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {['Google Pay', 'PhonePe', 'Paytm', 'Any UPI App', 'Credit/Debit Cards', 'NetBanking'].map((badge) => (
+                      <span key={badge} className="px-2 py-0.5 rounded-md bg-white border border-stone-200 text-[10px] font-bold text-stone-700 shadow-2xs">
+                        {badge}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Razorpay Launch Button */}
                 <button
                   type="button"
-                  onClick={() => setPaymentMethod('UPI_QR')}
-                  className={`py-2.5 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer ${
-                    paymentMethod === 'UPI_QR'
-                      ? 'bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-950 shadow-md ring-1 ring-amber-300'
-                      : 'text-stone-700 hover:text-stone-950'
-                  }`}
+                  onClick={handleRazorpayPayment}
+                  disabled={isRazorpayLoading}
+                  className="w-full py-4 px-6 rounded-xl bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-950 font-black text-sm sm:text-base ring-2 ring-amber-300 hover:brightness-105 transition shadow-lg flex items-center justify-center gap-2 cursor-pointer"
                 >
-                  <Copy className="w-4 h-4" />
-                  <span>Scan UPI QR (Manual)</span>
+                  {isRazorpayLoading ? (
+                    <div className="w-5 h-5 border-2 border-stone-950 border-t-transparent rounded-full animate-spin"></div>
+                  ) : (
+                    <Sparkles className="w-5 h-5 text-stone-950" />
+                  )}
+                  <span>PAY ₹{total} SECURELY VIA PAYMENT GATEWAY</span>
                 </button>
               </div>
-
-              {/* OPTION 1: RAZORPAY INSTANT PAYMENT */}
-              {paymentMethod === 'RAZORPAY' && (
-                <div className="p-4 sm:p-5 rounded-2xl bg-white border-2 border-amber-300 shadow-sm space-y-4">
-                  <div className="flex items-center justify-between pb-3 border-b border-stone-100">
-                    <div>
-                      <span className="text-[10px] uppercase font-bold text-amber-800 tracking-wider">
-                        AUTOMATED SECURE PAYMENT
-                      </span>
-                      <h5 className="text-base sm:text-lg font-serif font-bold text-stone-950 mt-0.5">
-                        UPI • Cards • NetBanking • Wallets
-                      </h5>
-                    </div>
-                    <div className="text-right">
-                      <span className="text-[10px] text-stone-500 block uppercase font-bold">Total Fee</span>
-                      <span className="text-2xl sm:text-3xl font-serif font-black text-amber-800">₹{total}</span>
-                    </div>
-                  </div>
-
-                  {/* Feature Highlights */}
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
-                    <div className="p-2.5 rounded-xl bg-amber-50/70 border border-amber-200">
-                      <div className="font-bold text-amber-950 flex items-center gap-1 mb-0.5">
-                        <Check className="w-3.5 h-3.5 text-amber-600" /> Instant Activation
-                      </div>
-                      <p className="text-[11px] text-stone-600">Automated verification without waiting for manual confirmation.</p>
-                    </div>
-
-                    <div className="p-2.5 rounded-xl bg-amber-50/70 border border-amber-200">
-                      <div className="font-bold text-amber-950 flex items-center gap-1 mb-0.5">
-                        <Download className="w-3.5 h-3.5 text-amber-600" /> Auto PDF Receipt
-                      </div>
-                      <p className="text-[11px] text-stone-600">Official Pass generated & downloaded instantly upon success.</p>
-                    </div>
-
-                    <div className="p-2.5 rounded-xl bg-amber-50/70 border border-amber-200">
-                      <div className="font-bold text-amber-950 flex items-center gap-1 mb-0.5">
-                        <ShieldCheck className="w-3.5 h-3.5 text-amber-600" /> 100% Encrypted
-                      </div>
-                      <p className="text-[11px] text-stone-600">Bank-grade 256-bit secure gateway powered by Razorpay.</p>
-                    </div>
-                  </div>
-
-                  {/* Accepted Payment Modes Badges */}
-                  <div className="p-3 rounded-xl bg-stone-50 border border-stone-200 flex flex-wrap items-center justify-between gap-2 text-xs">
-                    <span className="text-stone-600 font-semibold text-[11px]">All Payment Modes Supported:</span>
-                    <div className="flex flex-wrap gap-1.5">
-                      {['GPay', 'PhonePe', 'Paytm', 'UPI QR', 'Credit/Debit Cards', 'NetBanking'].map((badge) => (
-                        <span key={badge} className="px-2 py-0.5 rounded-md bg-white border border-stone-200 text-[10px] font-bold text-stone-700 shadow-2xs">
-                          {badge}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Razorpay Launch Button */}
-                  <button
-                    type="button"
-                    onClick={handleRazorpayPayment}
-                    disabled={isRazorpayLoading}
-                    className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-950 font-black text-sm sm:text-base ring-1 ring-amber-300 hover:brightness-105 transition shadow-lg flex items-center justify-center gap-2 cursor-pointer"
-                  >
-                    {isRazorpayLoading ? (
-                      <div className="w-5 h-5 border-2 border-stone-950 border-t-transparent rounded-full animate-spin"></div>
-                    ) : (
-                      <Sparkles className="w-5 h-5 text-stone-950" />
-                    )}
-                    <span>PAY ₹{total} SECURELY ONLINE</span>
-                  </button>
-                </div>
-              )}
-
-              {/* OPTION 2: MANUAL UPI QR */}
-              {paymentMethod === 'UPI_QR' && (
-                <form onSubmit={handleSubmitPayment} className="space-y-4">
-                  {/* QR & UPI Section */}
-                  <div className="p-4 rounded-2xl bg-stone-50 border-2 border-amber-300 flex flex-col sm:flex-row items-center gap-4 shadow-sm">
-                    
-                    {/* QR Code */}
-                    <div className="bg-white p-3 rounded-2xl shadow-md border border-stone-200 flex flex-col items-center flex-shrink-0">
-                      {qrDataUrl ? (
-                        <img
-                          src={qrDataUrl}
-                          alt="UPI Payment QR Code"
-                          className="w-40 h-40 sm:w-44 sm:h-44 object-contain"
-                        />
-                      ) : (
-                        <div className="w-40 h-40 flex items-center justify-center text-xs text-stone-500">
-                          Generating QR...
-                        </div>
-                      )}
-                      <span className="text-[9px] font-black text-stone-950 tracking-wider mt-1 uppercase">
-                        SCAN & PAY WITH ANY UPI APP
-                      </span>
-                    </div>
-
-                    {/* Amount & UPI Details */}
-                    <div className="flex-1 text-center sm:text-left space-y-2.5">
-                      <div>
-                        <span className="text-xs uppercase tracking-wider text-amber-800 font-bold">
-                          Amount Payable
-                        </span>
-                        <div className="text-2xl sm:text-3xl font-serif font-black text-amber-800">
-                          ₹{total}
-                        </div>
-                      </div>
-
-                      {/* UPI ID copy */}
-                      <div className="p-2 rounded-xl bg-white border border-stone-200 shadow-sm">
-                        <span className="text-[10px] text-stone-500 block uppercase font-bold">
-                          Pay directly to UPI ID:
-                        </span>
-                        <div className="flex items-center justify-between gap-2 mt-0.5">
-                          <span className="font-mono text-xs font-bold text-stone-950 truncate">
-                            {upiId}
-                          </span>
-                          <button
-                            type="button"
-                            onClick={handleCopyUpi}
-                            className="px-2.5 py-1 rounded bg-amber-100 text-stone-950 text-[11px] font-bold flex items-center gap-1 hover:bg-amber-200 transition cursor-pointer"
-                          >
-                            {copiedUpi ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
-                            <span>{copiedUpi ? 'Copied' : 'Copy'}</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Payment Proof Submission */}
-                  <div className="p-3.5 rounded-xl bg-stone-50 border-2 border-stone-200 space-y-3">
-                    <div className="text-xs font-bold text-maroon-950 uppercase tracking-wide">
-                      Submit Payment Verification Details
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                      {/* UTR / Transaction ID */}
-                      <div>
-                        <label className="block text-stone-950 font-bold mb-1">
-                          12-Digit UTR / Transaction ID <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          value={utrNumber}
-                          onChange={(e) => setUtrNumber(e.target.value)}
-                          placeholder="e.g. 429182901842"
-                          className="w-full bg-white border-2 border-stone-200 rounded-xl px-3.5 py-2 text-stone-950 placeholder-stone-400 text-xs focus:outline-none focus:border-amber-500 font-mono"
-                          required
-                        />
-                      </div>
-
-                      {/* Payment Date */}
-                      <div>
-                        <label className="block text-stone-950 font-bold mb-1">Payment Date</label>
-                        <input
-                          type="date"
-                          value={paymentDate}
-                          onChange={(e) => setPaymentDate(e.target.value)}
-                          className="w-full bg-white border-2 border-stone-200 rounded-xl px-3.5 py-2 text-stone-950 text-xs focus:outline-none focus:border-amber-500 font-medium"
-                        />
-                      </div>
-
-                      {/* Screenshot upload */}
-                      <div className="sm:col-span-2">
-                        <label className="block text-stone-950 font-bold mb-1">
-                          Payment Screenshot (Optional / Recommended)
-                        </label>
-                        <div className="flex items-center gap-3">
-                          <label className="cursor-pointer px-3.5 py-1.5 rounded-xl bg-white border-2 border-stone-200 hover:border-amber-400 text-stone-950 text-xs font-bold flex items-center gap-2 transition shadow-sm">
-                            <Upload className="w-3.5 h-3.5 text-amber-600" />
-                            <span>{screenshotData ? 'Change Screenshot' : 'Upload Receipt Screenshot'}</span>
-                            <input
-                              type="file"
-                              accept="image/*"
-                              onChange={handleScreenshotUpload}
-                              className="hidden"
-                            />
-                          </label>
-                          {screenshotData && (
-                            <span className="text-xs text-emerald-700 flex items-center gap-1 font-bold">
-                              <Check className="w-3.5 h-3.5" /> Screenshot Attached
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Submit Payment Button */}
-                  <button
-                    type="submit"
-                    disabled={submitting}
-                    className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-950 font-black text-sm sm:text-base ring-1 ring-amber-300 hover:brightness-105 transition shadow-md flex items-center justify-center gap-2 cursor-pointer"
-                  >
-                    {submitting ? (
-                      <div className="w-5 h-5 border-2 border-stone-950 border-t-transparent rounded-full animate-spin"></div>
-                    ) : (
-                      <Check className="w-5 h-5" />
-                    )}
-                    <span>SUBMIT MANUAL PAYMENT VERIFICATION</span>
-                  </button>
-                </form>
-              )}
             </div>
           )}
 

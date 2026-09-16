@@ -37,7 +37,8 @@ export default function SlotsSection({ onSelectSlot }: SlotsSectionProps) {
     { id: 'ALL', name: 'All Locations' },
     { id: 'TFN Studio', name: 'TFN Studio' },
     { id: 'Bang Marriage Hall', name: 'Bang Marriage Hall' },
-    { id: 'Cricket Academy (Turf, Kishangarh)', name: 'Cricket Academy (Turf)' },
+    { id: 'Crystal Park', name: 'Crystal Park' },
+    { id: 'Cricket Academy', name: 'Cricket Academy (Turf)' },
   ];
 
   const filteredSlots = slots.filter((slot) => {
@@ -46,20 +47,20 @@ export default function SlotsSection({ onSelectSlot }: SlotsSectionProps) {
   });
 
   return (
-    <section id="slots" className="relative py-10 md:py-16 bg-white border-b border-amber-100">
+    <section id="slots" className="relative py-10 md:py-16 bg-white border-b border-pink-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-10">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-50 border border-amber-200 text-xs text-amber-900 uppercase tracking-widest font-bold mb-2 shadow-sm">
-            <Clock className="w-3.5 h-3.5 text-amber-600" />
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-pink-50 border border-pink-200 text-xs text-pink-700 uppercase tracking-widest font-black mb-2 shadow-xs">
+            <Clock className="w-3.5 h-3.5 text-pink-500" />
             Live Real-Time Seat Availability
           </div>
-          <h2 className="text-2xl sm:text-4xl md:text-5xl font-serif font-black text-maroon-950 tracking-tight">
-            WORKSHOP <span className="garba-gradient-text">LOCATIONS & TIMINGS</span>
+          <h2 className="text-2xl sm:text-4xl md:text-5xl font-serif font-black text-slate-900 tracking-tight">
+            WORKSHOP <span className="festive-gradient-text">LOCATIONS & TIMINGS</span>
           </h2>
-          <div className="h-[3px] w-24 sm:w-32 mx-auto my-3 rounded-full bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500"></div>
-          <p className="text-xs sm:text-base text-stone-700 font-medium">
+          <div className="h-[3.5px] w-24 sm:w-32 mx-auto my-3 rounded-full bg-gradient-to-r from-pink-500 via-yellow-400 via-emerald-400 to-blue-600"></div>
+          <p className="text-xs sm:text-base text-slate-600 font-medium">
             Pick your preferred location and timing batch below. Seats are allocated on a verified first-come, first-served basis.
           </p>
         </div>
@@ -69,16 +70,16 @@ export default function SlotsSection({ onSelectSlot }: SlotsSectionProps) {
           <div className="flex flex-nowrap overflow-x-auto gap-2 pb-2 sm:pb-0 no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
             {locations.map((loc) => {
               const isSelected = selectedLocation === loc.id;
-              const activeClass = 'bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-950 shadow-md font-black ring-1 ring-amber-300';
+              const activeClass = 'bg-gradient-to-r from-pink-600 via-rose-500 to-amber-500 text-white shadow-md font-black ring-2 ring-pink-300';
 
               return (
                 <button
                   key={loc.id}
                   onClick={() => setSelectedLocation(loc.id)}
-                  className={`px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer flex-shrink-0 ${
+                  className={`px-3.5 sm:px-5 py-2 rounded-2xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer flex-shrink-0 ${
                     isSelected
                       ? activeClass
-                      : 'bg-white border-2 border-stone-200 text-stone-800 hover:border-amber-400 shadow-sm'
+                      : 'bg-white border-2 border-slate-200 text-slate-700 hover:border-pink-300 shadow-xs'
                   }`}
                 >
                   {loc.name}
@@ -89,7 +90,7 @@ export default function SlotsSection({ onSelectSlot }: SlotsSectionProps) {
 
           <button
             onClick={fetchSlots}
-            className="flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-white border-2 border-amber-200 text-xs font-bold text-amber-900 hover:bg-amber-50 transition shadow-sm cursor-pointer self-end sm:self-auto"
+            className="flex items-center justify-center gap-1.5 px-4 py-2 rounded-2xl bg-white border-2 border-pink-200 text-xs font-bold text-pink-700 hover:bg-pink-50 transition shadow-xs cursor-pointer self-end sm:self-auto"
             title="Refresh availability"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
@@ -100,8 +101,8 @@ export default function SlotsSection({ onSelectSlot }: SlotsSectionProps) {
         {/* Slots Grid */}
         {loading && slots.length === 0 ? (
           <div className="py-16 text-center">
-            <div className="w-10 h-10 border-3 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
-            <p className="text-sm font-bold text-amber-800">Loading live workshop batches...</p>
+            <div className="w-10 h-10 border-3 border-pink-500 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+            <p className="text-sm font-bold text-pink-700">Loading live workshop batches...</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -114,40 +115,48 @@ export default function SlotsSection({ onSelectSlot }: SlotsSectionProps) {
               // Location-based theme matching
               const isTFN = slot.locationName.includes('TFN');
               const isCricket = slot.locationName.includes('Cricket');
+              const isCrystal = slot.locationName.includes('Crystal');
+              const isBoys = slot.batchName.includes('Boys');
               const isNightBang = slot.locationName.includes('Bang') && slot.startTime.includes('8:00');
 
-              let themeCard = 'bg-white border-2 border-amber-300 hover:border-amber-500 shadow-sm hover:shadow-md';
-              let themeIconColor = 'text-amber-600';
-              let themeBatchBg = 'bg-amber-50/70 border border-amber-200';
-              let themeBatchText = 'text-amber-900';
-              let themeProgressGradient = 'bg-gradient-to-r from-amber-500 to-yellow-400';
+              let themeCard = 'bg-white border-2 border-pink-200 hover:border-pink-400 shadow-sm hover:shadow-pink-500/15 hover:shadow-lg';
+              let themeIconColor = 'text-pink-600';
+              let themeBatchBg = 'bg-pink-50/70 border border-pink-200';
+              let themeBatchText = 'text-pink-900';
+              let themeProgressGradient = 'bg-gradient-to-r from-pink-500 to-rose-400';
 
-              if (isTFN) {
-                themeCard = 'bg-white border-2 border-yellow-300 hover:border-yellow-500 shadow-sm hover:shadow-md';
-                themeIconColor = 'text-amber-600';
-                themeBatchBg = 'bg-yellow-50/70 border border-yellow-200';
-                themeBatchText = 'text-amber-950';
-                themeProgressGradient = 'bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600';
-              } else if (isCricket) {
-                themeCard = 'bg-white border-2 border-emerald-300 hover:border-emerald-500 shadow-sm hover:shadow-md';
+              if (isBoys) {
+                themeCard = 'bg-white border-2 border-blue-300 hover:border-blue-500 shadow-sm hover:shadow-blue-500/15 hover:shadow-lg';
+                themeIconColor = 'text-blue-600';
+                themeBatchBg = 'bg-blue-50/80 border border-blue-200';
+                themeBatchText = 'text-blue-900';
+                themeProgressGradient = 'bg-gradient-to-r from-blue-600 via-indigo-500 to-cyan-400';
+              } else if (isTFN) {
+                themeCard = 'bg-white border-2 border-pink-300 hover:border-pink-500 shadow-sm hover:shadow-pink-500/15 hover:shadow-lg';
+                themeIconColor = 'text-pink-600';
+                themeBatchBg = 'bg-pink-50/70 border border-pink-200';
+                themeBatchText = 'text-pink-900';
+                themeProgressGradient = 'bg-gradient-to-r from-pink-600 via-rose-500 to-amber-400';
+              } else if (isCrystal || isCricket) {
+                themeCard = 'bg-white border-2 border-emerald-300 hover:border-emerald-500 shadow-sm hover:shadow-emerald-500/15 hover:shadow-lg';
                 themeIconColor = 'text-emerald-600';
                 themeBatchBg = 'bg-emerald-50/70 border border-emerald-200';
-                themeBatchText = 'text-emerald-800';
-                themeProgressGradient = 'bg-gradient-to-r from-emerald-600 to-teal-500';
+                themeBatchText = 'text-emerald-900';
+                themeProgressGradient = 'bg-gradient-to-r from-emerald-600 to-teal-400';
               } else if (isNightBang) {
-                themeCard = 'bg-white border-2 border-garba-purple-300 hover:border-garba-purple-500 shadow-sm hover:shadow-md';
-                themeIconColor = 'text-garba-purple-600';
-                themeBatchBg = 'bg-garba-purple-50/70 border border-garba-purple-200';
-                themeBatchText = 'text-garba-purple-800';
-                themeProgressGradient = 'bg-gradient-to-r from-garba-purple-600 to-amber-500';
+                themeCard = 'bg-white border-2 border-purple-300 hover:border-purple-500 shadow-sm hover:shadow-purple-500/15 hover:shadow-lg';
+                themeIconColor = 'text-purple-600';
+                themeBatchBg = 'bg-purple-50/70 border border-purple-200';
+                themeBatchText = 'text-purple-900';
+                themeProgressGradient = 'bg-gradient-to-r from-purple-600 to-pink-500';
               }
 
               return (
                 <div
                   key={slot.id}
-                  className={`relative rounded-2xl p-5 border-2 transition-all duration-200 flex flex-col justify-between ${
+                  className={`relative rounded-3xl p-5 border-2 transition-all duration-200 flex flex-col justify-between ${
                     isFull
-                      ? 'bg-stone-50 border-stone-300 opacity-75'
+                      ? 'bg-slate-50 border-slate-200 opacity-75'
                       : themeCard
                   }`}
                 >
@@ -155,37 +164,37 @@ export default function SlotsSection({ onSelectSlot }: SlotsSectionProps) {
                     {/* Top Location and Status Badge */}
                     <div className="flex items-start justify-between gap-2 mb-3">
                       <div>
-                        <div className={`flex items-center gap-1.5 ${themeIconColor} text-xs font-bold mb-0.5`}>
+                        <div className={`flex items-center gap-1.5 ${themeIconColor} text-xs font-black mb-0.5`}>
                           <MapPin className="w-3.5 h-3.5" />
                           <span>{slot.locationName}</span>
                         </div>
-                        <p className="text-[11px] text-stone-600 font-medium truncate max-w-[200px]">
+                        <p className="text-[11px] text-slate-500 font-semibold truncate max-w-[200px]">
                           {slot.locationAddress}
                         </p>
                       </div>
 
                       {/* Status Tag */}
                       {isFull ? (
-                        <span className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-red-100 text-red-700 border border-red-300">
+                        <span className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-black bg-red-100 text-red-700 border border-red-300">
                           <XCircle className="w-3 h-3" /> Full
                         </span>
                       ) : isFewLeft ? (
-                        <span className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-100 text-amber-800 border border-amber-300 animate-pulse">
+                        <span className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-black bg-amber-100 text-amber-800 border border-amber-300 animate-pulse">
                           <AlertTriangle className="w-3 h-3" /> Few Left
                         </span>
                       ) : (
-                        <span className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                        <span className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-black bg-emerald-100 text-emerald-800 border border-emerald-300">
                           <CheckCircle2 className="w-3 h-3" /> Available
                         </span>
                       )}
                     </div>
 
                     {/* Batch Name & Timing */}
-                    <div className={`rounded-xl p-3 border my-3 ${themeBatchBg}`}>
-                      <div className={`text-xs uppercase font-extrabold ${themeBatchText} tracking-wider`}>
+                    <div className={`rounded-2xl p-3 border my-3 ${themeBatchBg}`}>
+                      <div className={`text-xs uppercase font-black ${themeBatchText} tracking-wider`}>
                         {slot.batchName}
                       </div>
-                      <div className="text-lg sm:text-xl font-serif font-bold text-stone-950 flex items-center gap-2 mt-0.5">
+                      <div className="text-lg sm:text-xl font-serif font-black text-slate-900 flex items-center gap-2 mt-0.5">
                         <Clock className={`w-4 h-4 ${themeIconColor}`} />
                         <span>{slot.startTime} – {slot.endTime}</span>
                       </div>
@@ -194,18 +203,18 @@ export default function SlotsSection({ onSelectSlot }: SlotsSectionProps) {
                     {/* Capacity Progress Bar */}
                     <div className="mt-3">
                       <div className="flex items-center justify-between text-xs mb-1">
-                        <span className="text-stone-900 font-medium">
+                        <span className="text-slate-900 font-bold">
                           {isFull ? (
                             <span className="text-red-600 font-bold">Housefull</span>
                           ) : (
-                            <span className="text-amber-800 font-bold">{remaining} seats left</span>
+                            <span className="text-pink-700 font-black">{remaining} seats left</span>
                           )}
                         </span>
-                        <span className="text-stone-500 text-[11px] font-semibold">
+                        <span className="text-slate-500 text-[11px] font-semibold">
                           {slot.bookedSeats} / {slot.capacity} Booked
                         </span>
                       </div>
-                      <div className="w-full h-2.5 rounded-full bg-stone-200 overflow-hidden border border-stone-300">
+                      <div className="w-full h-2.5 rounded-full bg-slate-100 overflow-hidden border border-slate-200">
                         <div
                           className={`h-full transition-all duration-500 ${
                             isFull
@@ -221,21 +230,21 @@ export default function SlotsSection({ onSelectSlot }: SlotsSectionProps) {
                   </div>
 
                   {/* Action Button */}
-                  <div className="mt-5 pt-3 border-t border-stone-200">
+                  <div className="mt-5 pt-3 border-t border-slate-100">
                     <button
                       onClick={() => !isFull && onSelectSlot(slot)}
                       disabled={isFull}
-                      className={`w-full py-2.5 px-4 rounded-xl font-black text-xs sm:text-sm transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                      className={`w-full py-2.5 px-4 rounded-2xl font-black text-xs sm:text-sm transition-all flex items-center justify-center gap-2 cursor-pointer ${
                         isFull
-                          ? 'bg-stone-200 text-stone-500 border border-stone-300 cursor-not-allowed'
-                          : 'bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-950 shadow-md ring-1 ring-amber-300 hover:scale-[1.02]'
+                          ? 'bg-slate-200 text-slate-500 border border-slate-300 cursor-not-allowed'
+                          : 'bg-gradient-to-r from-pink-600 via-rose-500 to-amber-500 text-white shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-95'
                       }`}
                     >
                       {isFull ? (
                         <span>Slot Completely Full</span>
                       ) : (
                         <>
-                          <Sparkles className="w-4 h-4 text-stone-950" />
+                          <Sparkles className="w-4 h-4 text-yellow-300" />
                           <span>Select & Book This Batch</span>
                         </>
                       )}
