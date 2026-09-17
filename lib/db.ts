@@ -866,7 +866,7 @@ export async function getRegistrations(filters?: {
       }
 
       const { data, error } = await query;
-      if (!error && Array.isArray(data) && data.length > 0) {
+      if (!error && Array.isArray(data)) {
         return data.map(mapDbRegistration);
       }
     } catch (e) {

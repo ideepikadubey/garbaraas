@@ -1,8 +1,38 @@
 import { jsPDF } from 'jspdf';
 import { Registration } from './types';
 
-export function generateRegistrationPDF(registration: Registration): jsPDF {
-  // A4 size: 210 x 297 mm
+// Helper to convert image URL to Base64 in browser
+async function loadImageAsDataUrl(url: string): Promise<string | null> {
+  if (typeof window === 'undefined') return null;
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.crossOrigin = 'Anonymous';
+    img.onload = () => {
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.naturalWidth || img.width;
+        canvas.height = img.naturalHeight || img.height;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.drawImage(img, 0, 0);
+          resolve(canvas.toDataURL('image/png'));
+          return;
+        }
+      } catch (e) {
+        console.warn('Canvas export failed for:', url, e);
+      }
+      resolve(null);
+    };
+    img.onerror = () => resolve(null);
+    img.src = url;
+  });
+}
+
+export function generateRegistrationPDF(
+  registration: Registration,
+  logoImages?: { namoLogo?: string; tfnLogo?: string }
+): jsPDF {
+  // A4 dimensions: 210 x 297 mm
   const doc = new jsPDF({
     orientation: 'portrait',
     unit: 'mm',
@@ -11,276 +41,366 @@ export function generateRegistrationPDF(registration: Registration): jsPDF {
 
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
+  const margin = 14;
+  const contentWidth = pageWidth - margin * 2;
 
-  // 1. Page Background (Cream / Warm Parchment)
-  doc.setFillColor(253, 248, 238); // #fdf8ee
+  // 1. Clean White Background with Standard Outer Border
+  doc.setFillColor(255, 255, 255);
   doc.rect(0, 0, pageWidth, pageHeight, 'F');
 
-  // 2. Ornate Double Border in Deep Maroon and Gold
-  doc.setDrawColor(217, 166, 53); // Gold #d9a635
-  doc.setLineWidth(1.5);
-  doc.rect(8, 8, pageWidth - 16, pageHeight - 16);
-
-  doc.setDrawColor(78, 12, 28); // Deep Maroon #4e0c1c
+  // Outer border (Clean slate border)
+  doc.setDrawColor(203, 213, 225); // Slate-300
   doc.setLineWidth(0.6);
-  doc.rect(10, 10, pageWidth - 20, pageHeight - 20);
+  doc.roundedRect(margin - 4, margin - 4, contentWidth + 8, pageHeight - (margin * 2) + 8, 2, 2, 'S');
 
-  // Corner Ornaments (Gold Dots)
-  doc.setFillColor(217, 166, 53);
-  const corners = [
-    [10, 10],
-    [pageWidth - 10, 10],
-    [10, pageHeight - 10],
-    [pageWidth - 10, pageHeight - 10],
-  ];
-  corners.forEach(([x, y]) => {
-    doc.circle(x, y, 2, 'F');
-  });
+  // 2. HEADER: Logos & Clean Standard Typography
+  const headerTop = 15;
 
-  // 3. Top Banner (Deep Royal Burgundy)
-  doc.setFillColor(34, 5, 11); // #22050b
-  doc.rect(11, 11, pageWidth - 22, 42, 'F');
+  // Left: Namo Club Logo
+  if (logoImages?.namoLogo) {
+    try {
+      doc.addImage(logoImages.namoLogo, 'PNG', margin, headerTop, 20, 20);
+    } catch (e) {
+      // Fallback text monogram if image render fails
+      doc.setFillColor(254, 243, 199);
+      doc.roundedRect(margin, headerTop, 20, 20, 2, 2, 'F');
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(8);
+      doc.setTextColor(180, 83, 9);
+      doc.text('NAMO\nCLUB', margin + 10, headerTop + 9, { align: 'center' });
+    }
+  } else {
+    doc.setFillColor(254, 243, 199);
+    doc.roundedRect(margin, headerTop, 20, 20, 2, 2, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7.5);
+    doc.setTextColor(180, 83, 9);
+    doc.text('NAMO\nCLUB', margin + 10, headerTop + 9, { align: 'center' });
+  }
 
-  // Gold Trim Line under Header
-  doc.setDrawColor(217, 166, 53);
-  doc.setLineWidth(1);
-  doc.line(11, 53, pageWidth - 11, 53);
-
-  // 4. Logo Crest / Monogram (Gold Circle)
-  doc.setFillColor(217, 166, 53);
-  doc.circle(28, 32, 14, 'F');
-  doc.setFillColor(34, 5, 11);
-  doc.circle(28, 32, 12.5, 'F');
-
-  doc.setTextColor(217, 166, 53);
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(16);
-  doc.text('TFN', 28, 36, { align: 'center' });
-
-  // 5. Header Brand Typography
-  doc.setTextColor(250, 232, 176); // Light Gold #fae8b0
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(15);
-  doc.text('THE FROZEN NIGHT', 48, 23);
-
-  doc.setTextColor(230, 191, 77);
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(8.5);
-  doc.text('EVENT AND ENTERTAINMENTS • KISHANGARH, RAJASTHAN', 48, 28);
-
-  doc.setTextColor(255, 255, 255);
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(13);
-  doc.text('GARBA & DANDIYA ONE MONTH WORKSHOP', 48, 36);
-
-  doc.setTextColor(217, 166, 53);
-  doc.setFont('helvetica', 'italic');
-  doc.setFontSize(9);
-  doc.text('Workshop: 13th Sept to 11th Oct | Kishangarh', 48, 43);
-
-  // 6. Registration ID & Booking Date Ribbon
-  doc.setFillColor(247, 236, 211); // Light Cream Gold
-  doc.roundedRect(16, 58, pageWidth - 32, 20, 3, 3, 'F');
-  doc.setDrawColor(217, 166, 53);
-  doc.setLineWidth(0.5);
-  doc.roundedRect(16, 58, pageWidth - 32, 20, 3, 3, 'S');
-
-  doc.setTextColor(62, 10, 22);
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(10);
-  doc.text('REGISTRATION PASS / OFFICIAL RECEIPT', 22, 65);
-
-  doc.setTextColor(153, 28, 61);
-  doc.setFontSize(14);
-  doc.text(registration.id, 22, 73);
-
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(9);
-  doc.setTextColor(90, 70, 40);
-  doc.text(`Booking Date: ${new Date(registration.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}`, pageWidth - 22, 65, { align: 'right' });
-
-  // Status Badge
-  const isPaid = registration.paymentStatus === 'PAYMENT_VERIFIED';
-  doc.setFillColor(isPaid ? 34 : 190, isPaid ? 139 : 120, isPaid ? 34 : 20);
-  doc.roundedRect(pageWidth - 62, 68, 40, 7, 2, 2, 'F');
-  doc.setTextColor(255, 255, 255);
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(8);
-  doc.text(isPaid ? 'PAID & CONFIRMED' : 'PAYMENT SUBMITTED', pageWidth - 42, 72.8, { align: 'center' });
-
-  // 7. PARTICIPANT & WORKSHOP DETAILS GRID
-  let y = 86;
-
-  const drawSectionTitle = (title: string, yPos: number) => {
-    doc.setFillColor(78, 12, 28);
-    doc.rect(16, yPos, pageWidth - 32, 6.5, 'F');
-    doc.setTextColor(250, 232, 176);
+  // Right: TFN Logo
+  if (logoImages?.tfnLogo) {
+    try {
+      doc.addImage(logoImages.tfnLogo, 'PNG', pageWidth - margin - 20, headerTop, 20, 20);
+    } catch (e) {
+      doc.setFillColor(241, 245, 249);
+      doc.roundedRect(pageWidth - margin - 20, headerTop, 20, 20, 2, 2, 'F');
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(9);
+      doc.setTextColor(15, 23, 42);
+      doc.text('TFN', pageWidth - margin - 10, headerTop + 12, { align: 'center' });
+    }
+  } else {
+    doc.setFillColor(241, 245, 249);
+    doc.roundedRect(pageWidth - margin - 20, headerTop, 20, 20, 2, 2, 'F');
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(9);
-    doc.text(title.toUpperCase(), 20, yPos + 4.6);
-  };
-
-  // Participant Section
-  drawSectionTitle('1. Participant Details', y);
-  y += 12;
-
-  const leftColX = 20;
-  const rightColX = 110;
-
-  const addField = (label: string, value: string, x: number, yPos: number) => {
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(8.5);
-    doc.setTextColor(110, 40, 50);
-    doc.text(label, x, yPos);
-
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(9.5);
-    doc.setTextColor(30, 20, 20);
-    doc.text(value || 'N/A', x, yPos + 4.5);
-  };
-
-  addField('Participant Name:', registration.participantName, leftColX, y);
-  addField('Admission Category:', registration.categoryLabel, rightColX, y);
-  y += 11;
-
-  if (registration.fatherOrHusbandName) {
-    addField("Father's / Husband's Name:", registration.fatherOrHusbandName, leftColX, y);
-    addField('Primary Mobile:', `+91 ${registration.mobile}`, rightColX, y);
-    y += 11;
-  } else {
-    addField('Primary Mobile:', `+91 ${registration.mobile}`, leftColX, y);
-    addField('WhatsApp Number:', registration.whatsapp ? `+91 ${registration.whatsapp}` : `+91 ${registration.mobile}`, rightColX, y);
-    y += 11;
+    doc.setTextColor(15, 23, 42);
+    doc.text('TFN', pageWidth - margin - 10, headerTop + 12, { align: 'center' });
   }
 
-  addField('Age & Gender:', `${registration.age ? `${registration.age} Years` : 'N/A'} | ${registration.gender}`, leftColX, y);
-  addField('City / Address:', `${registration.city} ${registration.address ? `(${registration.address})` : ''}`, rightColX, y);
-  y += 11;
-
-  if (registration.isKids && registration.guardianName) {
-    addField('Guardian / Parent:', registration.guardianName, leftColX, y);
-    addField('Guardian Contact:', registration.guardianPhone ? `+91 ${registration.guardianPhone}` : 'N/A', rightColX, y);
-    y += 11;
-  }
-
-  if (registration.isGroup) {
-    const membersSummary = registration.groupMembers && registration.groupMembers.length > 0
-      ? registration.groupMembers.map((m, i) => `${i + 1}. ${m.name}`).join(', ')
-      : `${registration.membersCount} Participants`;
-    addField('Group Leader:', registration.groupLeaderName || registration.participantName, leftColX, y);
-    addField('Group Members:', membersSummary.length > 40 ? `${membersSummary.substring(0, 37)}...` : membersSummary, rightColX, y);
-    y += 11;
-  }
-
-  // Workshop & Slot Section
-  y += 2;
-  drawSectionTitle('2. Workshop Location & Batch Slot', y);
-  y += 12;
-
-  addField('Assigned Location:', registration.locationName, leftColX, y);
-  addField('Batch Timing:', registration.batchTime, rightColX, y);
-  y += 12;
-
-  addField('Workshop Duration:', registration.workshopDate, leftColX, y);
-  addField('Choreography By:', 'Manish & Neel Sir (TFN Academy)', rightColX, y);
-  y += 14;
-
-  // 8. Payment & Inclusions Section
-  drawSectionTitle('3. Payment & Fee Summary', y);
-  y += 11;
-
-  doc.setFillColor(255, 255, 255);
-  doc.setDrawColor(217, 166, 53);
-  doc.setLineWidth(0.4);
-  doc.rect(16, y, pageWidth - 32, 28, 'FD');
+  // Center Brand Header
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(13);
+  doc.setTextColor(15, 23, 42); // Slate-900
+  doc.text('NAMO CLUB KISHANGARH', pageWidth / 2, headerTop + 4, { align: 'center' });
 
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(8.5);
-  doc.setTextColor(80, 80, 80);
-  doc.text('Fee per Participant:', 22, y + 6);
-  doc.text('Participants Count:', 22, y + 12);
-  doc.text('Transaction / UTR Number:', 22, y + 18);
-  doc.text('Payment Status:', 22, y + 24);
+  doc.setTextColor(71, 85, 105); // Slate-600
+  doc.text('Co Powered By The Frozen Night Event and Entertainment', pageWidth / 2, headerTop + 9, { align: 'center' });
 
   doc.setFont('helvetica', 'bold');
-  doc.setTextColor(30, 20, 20);
-  doc.text(`₹${registration.feePerPerson}`, 80, y + 6);
-  doc.text(`${registration.membersCount || 1}`, 80, y + 12);
-  doc.text(registration.utrNumber || 'To be reconciled', 80, y + 18);
-  doc.setTextColor(isPaid ? 34 : 180, isPaid ? 139 : 100, isPaid ? 34 : 20);
-  doc.text(isPaid ? 'VERIFIED & RECEIVED' : 'SUBMITTED FOR RECONCILIATION', 80, y + 24);
+  doc.setFontSize(11);
+  doc.setTextColor(190, 24, 93); // Rose-700 / Garba Pink
+  doc.text('GARBA RAAS DANDIYA MAHOTSAV 2026', pageWidth / 2, headerTop + 15, { align: 'center' });
 
-  // Total Amount Box
-  doc.setFillColor(34, 5, 11);
-  doc.rect(pageWidth - 75, y + 2, 55, 24, 'F');
-  doc.setTextColor(250, 232, 176);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(8);
+  doc.setTextColor(100, 116, 139); // Slate-500
+  doc.text('Official Registration Pass & Payment Receipt', pageWidth / 2, headerTop + 19.5, { align: 'center' });
+
+  // Top Divider Line
+  doc.setDrawColor(226, 232, 240);
+  doc.setLineWidth(0.4);
+  doc.line(margin, headerTop + 24, pageWidth - margin, headerTop + 24);
+
+  // 3. REGISTRATION META STRIP
+  let y = headerTop + 28;
+
+  doc.setFillColor(248, 250, 252); // Slate-50
+  doc.setDrawColor(226, 232, 240);
+  doc.setLineWidth(0.3);
+  doc.roundedRect(margin, y, contentWidth, 16, 1.5, 1.5, 'FD');
+
+  // Registration ID
   doc.setFont('helvetica', 'bold');
-  doc.setFontSize(8.5);
-  doc.text('TOTAL AMOUNT PAID', pageWidth - 47.5, y + 8, { align: 'center' });
-  doc.setFontSize(14);
-  doc.setTextColor(255, 255, 255);
-  doc.text(`₹${registration.totalAmount}`, pageWidth - 47.5, y + 18, { align: 'center' });
+  doc.setFontSize(7.5);
+  doc.setTextColor(100, 116, 139);
+  doc.text('REGISTRATION ID', margin + 5, y + 5.5);
 
-  y += 34;
-
-  // 9. Free Family Pass Golden Highlight Box (Strict Requirement from Poster)
-  doc.setFillColor(255, 248, 225); // Gold Warm Glow
-  doc.setDrawColor(217, 166, 53);
-  doc.setLineWidth(0.8);
-  doc.roundedRect(16, y, pageWidth - 32, 15, 2, 2, 'FD');
-
-  doc.setTextColor(140, 90, 15);
   doc.setFont('helvetica', 'bold');
-  doc.setFontSize(10);
-  doc.text('★ SPECIAL COMPLIMENTARY BENEFIT ★', pageWidth / 2, y + 5.5, { align: 'center' });
+  doc.setFontSize(11);
+  doc.setTextColor(15, 23, 42);
+  doc.text(registration.id, margin + 5, y + 12);
 
-  doc.setTextColor(78, 12, 28);
-  doc.setFontSize(10.5);
-  doc.text('EVERY PARTICIPANT GETS A FREE FAMILY PASS FOR ONE DAY', pageWidth / 2, y + 11.5, { align: 'center' });
+  // Booking Date
+  const bookingDateStr = registration.createdAt
+    ? new Date(registration.createdAt).toLocaleDateString('en-IN', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+      })
+    : new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
 
-  y += 20;
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(7.5);
+  doc.setTextColor(100, 116, 139);
+  doc.text('DATE ISSUED', pageWidth / 2 - 10, y + 5.5);
 
-  // 10. Important Guidelines / Instructions
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9.5);
+  doc.setTextColor(30, 41, 59);
+  doc.text(bookingDateStr, pageWidth / 2 - 10, y + 12);
+
+  // Status Badge Pill
+  const isPaid = registration.paymentStatus === 'PAYMENT_VERIFIED';
+  doc.setFillColor(isPaid ? 240 : 254, isPaid ? 253 : 242, isPaid ? 244 : 242);
+  doc.setDrawColor(isPaid ? 74 : 234, isPaid ? 222 : 179, isPaid ? 128 : 8);
+  doc.setLineWidth(0.4);
+  doc.roundedRect(pageWidth - margin - 48, y + 4, 43, 8, 1, 1, 'FD');
+
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(8);
-  doc.setTextColor(90, 20, 30);
-  doc.text('IMPORTANT GUIDELINES FOR PARTICIPANTS:', 16, y);
+  doc.setTextColor(isPaid ? 21 : 161, isPaid ? 128 : 98, isPaid ? 61 : 7);
+  doc.text(isPaid ? '✓ PAYMENT VERIFIED' : '● PAYMENT SUBMITTED', pageWidth - margin - 26.5, y + 9.5, {
+    align: 'center',
+  });
+
+  y += 21;
+
+  // Section Header Function
+  const renderSectionHeader = (title: string, yPos: number) => {
+    doc.setFillColor(241, 245, 249);
+    doc.rect(margin, yPos, contentWidth, 6, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    doc.setTextColor(30, 41, 59);
+    doc.text(title.toUpperCase(), margin + 3, yPos + 4.2);
+  };
+
+  // 4. PARTICIPANT & WORKSHOP DETAILS
+  renderSectionHeader('1. Participant & Workshop Details', y);
+  y += 8;
+
+  const col1X = margin + 3;
+  const col2X = margin + contentWidth / 2 + 3;
+
+  const renderField = (label: string, value: string, xPos: number, yPos: number) => {
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7.5);
+    doc.setTextColor(100, 116, 139);
+    doc.text(label, xPos, yPos);
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.setTextColor(15, 23, 42);
+    doc.text(value || 'N/A', xPos, yPos + 4.5);
+  };
+
+  renderField('Participant Name', registration.participantName, col1X, y);
+  renderField('Admission Category', registration.categoryLabel, col2X, y);
+  y += 10.5;
+
+  if (registration.fatherOrHusbandName) {
+    renderField("Father's / Husband's Name", registration.fatherOrHusbandName, col1X, y);
+    renderField('Primary Mobile', `+91 ${registration.mobile}`, col2X, y);
+    y += 10.5;
+  } else {
+    renderField('Primary Mobile', `+91 ${registration.mobile}`, col1X, y);
+    renderField('WhatsApp', registration.whatsapp ? `+91 ${registration.whatsapp}` : `+91 ${registration.mobile}`, col2X, y);
+    y += 10.5;
+  }
+
+  renderField('Age & Gender', `${registration.age ? `${registration.age} Yrs` : 'N/A'} • ${registration.gender || 'Female'}`, col1X, y);
+  renderField('City / Address', `${registration.city || 'Kishangarh'} ${registration.address ? `(${registration.address})` : ''}`, col2X, y);
+  y += 10.5;
+
+  renderField('Assigned Hall Location', registration.locationName, col1X, y);
+  renderField('Batch Timing', registration.batchTime, col2X, y);
+  y += 10.5;
+
+  renderField('Workshop Duration', registration.workshopDate || 'Workshop Schedule', col1X, y);
+  renderField('Instructors / Mentors', 'Neel Sir & Manish Sir (TFN)', col2X, y);
+  y += 11;
+
+  // Guardian details if kids
+  if (registration.isKids && registration.guardianName) {
+    renderField('Parent / Guardian', `${registration.guardianName} (${registration.guardianPhone ? `+91 ${registration.guardianPhone}` : ''})`, col1X, y);
+    y += 10;
+  }
+
+  // Group members if group registration
+  if (registration.isGroup && registration.groupMembers && registration.groupMembers.length > 0) {
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7.5);
+    doc.setTextColor(100, 116, 139);
+    doc.text(`Enrolled Group Members (${registration.membersCount} Participants):`, col1X, y);
+    y += 4;
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(30, 41, 59);
+    const membersList = registration.groupMembers
+      .slice(0, 10)
+      .map((m, idx) => `${idx + 1}. ${m.name || 'Member'} ${m.mobile ? `(+91 ${m.mobile})` : ''}`)
+      .join('  •  ');
+    doc.text(membersList, col1X, y, { maxWidth: contentWidth - 6 });
+    y += 7;
+  }
+
+  y += 2;
+
+  // 5. PAYMENT & ACCOUNTING SUMMARY TABLE
+  renderSectionHeader('2. Payment & Fee Statement', y);
+  y += 8;
+
+  // Table Box
+  const tableY = y;
+  const tableHeight = 26;
+  doc.setFillColor(255, 255, 255);
+  doc.setDrawColor(226, 232, 240);
+  doc.setLineWidth(0.3);
+  doc.rect(margin, tableY, contentWidth, tableHeight, 'FD');
+
+  // Table Row Separator
+  doc.line(margin, tableY + 6, margin + contentWidth, tableY + 6);
+
+  // Table Headers
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(7.5);
+  doc.setTextColor(71, 85, 105);
+  doc.text('DESCRIPTION', margin + 4, tableY + 4.2);
+  doc.text('FEE / PERSON', margin + 95, tableY + 4.2);
+  doc.text('QTY', margin + 125, tableY + 4.2);
+  doc.text('AMOUNT', margin + contentWidth - 4, tableY + 4.2, { align: 'right' });
+
+  // Table Data Row
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(8.5);
+  doc.setTextColor(15, 23, 42);
+  doc.text(`${registration.categoryLabel}`, margin + 4, tableY + 11.5);
+  doc.text(`₹${registration.feePerPerson}`, margin + 95, tableY + 11.5);
+  doc.text(`${registration.membersCount || 1}`, margin + 125, tableY + 11.5);
+
+  doc.setFont('helvetica', 'bold');
+  doc.text(`₹${registration.totalAmount}`, margin + contentWidth - 4, tableY + 11.5, { align: 'right' });
+
+  // Payment Reference Sub-line
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(7.5);
+  doc.setTextColor(100, 116, 139);
+  const paymentRef = registration.utrNumber
+    ? `Transaction / Reference ID: ${registration.utrNumber}`
+    : 'Payment Mode: Online Payment Gateway / UPI';
+  doc.text(paymentRef, margin + 4, tableY + 17.5);
+
+  // Total Summary Pill
+  doc.setDrawColor(203, 213, 225);
+  doc.line(margin, tableY + 20, margin + contentWidth, tableY + 20);
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(8);
+  doc.setTextColor(71, 85, 105);
+  doc.text('TOTAL PAID:', margin + 95, tableY + 24.2);
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(10);
+  doc.setTextColor(190, 24, 93);
+  doc.text(`₹${registration.totalAmount}`, margin + contentWidth - 4, tableY + 24.2, { align: 'right' });
+
+  y += tableHeight + 6;
+
+  // 6. FREE FAMILY PASS COMPLIMENTARY BOX
+  doc.setFillColor(254, 243, 199); // Amber-100 warm gold
+  doc.setDrawColor(245, 158, 11);
+  doc.setLineWidth(0.4);
+  doc.roundedRect(margin, y, contentWidth, 12, 1.5, 1.5, 'FD');
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(8);
+  doc.setTextColor(146, 64, 14); // Amber-800
+  doc.text('★ SPECIAL COMPLIMENTARY INCLUSION ★', pageWidth / 2, y + 4.5, { align: 'center' });
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(8.5);
+  doc.setTextColor(15, 23, 42);
+  doc.text('THIS PASS INCLUDES 1-DAY FREE FAMILY PASS FOR GRAND FINALE CELEBRATIONS', pageWidth / 2, y + 9, {
+    align: 'center',
+  });
+
+  y += 17;
+
+  // 7. IMPORTANT GUIDELINES
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(8);
+  doc.setTextColor(15, 23, 42);
+  doc.text('IMPORTANT GUIDELINES & INSTRUCTIONS:', margin, y);
   y += 4.5;
 
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(7.5);
-  doc.setTextColor(70, 70, 70);
+  doc.setTextColor(71, 85, 105);
   const guidelines = [
-    '• Please present this digital or printed pass along with your Registration ID at the studio entrance.',
-    '• Please arrive 10 minutes prior to your allocated batch time in comfortable traditional/dance attire.',
-    '• All participants qualify for TFN Competition Rounds scheduled for 18th October in Kishangarh.',
-    '• For slot changes or questions, contact TFN Helpdesk: 843 222 3222 / 838 596 9285.',
+    '1. Please carry this digital or printed pass along with your Registration ID at the studio entrance.',
+    '2. Arrive 10 minutes prior to your allocated batch time in comfortable traditional or dance attire.',
+    '3. All registered workshop participants qualify for entry in the Grand Garba Competitions on 18th & 19th October.',
+    '4. For slot adjustments, support, or batch queries, contact TFN Helpline: 8385969285 / 8432223222.',
   ];
+
   guidelines.forEach((g) => {
-    doc.text(g, 16, y);
+    doc.text(g, margin, y);
     y += 4;
   });
 
-  // 11. Footer with Brand Signature and Tagline
-  const footerY = pageHeight - 20;
-  doc.setDrawColor(217, 166, 53);
+  // 8. FOOTER: VERIFICATION & HELPLINE
+  const footerY = pageHeight - margin - 4;
+  doc.setDrawColor(226, 232, 240);
   doc.setLineWidth(0.4);
-  doc.line(16, footerY - 2, pageWidth - 16, footerY - 2);
+  doc.line(margin, footerY - 3, pageWidth - margin, footerY - 3);
 
-  doc.setTextColor(217, 166, 53);
   doc.setFont('helvetica', 'bold');
-  doc.setFontSize(9);
-  doc.text('Dance  |  Learn  |  Grow  |  Together', pageWidth / 2, footerY + 3, { align: 'center' });
+  doc.setFontSize(7.5);
+  doc.setTextColor(15, 23, 42);
+  doc.text('Organized by: Namo Club Kishangarh & The Frozen Night (TFN)', margin, footerY + 1.5);
 
-  doc.setTextColor(120, 100, 100);
   doc.setFont('helvetica', 'normal');
-  doc.setFontSize(7);
-  doc.text('The Frozen Night - Event and Entertainment • Kishangarh, Rajasthan • Helpline: +91 8385969285', pageWidth / 2, footerY + 7.5, { align: 'center' });
+  doc.setFontSize(7.5);
+  doc.setTextColor(71, 85, 105);
+  doc.text('Helpline: +91 8385969285 (Neel Sir) • +91 8432223222 (Manish Sir)', pageWidth - margin, footerY + 1.5, {
+    align: 'right',
+  });
 
   return doc;
 }
 
-export function downloadRegistrationReceipt(registration: Registration) {
-  const doc = generateRegistrationPDF(registration);
+export async function downloadRegistrationReceipt(registration: Registration) {
+  let namoLogo: string | null = null;
+  let tfnLogo: string | null = null;
+
+  try {
+    [namoLogo, tfnLogo] = await Promise.all([
+      loadImageAsDataUrl('/images/namo-club-logo.png'),
+      loadImageAsDataUrl('/images/TFN.png'),
+    ]);
+  } catch (e) {
+    console.warn('Could not preload logos for PDF, using standard vector badges fallback:', e);
+  }
+
+  const doc = generateRegistrationPDF(registration, {
+    namoLogo: namoLogo || undefined,
+    tfnLogo: tfnLogo || undefined,
+  });
+
   doc.save(`TFN_Receipt_${registration.id}.pdf`);
 }
