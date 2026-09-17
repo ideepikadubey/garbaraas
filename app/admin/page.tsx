@@ -84,10 +84,10 @@ export default function AdminPage() {
       setLoadingSlots(true);
 
       const [metricsRes, regsRes, slotsRes, settingsRes] = await Promise.all([
-        fetch('/api/admin/metrics'),
-        fetch('/api/registrations'),
-        fetch('/api/slots'),
-        fetch('/api/admin/settings'),
+        fetch('/api/admin/metrics', { cache: 'no-store' }),
+        fetch('/api/registrations', { cache: 'no-store' }),
+        fetch('/api/slots', { cache: 'no-store' }),
+        fetch('/api/admin/settings', { cache: 'no-store' }),
       ]);
 
       const metricsData = await metricsRes.json();

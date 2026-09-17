@@ -867,7 +867,16 @@ export async function getRegistrations(filters?: {
 
       const { data, error } = await query;
       if (!error && Array.isArray(data)) {
-        return data.map(mapDbRegistration);
+        const mapped = data.map(mapDbRegistration);
+        // Sync local memory and cache file when clean fetch occurs
+        if (!filters || (!filters.search && (!filters.category || filters.category === 'ALL') && (!filters.location || filters.location === 'ALL') && (!filters.paymentStatus || filters.paymentStatus === 'ALL'))) {
+          executeWithLock(() => {
+            const db = ensureDbFile();
+            db.registrations = mapped;
+            writeDbFile(db);
+          });
+        }
+        return mapped;
       }
     } catch (e) {
       console.warn('Supabase getRegistrations fallback:', e);
