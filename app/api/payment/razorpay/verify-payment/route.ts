@@ -21,7 +21,9 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: 'Registration record not found' }, { status: 404 });
     }
 
-    const keySecret = process.env.RAZORPAY_KEY_SECRET;
+    const keySecret =
+      process.env.RAZORPAY_KEY_SECRET ||
+      process.env.PAYMENT_GATEWAY_SECRET;
 
     // In real mode, verify cryptographic signature
     if (!isSimulated && keySecret && razorpay_order_id && razorpay_signature) {

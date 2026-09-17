@@ -15,8 +15,14 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: 'Registration record not found' }, { status: 404 });
     }
 
-    const keyId = process.env.RAZORPAY_KEY_ID || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
-    const keySecret = process.env.RAZORPAY_KEY_SECRET;
+    const keyId =
+      process.env.RAZORPAY_KEY_ID ||
+      process.env.PAYMENT_GATEWAY_KEY ||
+      process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID ||
+      process.env.NEXT_PUBLIC_PAYMENT_GATEWAY_KEY;
+    const keySecret =
+      process.env.RAZORPAY_KEY_SECRET ||
+      process.env.PAYMENT_GATEWAY_SECRET;
 
     // If Razorpay keys are not configured yet, offer a simulated dev test order or inform user
     if (!keyId || !keySecret) {
