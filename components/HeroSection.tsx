@@ -81,7 +81,8 @@ export default function HeroSection({ onOpenRegister }: HeroSectionProps) {
           playsInline
           className="w-full h-full object-cover opacity-75 filter saturate-125 brightness-105"
         >
-          <source src="/GARBA.mp4" type="video/mp4" />
+          <source src="/Garba%20Event%20Video.mp4" type="video/mp4" />
+          <source src="/Garba Event Video.mp4" type="video/mp4" />
         </video>
         {/* Soft Contrast Gradient Layer */}
         <div className="absolute inset-0 bg-gradient-to-b from-slate-950/85 via-slate-950/60 to-slate-950/90 backdrop-blur-[0.5px]"></div>
