@@ -57,11 +57,11 @@ export default function SpecialWorkshopsSection({
             <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 sm:gap-3 text-xs">
               <span className="px-3.5 py-1.5 rounded-full bg-pink-600/30 border border-pink-400 text-pink-200 font-bold flex items-center gap-1.5 shadow-sm">
                 <Sparkles className="w-3.5 h-3.5 text-yellow-300 animate-pulse" />
-                <span>Girls Special (15 Days): <strong>₹1500</strong></span>
+                <span>Girls Special (26 Sep–11 Oct): <strong>₹1500</strong></span>
               </span>
               <span className="px-3.5 py-1.5 rounded-full bg-blue-600/30 border border-blue-400 text-cyan-200 font-bold flex items-center gap-1.5 shadow-sm">
                 <Flame className="w-3.5 h-3.5 text-yellow-300" />
-                <span>Boys Dandiya (10 Days): <strong>₹1100</strong></span>
+                <span>Boys Dandiya (27 Sep–11 Oct): <strong>₹1500</strong></span>
               </span>
             </div>
 
@@ -72,7 +72,7 @@ export default function SpecialWorkshopsSection({
                 className="flex-1 sm:flex-none py-3 px-5 rounded-xl bg-gradient-to-r from-pink-600 via-rose-500 to-amber-500 text-white font-black text-xs sm:text-sm shadow-md hover:scale-[1.02] active:scale-95 transition flex items-center justify-center gap-1.5 cursor-pointer ring-1 ring-pink-300"
               >
                 <Sparkles className="w-4 h-4 text-yellow-300" />
-                <span>BOOK GIRLS WORKSHOP (₹1500)</span>
+                <span>BOOK GIRLS (26 SEP - 11 OCT • ₹1500)</span>
               </button>
 
               <button
@@ -80,7 +80,7 @@ export default function SpecialWorkshopsSection({
                 className="flex-1 sm:flex-none py-3 px-5 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 text-white font-black text-xs sm:text-sm shadow-md hover:scale-[1.02] active:scale-95 transition flex items-center justify-center gap-1.5 cursor-pointer ring-1 ring-cyan-300"
               >
                 <Sparkles className="w-4 h-4 text-yellow-300" />
-                <span>BOOK BOYS DANDIYA (₹1100)</span>
+                <span>BOOK BOYS (27 SEP - 11 OCT • ₹1500)</span>
               </button>
             </div>
           </div>

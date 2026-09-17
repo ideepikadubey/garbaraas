@@ -245,10 +245,10 @@ export default function PricingSection({ onSelectCategory }: PricingSectionProps
 
               <div className="my-5 pb-3 border-b border-slate-100">
                 <div className="flex items-baseline gap-1">
-                  <span className="text-3xl sm:text-4xl font-serif font-black text-blue-600">₹1100</span>
-                  <span className="text-xs font-semibold text-slate-500">/ 10 Days</span>
+                  <span className="text-3xl sm:text-4xl font-serif font-black text-blue-600">₹1500</span>
+                  <span className="text-xs font-semibold text-slate-500">/ 15 Days</span>
                 </div>
-                <p className="text-[11px] text-blue-700 mt-1 font-bold">Starts 22nd Sept • 22 Sep - 2 Oct</p>
+                <p className="text-[11px] text-blue-700 mt-1 font-bold">Starts 27th Sept • 27 Sep - 11 Oct</p>
               </div>
 
               <ul className="space-y-2.5 text-xs text-slate-700 font-medium mb-6">
@@ -262,7 +262,7 @@ export default function PricingSection({ onSelectCategory }: PricingSectionProps
                 </li>
                 <li className="flex items-start gap-2">
                   <Check className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
-                  <span>10-Day Masterclass (22 Sept – 2 Oct)</span>
+                  <span>15-Day Masterclass (27 Sept – 11 Oct)</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <Check className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
@@ -275,7 +275,7 @@ export default function PricingSection({ onSelectCategory }: PricingSectionProps
               onClick={() => onSelectCategory('BOYS_DANDIYA')}
               className="w-full py-2.5 px-3 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 text-white font-black text-xs sm:text-sm shadow-md hover:scale-[1.02] active:scale-95 transition cursor-pointer"
             >
-              Register Boys (₹1100)
+              Register Boys (₹1500)
             </button>
           </div>
 

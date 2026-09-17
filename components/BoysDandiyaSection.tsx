@@ -55,7 +55,7 @@ export default function BoysDandiyaSection({
               </div>
 
               <h3 className="text-xl sm:text-2xl md:text-3xl font-serif font-bold text-white leading-snug">
-                10-Day Intensive Dandiya Masterclass
+                15-Day Intensive Dandiya Masterclass
               </h3>
 
               <p className="text-xs sm:text-sm text-amber-100/80 leading-relaxed font-normal">
@@ -71,8 +71,8 @@ export default function BoysDandiyaSection({
                   </div>
                   <div>
                     <div className="text-xs font-bold text-white uppercase tracking-wider">Dates & Batch</div>
-                    <div className="text-xs sm:text-sm text-yellow-300 font-bold">Starts 22nd September</div>
-                    <div className="text-[11px] text-amber-200/70">Batch: 22nd Sept to 2nd Oct</div>
+                    <div className="text-xs sm:text-sm text-yellow-300 font-bold">Starts 27th September</div>
+                    <div className="text-[11px] text-amber-200/70">Batch: 27th Sept to 11th Oct</div>
                   </div>
                 </div>
 
@@ -104,7 +104,7 @@ export default function BoysDandiyaSection({
                   </div>
                   <div>
                     <div className="text-xs font-bold text-white uppercase tracking-wider">Girls Special Batch</div>
-                    <div className="text-xs sm:text-sm text-yellow-300 font-bold">25 Sep to 11 Oct</div>
+                    <div className="text-xs sm:text-sm text-yellow-300 font-bold">26 Sep to 11 Oct</div>
                     <div className="text-[11px] text-amber-200/70">For Females Only (Special Workshop)</div>
                   </div>
                 </div>
@@ -121,12 +121,12 @@ export default function BoysDandiyaSection({
               </div>
 
               <div className="flex items-baseline justify-center gap-1.5 my-2">
-                <span className="text-4xl sm:text-6xl font-serif font-black garba-gradient-text">₹1100</span>
-                <span className="text-xs sm:text-sm font-bold text-amber-200">/ 10 Days</span>
+                <span className="text-4xl sm:text-6xl font-serif font-black garba-gradient-text">₹1500</span>
+                <span className="text-xs sm:text-sm font-bold text-amber-200">/ 15 Days</span>
               </div>
 
               <p className="text-xs text-amber-200/80 font-medium max-w-xs mb-6">
-                All-inclusive fee for 10-day intensive training & eligibility for the Grand Finale celebration.
+                All-inclusive fee for 15-day intensive training & eligibility for the Grand Finale celebration.
               </p>
 
               <div className="w-full space-y-3">
@@ -135,7 +135,7 @@ export default function BoysDandiyaSection({
                   className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-950 font-black text-sm shadow-lg shadow-amber-500/30 ring-2 ring-amber-300 hover:scale-[1.02] transition-all flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <Sparkles className="w-4 h-4 text-stone-950" />
-                  <span>ENROLL FOR BOYS DANDIYA (₹1100)</span>
+                  <span>ENROLL FOR BOYS DANDIYA (₹1500)</span>
                   <ChevronRight className="w-4 h-4 text-stone-950" />
                 </button>
 

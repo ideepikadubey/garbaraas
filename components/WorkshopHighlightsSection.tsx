@@ -28,11 +28,11 @@ export default function WorkshopHighlightsSection({
               NEW BATCHES OPEN
             </span>
             <span className="text-sm sm:text-base font-bold text-white">
-              Boys Dandiya (22 Sep–2 Oct • <strong className="text-emerald-400 font-extrabold">₹1100</strong>)
+              Boys Dandiya (27 Sep–11 Oct • <strong className="text-emerald-400 font-extrabold">₹1500</strong>)
             </span>
             <span className="text-slate-600 hidden sm:inline">•</span>
             <span className="text-sm sm:text-base font-bold text-white">
-              Girls Fast-Track (25 Sep–11 Oct • <strong className="text-pink-400 font-extrabold">₹1500</strong>)
+              Girls Fast-Track (26 Sep–11 Oct • <strong className="text-pink-400 font-extrabold">₹1500</strong>)
             </span>
           </div>
 

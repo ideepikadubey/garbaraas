@@ -115,10 +115,10 @@ export async function POST(req: Request) {
 
     if (category === 'FEMALE_15DAY') {
       feePerPerson = 1500;
-      categoryLabel = 'Special Girls Garba (25 Sep–11 Oct)';
+      categoryLabel = 'Special Girls Garba (26 Sep–11 Oct)';
     } else if (category === 'BOYS_DANDIYA') {
-      feePerPerson = settings.priceBoysDandiya || 1100;
-      categoryLabel = 'Boys Dandiya Workshop (22 Sep–2 Oct)';
+      feePerPerson = settings.priceBoysDandiya || 1500;
+      categoryLabel = 'Boys Dandiya Workshop (27 Sep–11 Oct)';
     } else if (category === 'KIDS') {
       feePerPerson = settings.priceKids; // 2000
       categoryLabel = 'Kids Girls (7–16 Years)';
