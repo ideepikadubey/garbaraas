@@ -15,14 +15,19 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: 'Registration record not found' }, { status: 404 });
     }
 
-    const keyId =
+    const keyId = (
       process.env.RAZORPAY_KEY_ID ||
       process.env.PAYMENT_GATEWAY_KEY ||
       process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID ||
-      process.env.NEXT_PUBLIC_PAYMENT_GATEWAY_KEY;
-    const keySecret =
+      process.env.NEXT_PUBLIC_PAYMENT_GATEWAY_KEY ||
+      ''
+    ).trim();
+
+    const keySecret = (
       process.env.RAZORPAY_KEY_SECRET ||
-      process.env.PAYMENT_GATEWAY_SECRET;
+      process.env.PAYMENT_GATEWAY_SECRET ||
+      ''
+    ).trim();
 
     // If Razorpay keys are not configured yet, offer a simulated dev test order or inform user
     if (!keyId || !keySecret) {
@@ -31,7 +36,7 @@ export async function POST(req: Request) {
         success: true,
         isSimulated: true,
         orderId: `order_sim_${Date.now()}`,
-        amount: reg.totalAmount * 100,
+        amount: (Number(reg.totalAmount) || 1500) * 100,
         currency: 'INR',
         keyId: 'rzp_test_simulated',
         registration: reg,
@@ -44,16 +49,18 @@ export async function POST(req: Request) {
       key_secret: keySecret,
     });
 
+    const parsedAmount = Math.max(100, Math.round(Number(reg.totalAmount || 1500) * 100)); // amount in paise
+
     const options = {
-      amount: Math.round(reg.totalAmount * 100), // amount in paise
+      amount: parsedAmount,
       currency: 'INR',
-      receipt: reg.id,
+      receipt: String(reg.id || `rec_${Date.now()}`).substring(0, 40),
       notes: {
-        registrationId: reg.id,
-        participantName: reg.participantName,
-        mobile: reg.mobile,
-        category: reg.category,
-        slotId: reg.slotId,
+        registrationId: String(reg.id || ''),
+        participantName: String(reg.participantName || ''),
+        mobile: String(reg.mobile || ''),
+        category: String(reg.category || ''),
+        slotId: String(reg.slotId || ''),
       },
     };
 
@@ -70,6 +77,12 @@ export async function POST(req: Request) {
     });
   } catch (error: any) {
     console.error('Razorpay create-order error:', error);
-    return NextResponse.json({ success: false, error: error.message || 'Error creating Razorpay order' }, { status: 500 });
+    const errorMsg =
+      error?.error?.description ||
+      error?.description ||
+      error?.message ||
+      (typeof error === 'string' ? error : 'Error creating Razorpay order');
+
+    return NextResponse.json({ success: false, error: errorMsg }, { status: 500 });
   }
 }

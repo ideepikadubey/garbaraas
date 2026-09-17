@@ -21,9 +21,11 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: 'Registration record not found' }, { status: 404 });
     }
 
-    const keySecret =
+    const keySecret = (
       process.env.RAZORPAY_KEY_SECRET ||
-      process.env.PAYMENT_GATEWAY_SECRET;
+      process.env.PAYMENT_GATEWAY_SECRET ||
+      ''
+    ).trim();
 
     // In real mode, verify cryptographic signature
     if (!isSimulated && keySecret && razorpay_order_id && razorpay_signature) {
@@ -61,6 +63,11 @@ export async function POST(req: Request) {
     });
   } catch (error: any) {
     console.error('Razorpay verify-payment error:', error);
-    return NextResponse.json({ success: false, error: error.message || 'Payment verification failed' }, { status: 500 });
+    const errorMsg =
+      error?.error?.description ||
+      error?.description ||
+      error?.message ||
+      'Payment verification failed';
+    return NextResponse.json({ success: false, error: errorMsg }, { status: 500 });
   }
 }

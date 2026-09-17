@@ -19,30 +19,29 @@ export default function Navbar({ onOpenRegister, onOpenLookup }: NavbarProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14 sm:h-16">
           
-          {/* Logo & Brand - Equal Sized Logos with Clean Alignment */}
-          <div className="flex items-center gap-2 sm:gap-2.5">
-            <div className="flex items-center gap-1.5 flex-shrink-0">
-              <img
-                src="/images/namo-club-logo.png"
-                alt="Namo Club Logo"
-                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-contain border border-amber-300 ring-2 ring-pink-100 shadow-xs"
-              />
-              <img
-                src="/images/TFN.png"
-                alt="TFN Logo"
-                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-contain"
-              />
+          {/* Logo & Brand - Perfectly Balanced & Equal Sized Logos */}
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden flex items-center justify-center bg-white border border-slate-200 shadow-xs p-0.5">
+                <img
+                  src="/images/namo-club-logo.png"
+                  alt="Namo Club Logo"
+                  className="w-full h-full object-contain rounded-full"
+                />
+              </div>
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden flex items-center justify-center bg-white border border-slate-200 shadow-xs p-0.5">
+                <img
+                  src="/images/TFN.png"
+                  alt="TFN Logo"
+                  className="w-full h-full object-contain rounded-full"
+                />
+              </div>
             </div>
             <div>
-              <div className="flex items-center gap-1.5 sm:gap-2">
-                <h1 className="text-xs min-[360px]:text-sm sm:text-base md:text-lg font-heading font-black text-slate-900 tracking-tight leading-tight">
-                  THE FROZEN NIGHT
-                </h1>
-                <span className="hidden sm:inline-block px-2 py-0.5 rounded-full bg-pink-50 border border-pink-200 text-[10px] uppercase font-bold text-pink-700 tracking-wider">
-                  Kishangarh
-                </span>
-              </div>
-              <p className="text-[9px] min-[360px]:text-[10px] sm:text-[11px] text-slate-500 font-medium tracking-wide">
+              <h1 className="text-sm min-[360px]:text-base sm:text-lg md:text-xl font-heading font-black text-slate-900 tracking-tight leading-tight">
+                THE FROZEN NIGHT
+              </h1>
+              <p className="text-[9px] min-[360px]:text-[10px] sm:text-xs text-slate-500 font-semibold tracking-wide">
                 Garba Raas Dandiya Mahotsav 2026
               </p>
             </div>

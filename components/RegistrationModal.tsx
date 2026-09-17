@@ -1681,7 +1681,7 @@ export default function RegistrationModal({
                   )}
                   <div className="flex justify-between text-base font-bold text-stone-950 pt-2 border-t border-stone-200">
                     <span>Total Payable Amount:</span>
-                    <span className="text-2xl font-serif font-black text-amber-800">₹{total}</span>
+                    <span className="text-2xl font-sans font-black text-pink-600 tracking-tight">₹{total}</span>
                   </div>
                 </div>
               </div>
@@ -1692,85 +1692,51 @@ export default function RegistrationModal({
           {step === 5 && (
             <div className="space-y-4">
               <div className="text-center mb-2">
-                <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-emerald-50 border border-emerald-300 text-[11px] text-emerald-900 font-bold mb-1">
-                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>Slot Temporarily Reserved (ID: {createdRegistration?.id})</span>
-                </div>
-                <h4 className="text-xl font-serif font-black text-stone-950">
+                <h4 className="text-xl font-heading font-black text-slate-900">
                   Complete Online Payment
                 </h4>
-                <p className="text-xs text-stone-600 font-medium">
-                  Total Amount Payable: <strong className="text-amber-800 font-black text-base">₹{total}</strong>
+                <p className="text-xs text-slate-500 font-medium mt-1">
+                  Registration ID: <span className="font-mono font-bold text-slate-900">{createdRegistration?.id}</span>
                 </p>
               </div>
 
-              {/* Razorpay Instant Payment Card */}
-              <div className="p-4 sm:p-6 rounded-2xl bg-white border-2 border-amber-300 shadow-md space-y-4">
-                <div className="flex items-center justify-between pb-3 border-b border-stone-100">
+              {/* Minimal & Clean Payment Card */}
+              <div className="p-5 sm:p-7 rounded-2xl bg-white border-2 border-slate-200 shadow-lg space-y-6">
+                <div className="flex items-center justify-between pb-4 border-b border-slate-100">
                   <div>
-                    <span className="text-[10px] uppercase font-black text-amber-800 tracking-wider">
-                      OFFICIAL SECURE PAYMENT GATEWAY
+                    <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
+                      TOTAL PAYABLE AMOUNT
                     </span>
-                    <h5 className="text-base sm:text-lg font-serif font-bold text-stone-950 mt-0.5">
-                      GPay • PhonePe • Paytm • UPI • Cards • NetBanking
+                    <h5 className="text-sm sm:text-base font-bold text-slate-800 mt-0.5">
+                      {createdRegistration?.categoryLabel || 'Workshop Admission Fee'}
                     </h5>
                   </div>
                   <div className="text-right">
-                    <span className="text-[10px] text-stone-500 block uppercase font-bold">Total Fee</span>
-                    <span className="text-2xl sm:text-3xl font-serif font-black text-amber-800">₹{total}</span>
+                    <span className="text-3xl sm:text-4xl font-sans font-black text-pink-600 tracking-tight">
+                      ₹{total}
+                    </span>
                   </div>
                 </div>
 
-                {/* Feature Highlights */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
-                  <div className="p-2.5 rounded-xl bg-amber-50/70 border border-amber-200">
-                    <div className="font-bold text-amber-950 flex items-center gap-1 mb-0.5">
-                      <Check className="w-3.5 h-3.5 text-amber-600" /> Instant Confirmation
-                    </div>
-                    <p className="text-[11px] text-stone-600">Automated verification without waiting for manual approval.</p>
-                  </div>
-
-                  <div className="p-2.5 rounded-xl bg-amber-50/70 border border-amber-200">
-                    <div className="font-bold text-amber-950 flex items-center gap-1 mb-0.5">
-                      <Download className="w-3.5 h-3.5 text-amber-600" /> Auto PDF Receipt
-                    </div>
-                    <p className="text-[11px] text-stone-600">Official Pass generated & downloaded instantly upon success.</p>
-                  </div>
-
-                  <div className="p-2.5 rounded-xl bg-amber-50/70 border border-amber-200">
-                    <div className="font-bold text-amber-950 flex items-center gap-1 mb-0.5">
-                      <ShieldCheck className="w-3.5 h-3.5 text-amber-600" /> 100% Encrypted
-                    </div>
-                    <p className="text-[11px] text-stone-600">Bank-grade 256-bit secure gateway powered by Razorpay.</p>
-                  </div>
-                </div>
-
-                {/* Accepted Payment Modes Badges */}
-                <div className="p-3 rounded-xl bg-stone-50 border border-stone-200 flex flex-wrap items-center justify-between gap-2 text-xs">
-                  <span className="text-stone-600 font-semibold text-[11px]">All Payment Modes Supported:</span>
-                  <div className="flex flex-wrap gap-1.5">
-                    {['Google Pay', 'PhonePe', 'Paytm', 'Any UPI App', 'Credit/Debit Cards', 'NetBanking'].map((badge) => (
-                      <span key={badge} className="px-2 py-0.5 rounded-md bg-white border border-stone-200 text-[10px] font-bold text-stone-700 shadow-2xs">
-                        {badge}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Razorpay Launch Button */}
+                {/* Direct Pay Button */}
                 <button
                   type="button"
                   onClick={handleRazorpayPayment}
                   disabled={isRazorpayLoading}
-                  className="w-full py-4 px-6 rounded-xl bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-950 font-black text-sm sm:text-base ring-2 ring-amber-300 hover:brightness-105 transition shadow-lg flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-pink-600 via-rose-500 to-amber-500 text-white font-black text-sm sm:text-base shadow-xl shadow-pink-500/25 hover:brightness-105 active:scale-[0.99] transition flex items-center justify-center gap-2.5 cursor-pointer ring-2 ring-pink-300"
                 >
                   {isRazorpayLoading ? (
-                    <div className="w-5 h-5 border-2 border-stone-950 border-t-transparent rounded-full animate-spin"></div>
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                   ) : (
-                    <Sparkles className="w-5 h-5 text-stone-950" />
+                    <Sparkles className="w-5 h-5 text-yellow-300" />
                   )}
-                  <span>PAY ₹{total} SECURELY VIA PAYMENT GATEWAY</span>
+                  <span>PAY ₹{total} SECURELY NOW</span>
                 </button>
+
+                <div className="flex items-center justify-center gap-2 text-xs text-slate-500 font-medium pt-1">
+                  <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                  <span>256-Bit Bank Grade Encrypted Payment Gateway</span>
+                </div>
               </div>
             </div>
           )}
