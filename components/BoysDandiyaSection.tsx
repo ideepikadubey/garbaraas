@@ -103,9 +103,9 @@ export default function BoysDandiyaSection({
                     <MapPin className="w-5 h-5" />
                   </div>
                   <div>
-                    <div className="text-xs font-bold text-white uppercase tracking-wider">2 Premium Venues</div>
-                    <div className="text-xs sm:text-sm text-yellow-300 font-bold">Bang Hall & Crystal Park</div>
-                    <div className="text-[11px] text-amber-200/80">Turf & AC Dance Studio</div>
+                    <div className="text-xs font-bold text-white uppercase tracking-wider">Premium Venues</div>
+                    <div className="text-xs sm:text-sm text-yellow-300 font-bold">Bang Marriage Hall</div>
+                    <div className="text-[11px] text-amber-200/80">Spacious AC Workshop Hall</div>
                   </div>
                 </div>
 

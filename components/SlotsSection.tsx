@@ -37,7 +37,6 @@ export default function SlotsSection({ onSelectSlot }: SlotsSectionProps) {
     { id: 'ALL', name: 'All Locations' },
     { id: 'TFN Studio', name: 'TFN Studio' },
     { id: 'Bang Marriage Hall', name: 'Bang Marriage Hall' },
-    { id: 'Crystal Park', name: 'Crystal Park' },
     { id: 'Cricket Academy', name: 'Cricket Academy (Turf)' },
   ];
 
@@ -114,8 +113,7 @@ export default function SlotsSection({ onSelectSlot }: SlotsSectionProps) {
 
               // Location-based theme matching
               const isTFN = slot.locationName.includes('TFN');
-              const isCricket = slot.locationName.includes('Cricket');
-              const isCrystal = slot.locationName.includes('Crystal');
+              const isCricket = slot.locationName.includes('Cricket') || slot.locationName.includes('Turf');
               const isBoys = slot.batchName.includes('Boys');
               const isNightBang = slot.locationName.includes('Bang') && slot.startTime.includes('8:00');
 
@@ -137,7 +135,7 @@ export default function SlotsSection({ onSelectSlot }: SlotsSectionProps) {
                 themeBatchBg = 'bg-pink-50/70 border border-pink-200';
                 themeBatchText = 'text-pink-900';
                 themeProgressGradient = 'bg-gradient-to-r from-pink-600 via-rose-500 to-amber-400';
-              } else if (isCrystal || isCricket) {
+              } else if (isCricket) {
                 themeCard = 'bg-white border-2 border-emerald-300 hover:border-emerald-500 shadow-sm hover:shadow-emerald-500/15 hover:shadow-lg';
                 themeIconColor = 'text-emerald-600';
                 themeBatchBg = 'bg-emerald-50/70 border border-emerald-200';
