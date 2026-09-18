@@ -62,7 +62,7 @@ export default function BoysDandiyaSection({
                 Specially designed for beginners and enthusiasts wanting high-energy Dandiya routines. Learn from professional choreographers with real stage readiness!
               </p>
 
-              {/* 4 Feature Badges Grid */}
+              {/* 4 Feature Badges Grid matching official poster */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                 
                 <div className="p-3.5 rounded-2xl bg-white/5 border border-amber-400/30 flex items-start gap-3">
@@ -70,20 +70,9 @@ export default function BoysDandiyaSection({
                     <Calendar className="w-5 h-5" />
                   </div>
                   <div>
-                    <div className="text-xs font-bold text-white uppercase tracking-wider">Dates & Batch</div>
-                    <div className="text-xs sm:text-sm text-yellow-300 font-bold">Starts 27th September</div>
-                    <div className="text-[11px] text-amber-200/70">Batch: 27th Sept to 11th Oct</div>
-                  </div>
-                </div>
-
-                <div className="p-3.5 rounded-2xl bg-white/5 border border-amber-400/30 flex items-start gap-3">
-                  <div className="p-2 rounded-xl bg-amber-500/20 text-amber-400 flex-shrink-0">
-                    <MapPin className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-white uppercase tracking-wider">2 Venues</div>
-                    <div className="text-xs sm:text-sm text-yellow-300 font-bold">Bang Marriage Hall</div>
-                    <div className="text-[11px] text-amber-200/70">& Crystal Park (Turf)</div>
+                    <div className="text-xs font-bold text-white uppercase tracking-wider">15-Day Workshop</div>
+                    <div className="text-xs sm:text-sm text-yellow-300 font-bold">27 Sep to 11 Oct</div>
+                    <div className="text-[11px] text-amber-200/80 font-semibold">19 Oct Open Round Competition</div>
                   </div>
                 </div>
 
@@ -92,20 +81,31 @@ export default function BoysDandiyaSection({
                     <Award className="w-5 h-5" />
                   </div>
                   <div>
-                    <div className="text-xs font-bold text-white uppercase tracking-wider">Curriculum</div>
-                    <div className="text-xs sm:text-sm text-yellow-300 font-bold">5 Complete Patterns</div>
-                    <div className="text-[11px] text-amber-200/70">Authentic Gujarati Styles</div>
+                    <div className="text-xs font-bold text-white uppercase tracking-wider">Star Instructors</div>
+                    <div className="text-xs sm:text-sm text-yellow-300 font-bold">Manish Sir & Neel Sir</div>
+                    <div className="text-[11px] text-amber-200/80 font-medium">Mr. Kishangarh 2016 & 2019</div>
                   </div>
                 </div>
 
                 <div className="p-3.5 rounded-2xl bg-white/5 border border-amber-400/30 flex items-start gap-3">
                   <div className="p-2 rounded-xl bg-amber-500/20 text-amber-400 flex-shrink-0">
-                    <Users className="w-5 h-5" />
+                    <Zap className="w-5 h-5" />
                   </div>
                   <div>
-                    <div className="text-xs font-bold text-white uppercase tracking-wider">Girls Special Batch</div>
-                    <div className="text-xs sm:text-sm text-yellow-300 font-bold">26 Sep to 11 Oct</div>
-                    <div className="text-[11px] text-amber-200/70">For Females Only (Special Workshop)</div>
+                    <div className="text-xs font-bold text-white uppercase tracking-wider">Curriculum Highlights</div>
+                    <div className="text-xs sm:text-sm text-yellow-300 font-bold">Steps, Patterns & Strategy</div>
+                    <div className="text-[11px] text-amber-200/80">Dress code & beat coordination</div>
+                  </div>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-white/5 border border-amber-400/30 flex items-start gap-3">
+                  <div className="p-2 rounded-xl bg-amber-500/20 text-amber-400 flex-shrink-0">
+                    <MapPin className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-white uppercase tracking-wider">2 Premium Venues</div>
+                    <div className="text-xs sm:text-sm text-yellow-300 font-bold">Bang Hall & Crystal Park</div>
+                    <div className="text-[11px] text-amber-200/80">Turf & AC Dance Studio</div>
                   </div>
                 </div>
 
@@ -121,12 +121,12 @@ export default function BoysDandiyaSection({
               </div>
 
               <div className="flex items-baseline justify-center gap-1.5 my-2">
-                <span className="text-4xl sm:text-6xl font-serif font-black garba-gradient-text">₹1500</span>
+                <span className="text-4xl sm:text-6xl font-serif font-black garba-gradient-text">₹1600</span>
                 <span className="text-xs sm:text-sm font-bold text-amber-200">/ 15 Days</span>
               </div>
 
               <p className="text-xs text-amber-200/80 font-medium max-w-xs mb-6">
-                All-inclusive fee for 15-day intensive training & eligibility for the Grand Finale celebration.
+                Registration fee per member for 15-day intensive training & 19th Oct Open Round Competition eligibility.
               </p>
 
               <div className="w-full space-y-3">
@@ -135,7 +135,7 @@ export default function BoysDandiyaSection({
                   className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-950 font-black text-sm shadow-lg shadow-amber-500/30 ring-2 ring-amber-300 hover:scale-[1.02] transition-all flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <Sparkles className="w-4 h-4 text-stone-950" />
-                  <span>ENROLL FOR BOYS DANDIYA (₹1500)</span>
+                  <span>ENROLL FOR BOYS DANDIYA (₹1600)</span>
                   <ChevronRight className="w-4 h-4 text-stone-950" />
                 </button>
 

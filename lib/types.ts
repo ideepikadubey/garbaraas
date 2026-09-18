@@ -93,6 +93,7 @@ export interface AdminSettings {
   supportPhone1: string;
   supportPhone2: string;
   priceFemale: number;
+  priceFemale15Day?: number;
   priceOldStudentGroup: number;
   priceKids: number;
   priceBoysDandiya?: number;

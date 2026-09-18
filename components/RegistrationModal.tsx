@@ -322,9 +322,9 @@ export default function RegistrationModal({
   const calculatePricing = () => {
     let pricePerPerson = 2500;
     if (category === 'BOYS_DANDIYA') {
-      pricePerPerson = 1500;
+      pricePerPerson = 1600;
     } else if (category === 'FEMALE_15DAY') {
-      pricePerPerson = 1500;
+      pricePerPerson = 1800;
     } else if (category === 'KIDS') {
       pricePerPerson = 2000;
     } else if (category === 'OLD_STUDENT' || category === 'GROUP') {
@@ -827,7 +827,7 @@ export default function RegistrationModal({
                     <div className="flex justify-between items-start">
                       <span className="text-[10px] font-extrabold uppercase tracking-wider text-amber-800">Cat A</span>
                       <span className="text-lg font-black font-serif text-amber-600">
-                        {category === 'FEMALE_15DAY' ? '₹1500' : '₹2500'}
+                        {category === 'FEMALE_15DAY' ? '₹1800' : '₹2500'}
                       </span>
                     </div>
                     <h5 className="text-sm font-bold text-stone-950 mt-1">Female Admission</h5>
@@ -858,7 +858,7 @@ export default function RegistrationModal({
                         category === 'FEMALE_15DAY' ? 'bg-amber-500 text-stone-950 shadow-sm' : 'bg-white border border-amber-300 text-stone-800 hover:bg-amber-100'
                       }`}
                     >
-                      Girls (₹1500)
+                      Girls (₹1800)
                     </button>
                   </div>
                 </div>
@@ -951,14 +951,14 @@ export default function RegistrationModal({
                   <div>
                     <div className="flex justify-between items-start">
                       <span className="text-[10px] font-extrabold uppercase tracking-wider text-red-700">Cat D • New</span>
-                      <span className="text-lg font-black font-serif text-red-600">₹1500</span>
+                      <span className="text-lg font-black font-serif text-red-600">₹1600</span>
                     </div>
                     <h5 className="text-sm font-bold text-maroon-950 mt-1">Boys Dandiya</h5>
                     <p className="text-[11px] text-red-700 mt-0.5 font-bold">(Age 8–40 Years)</p>
                     <div className="mt-2.5 pt-2 border-t border-stone-200 text-[10px] text-stone-700 space-y-0.5 font-medium">
-                      <div>✓ 5 Dandiya Patterns</div>
                       <div>✓ 15 Days • 27 Sep–11 Oct</div>
-                      <div>✓ Bang & Crystal Park</div>
+                      <div>✓ 19 Oct Open Competition</div>
+                      <div>✓ Manish & Neel Sir Guidance</div>
                     </div>
                   </div>
                 </div>

@@ -214,12 +214,13 @@ const DEFAULT_SETTINGS: AdminSettings = {
   supportPhone1: '8385969285', // Neel Sir (Primary)
   supportPhone2: '8432223222', // Manish Sir (Call Only)
   priceFemale: 2500,
+  priceFemale15Day: 1800,
   priceOldStudentGroup: 2200,
   priceKids: 2000,
-  priceBoysDandiya: 1500,
+  priceBoysDandiya: 1600,
   workshopDates: '13th September to 11th October',
   bookingDates: '9th September to 30th September',
-  announcement: 'Special Girls Workshop (26 Sep–11 Oct) & Boys Dandiya (27 Sep–11 Oct) open for registrations! Grand Competitions on 18th & 19th Oct.',
+  announcement: 'Special Girls Workshop (26 Sep–11 Oct @ ₹1800) & Boys Dandiya (27 Sep–11 Oct @ ₹1600) open for registrations! Grand Competitions on 18th & 19th Oct.',
 };
 
 const DEFAULT_REGISTRATIONS: Registration[] = [];

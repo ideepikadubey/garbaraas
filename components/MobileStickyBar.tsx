@@ -18,7 +18,7 @@ export default function MobileStickyBar({ onOpenRegister }: MobileStickyBarProps
             <span>Slots Open • Kishangarh</span>
           </div>
           <div className="text-sm font-black text-slate-900 font-serif">
-            From ₹1500 <span className="text-xs font-bold text-pink-600">/ Free Family Pass</span>
+            From ₹1600 <span className="text-xs font-bold text-pink-600">/ Free Family Pass</span>
           </div>
         </div>
 

@@ -105,7 +105,7 @@ export default function PricingSection({ onSelectCategory }: PricingSectionProps
                 onClick={() => onSelectCategory('FEMALE_15DAY')}
                 className="w-full py-1.5 px-2 rounded-xl bg-pink-50 border border-pink-300 text-pink-800 font-black text-[11px] hover:bg-pink-100 transition cursor-pointer"
               >
-                Special 15-Day Batch (₹1500)
+                Special 15-Day Batch (₹1800)
               </button>
             </div>
           </div>
@@ -245,7 +245,7 @@ export default function PricingSection({ onSelectCategory }: PricingSectionProps
 
               <div className="my-5 pb-3 border-b border-slate-100">
                 <div className="flex items-baseline gap-1">
-                  <span className="text-3xl sm:text-4xl font-serif font-black text-blue-600">₹1500</span>
+                  <span className="text-3xl sm:text-4xl font-serif font-black text-blue-600">₹1600</span>
                   <span className="text-xs font-semibold text-slate-500">/ 15 Days</span>
                 </div>
                 <p className="text-[11px] text-blue-700 mt-1 font-bold">Starts 27th Sept • 27 Sep - 11 Oct</p>
@@ -254,15 +254,15 @@ export default function PricingSection({ onSelectCategory }: PricingSectionProps
               <ul className="space-y-2.5 text-xs text-slate-700 font-medium mb-6">
                 <li className="flex items-start gap-2">
                   <Check className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
-                  <span>5 Dynamic Dandiya Patterns</span>
+                  <span>Dandiya Steps, Patterns & Strategy</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <Check className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
-                  <span>Bang Marriage Hall & Crystal Park</span>
+                  <span>Manish Sir & Neel Sir Guidance</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <Check className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
-                  <span>15-Day Masterclass (27 Sept – 11 Oct)</span>
+                  <span>19 Oct Open Round Competition</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <Check className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
@@ -275,7 +275,7 @@ export default function PricingSection({ onSelectCategory }: PricingSectionProps
               onClick={() => onSelectCategory('BOYS_DANDIYA')}
               className="w-full py-2.5 px-3 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 text-white font-black text-xs sm:text-sm shadow-md hover:scale-[1.02] active:scale-95 transition cursor-pointer"
             >
-              Register Boys (₹1500)
+              Register Boys (₹1600)
             </button>
           </div>
 
