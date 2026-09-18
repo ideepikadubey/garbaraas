@@ -339,11 +339,7 @@ export default function AdminPage() {
             </button>
           </form>
 
-          <div className="mt-4 p-2.5 rounded-xl bg-slate-100 border border-slate-200 text-center text-[11px] text-slate-600 font-medium">
-            Organizer credentials: <strong className="text-slate-900 font-bold">admin@5111</strong> / <strong className="text-slate-900 font-bold">7002kishangarh2026</strong>
-          </div>
-
-          <div className="mt-4 text-center">
+          <div className="mt-6 text-center">
             <Link href="/" className="text-xs text-pink-600 hover:text-pink-800 font-bold">
               ← Return to Workshop Website
             </Link>
