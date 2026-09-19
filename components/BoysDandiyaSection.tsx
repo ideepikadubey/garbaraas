@@ -71,7 +71,7 @@ export default function BoysDandiyaSection({
                   </div>
                   <div>
                     <div className="text-xs font-bold text-white uppercase tracking-wider">15-Day Workshop</div>
-                    <div className="text-xs sm:text-sm text-yellow-300 font-bold">27 Sep to 11 Oct</div>
+                    <div className="text-xs sm:text-sm text-yellow-300 font-bold">26 Sep to 11 Oct</div>
                     <div className="text-[11px] text-amber-200/80 font-semibold">19 Oct Open Round Competition</div>
                   </div>
                 </div>

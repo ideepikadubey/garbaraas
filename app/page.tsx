@@ -33,7 +33,12 @@ export default function HomePage() {
 
   const handleSelectSlot = (slot: Slot) => {
     setPreSelectedSlot(slot);
-    setPreSelectedCategory(undefined);
+    const isBoysSlot = slot.batchName.toLowerCase().includes('boys');
+    if (isBoysSlot) {
+      setPreSelectedCategory('BOYS_DANDIYA');
+    } else {
+      setPreSelectedCategory('FEMALE');
+    }
     setRegisterModalOpen(true);
   };
 

@@ -37,7 +37,7 @@ export default function SlotsSection({ onSelectSlot }: SlotsSectionProps) {
     { id: 'ALL', name: 'All Locations' },
     { id: 'TFN Studio', name: 'TFN Studio' },
     { id: 'Bang Marriage Hall', name: 'Bang Marriage Hall' },
-    { id: 'Cricket Academy', name: 'Cricket Academy (Turf)' },
+    { id: 'Cricket Academy', name: 'Kishangarh Cricket Academy' },
   ];
 
   const filteredSlots = slots.filter((slot) => {
@@ -53,7 +53,7 @@ export default function SlotsSection({ onSelectSlot }: SlotsSectionProps) {
         <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-10">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-pink-50 border border-pink-200 text-xs text-pink-700 uppercase tracking-widest font-black mb-2 shadow-xs">
             <Clock className="w-3.5 h-3.5 text-pink-500" />
-            Live Real-Time Seat Availability
+            Live Workshop Batch Availability
           </div>
           <h2 className="text-2xl sm:text-4xl md:text-5xl font-serif font-black text-slate-900 tracking-tight">
             WORKSHOP <span className="festive-gradient-text">LOCATIONS & TIMINGS</span>
@@ -93,7 +93,7 @@ export default function SlotsSection({ onSelectSlot }: SlotsSectionProps) {
             title="Refresh availability"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
-            <span>Refresh Seats</span>
+            <span>Refresh Batches</span>
           </button>
         </div>
 
@@ -198,32 +198,18 @@ export default function SlotsSection({ onSelectSlot }: SlotsSectionProps) {
                       </div>
                     </div>
 
-                    {/* Capacity Progress Bar */}
-                    <div className="mt-3">
-                      <div className="flex items-center justify-between text-xs mb-1">
-                        <span className="text-slate-900 font-bold">
-                          {isFull ? (
-                            <span className="text-red-600 font-bold">Housefull</span>
-                          ) : (
-                            <span className="text-pink-700 font-black">{remaining} seats left</span>
-                          )}
-                        </span>
-                        <span className="text-slate-500 text-[11px] font-semibold">
-                          {slot.bookedSeats} / {slot.capacity} Booked
-                        </span>
-                      </div>
-                      <div className="w-full h-2.5 rounded-full bg-slate-100 overflow-hidden border border-slate-200">
-                        <div
-                          className={`h-full transition-all duration-500 ${
-                            isFull
-                              ? 'bg-red-500'
-                              : isFewLeft
-                              ? 'bg-amber-500'
-                              : themeProgressGradient
-                          }`}
-                          style={{ width: `${percentFilled}%` }}
-                        ></div>
-                      </div>
+                    {/* Batch Status */}
+                    <div className="mt-3 flex items-center justify-between text-xs pt-1">
+                      <span className="text-slate-500 font-semibold text-[11px]">Batch Status</span>
+                      <span className="font-bold text-xs">
+                        {isFull ? (
+                          <span className="text-red-600 font-extrabold">Housefull</span>
+                        ) : isFewLeft ? (
+                          <span className="text-amber-700 font-extrabold">Filling Fast</span>
+                        ) : (
+                          <span className="text-emerald-700 font-extrabold">Open for Registration</span>
+                        )}
+                      </span>
                     </div>
                   </div>
 

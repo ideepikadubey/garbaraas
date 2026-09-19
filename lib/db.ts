@@ -166,7 +166,7 @@ const DEFAULT_SLOTS: Slot[] = [
     locationId: 'loc-bang',
     locationName: 'Bang Marriage Hall',
     locationAddress: 'Near City Station, Kishangarh',
-    batchName: 'Boys Dandiya Workshop (27 Sep – 11 Oct)',
+    batchName: 'Boys Dandiya Workshop (26 Sep – 11 Oct)',
     startTime: '05:00 PM',
     endTime: '06:00 PM',
     capacity: 50,
@@ -181,7 +181,7 @@ const DEFAULT_SLOTS: Slot[] = [
     locationId: 'loc-bang',
     locationName: 'Bang Marriage Hall',
     locationAddress: 'Near City Station, Kishangarh',
-    batchName: 'Boys Dandiya Workshop (27 Sep – 11 Oct)',
+    batchName: 'Boys Dandiya Workshop (26 Sep – 11 Oct)',
     startTime: '07:00 PM',
     endTime: '08:00 PM',
     capacity: 50,
@@ -217,10 +217,11 @@ const DEFAULT_SETTINGS: AdminSettings = {
   priceFemale15Day: 1800,
   priceOldStudentGroup: 2200,
   priceKids: 2000,
+  priceKids15Day: 1500,
   priceBoysDandiya: 1600,
   workshopDates: '13th September to 11th October',
-  bookingDates: '9th September to 30th September',
-  announcement: 'Special Girls Workshop (26 Sep–11 Oct @ ₹1800) & Boys Dandiya (27 Sep–11 Oct @ ₹1600) open for registrations! Grand Competitions on 18th & 19th Oct.',
+  bookingDates: '9th September to 25th September',
+  announcement: 'Special Girls Workshop (26 Sep–11 Oct @ ₹1800), Kids 15-Day Batch (@ ₹1500) & Boys Dandiya (26 Sep–11 Oct @ ₹1600) open for registrations! Grand Competitions on 18th & 19th Oct.',
 };
 
 const DEFAULT_REGISTRATIONS: Registration[] = [];
@@ -600,7 +601,7 @@ export async function createRegistrationAtomic(
       if (remaining < seatsNeeded) {
         return {
           success: false,
-          error: `Sorry, this batch has only ${Math.max(0, remaining)} seats left!`,
+          error: `Sorry, this batch does not have enough seats remaining for your registration.`,
         };
       }
 
@@ -696,7 +697,7 @@ export async function createRegistrationAtomic(
     if (remainingSeats < seatsNeeded) {
       return {
         success: false,
-        error: `Sorry, this batch has only ${Math.max(0, remainingSeats)} seats left!`,
+        error: `Sorry, this batch does not have enough seats remaining for your registration.`,
       };
     }
 

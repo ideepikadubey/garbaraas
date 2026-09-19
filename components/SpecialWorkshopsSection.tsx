@@ -107,7 +107,7 @@ export default function SpecialWorkshopsSection({
                   Boys Dandiya Masterclass
                 </span>
                 <span className="text-[11px] sm:text-xs font-bold text-amber-200">
-                  27 Sep – 11 Oct • ₹1600
+                  26 Sep – 11 Oct • ₹1600
                 </span>
               </div>
 

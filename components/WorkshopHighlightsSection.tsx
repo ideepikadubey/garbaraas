@@ -28,7 +28,7 @@ export default function WorkshopHighlightsSection({
               NEW BATCHES OPEN
             </span>
             <span className="text-sm sm:text-base font-bold text-white">
-              Boys Dandiya (27 Sep–11 Oct • <strong className="text-emerald-400 font-extrabold">₹1600</strong>)
+              Boys Dandiya (26 Sep–11 Oct • <strong className="text-emerald-400 font-extrabold">₹1600</strong>)
             </span>
             <span className="text-slate-600 hidden sm:inline">•</span>
             <span className="text-sm sm:text-base font-bold text-white">
@@ -65,7 +65,7 @@ export default function WorkshopHighlightsSection({
               </div>
               <span className="text-[10px] sm:text-xs uppercase font-extrabold tracking-wider">Bookings</span>
             </div>
-            <div className="text-sm sm:text-base font-black text-slate-900 font-heading">9th to 19th Sept</div>
+            <div className="text-sm sm:text-base font-black text-slate-900 font-heading">9th to 25th Sept</div>
             <div className="text-xs text-emerald-700 font-semibold mt-0.5">Limited Capacity</div>
           </div>
 
@@ -89,8 +89,8 @@ export default function WorkshopHighlightsSection({
               </div>
               <span className="text-[10px] sm:text-xs uppercase font-extrabold tracking-wider">Venues</span>
             </div>
-            <div className="text-sm sm:text-base font-black text-slate-900 font-heading truncate">Bang Hall & TFN</div>
-            <div className="text-xs text-blue-700 font-semibold mt-0.5">Kishangarh</div>
+            <div className="text-xs sm:text-sm font-black text-slate-900 font-heading leading-snug">Bang Hall, TFN & Cricket Academy</div>
+            <div className="text-xs text-blue-700 font-semibold mt-0.5">3 Venues • Kishangarh</div>
           </div>
 
         </div>

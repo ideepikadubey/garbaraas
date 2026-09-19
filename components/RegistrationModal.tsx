@@ -309,7 +309,12 @@ export default function RegistrationModal({
           if (data.success && Array.isArray(data.slots)) {
             setSlots(data.slots);
             if (!selectedSlot && data.slots.length > 0) {
-              const firstAvail = data.slots.find((s: Slot) => s.status !== 'FULL');
+              const isBoysCat = category === 'BOYS_DANDIYA';
+              const firstAvail = data.slots.find((s: Slot) => {
+                if (s.status === 'FULL') return false;
+                const isBS = s.batchName.toLowerCase().includes('boys');
+                return isBoysCat ? isBS : !isBS;
+              });
               if (firstAvail) setSelectedSlot(firstAvail);
             }
           }
@@ -325,6 +330,8 @@ export default function RegistrationModal({
       pricePerPerson = 1600;
     } else if (category === 'FEMALE_15DAY') {
       pricePerPerson = 1800;
+    } else if (category === 'KIDS_15DAY') {
+      pricePerPerson = 1500;
     } else if (category === 'KIDS') {
       pricePerPerson = 2000;
     } else if (category === 'OLD_STUDENT' || category === 'GROUP') {
@@ -514,7 +521,7 @@ export default function RegistrationModal({
       return true;
     }
 
-    if (category === 'KIDS') {
+    if (category === 'KIDS' || category === 'KIDS_15DAY') {
       if (!participantName.trim()) {
         setErrorMessage("Please enter the child's full name");
         return false;
@@ -553,10 +560,21 @@ export default function RegistrationModal({
       setErrorMessage('Please select an available workshop batch');
       return false;
     }
+    const isBoysSlot = selectedSlot.batchName.toLowerCase().includes('boys');
+    const isBoysCat = category === 'BOYS_DANDIYA';
+    if (isBoysCat && !isBoysSlot) {
+      setErrorMessage('Boys Dandiya participants can only register for dedicated Boys Dandiya workshop batches.');
+      return false;
+    }
+    if (!isBoysCat && isBoysSlot) {
+      setErrorMessage('This batch is strictly reserved for Boys Dandiya participants. Please choose a Girls Garba batch.');
+      return false;
+    }
+
     const remaining = selectedSlot.capacity - selectedSlot.bookedSeats;
     if (remaining < count) {
       setErrorMessage(
-        `This batch has only ${Math.max(0, remaining)} seats left. Your group requires ${count} seats.`
+        `This batch does not have enough seats available for your selected group size.`
       );
       return false;
     }
@@ -584,15 +602,15 @@ export default function RegistrationModal({
           whatsapp: whatsapp || primaryMobile,
           email,
           age: isGroup ? (groupMembers[0]?.age || age) : age,
-          gender: category === 'KIDS' || category === 'FEMALE' ? 'Female' : gender,
+          gender: category === 'KIDS' || category === 'KIDS_15DAY' || category === 'FEMALE' || category === 'FEMALE_15DAY' ? 'Female' : gender,
           city,
           address,
           emergencyName,
           emergencyPhone,
-          isKids: category === 'KIDS',
+          isKids: category === 'KIDS' || category === 'KIDS_15DAY',
           guardianName,
           guardianPhone,
-          childAge: category === 'KIDS' ? childAge : undefined,
+          childAge: (category === 'KIDS' || category === 'KIDS_15DAY') ? childAge : undefined,
           isOldStudent: category === 'OLD_STUDENT' || isOldStudent,
           fatherOrHusbandName: primaryFatherHusband,
           isGroup,
@@ -918,9 +936,9 @@ export default function RegistrationModal({
 
                 {/* 4. Kids Girls */}
                 <div
-                  onClick={() => handleCategorySelect('KIDS')}
+                  onClick={() => handleCategorySelect(category === 'KIDS_15DAY' ? 'KIDS_15DAY' : 'KIDS')}
                   className={`p-3.5 rounded-2xl border-2 cursor-pointer transition-all flex flex-col justify-between ${
-                    category === 'KIDS'
+                    category === 'KIDS' || category === 'KIDS_15DAY'
                       ? 'bg-garba-teal-50/80 border-garba-teal-500 shadow-md ring-1 ring-teal-400'
                       : 'bg-white border-garba-teal-200 hover:border-garba-teal-400'
                   }`}
@@ -928,14 +946,40 @@ export default function RegistrationModal({
                   <div>
                     <div className="flex justify-between items-start">
                       <span className="text-[10px] font-extrabold uppercase tracking-wider text-garba-teal-700">Cat C</span>
-                      <span className="text-lg font-black font-serif text-garba-teal-700">₹2000</span>
+                      <span className="text-lg font-black font-serif text-garba-teal-700">
+                        {category === 'KIDS_15DAY' ? '₹1500' : '₹2000'}
+                      </span>
                     </div>
                     <h5 className="text-sm font-bold text-maroon-950 mt-1">Kids Girls</h5>
-                    <p className="text-[11px] text-stone-600 mt-0.5 font-medium">(Age 7–16 Years)</p>
+                    <p className="text-[11px] text-stone-600 mt-0.5 font-medium">
+                      {category === 'KIDS_15DAY' ? '(15-Day Batch • 26 Sep–11 Oct)' : '(Age 7–16 Years)'}
+                    </p>
                     <div className="mt-2.5 pt-2 border-t border-stone-200 text-[10px] text-stone-700 space-y-0.5 font-medium">
                       <div>✓ Princess Title Eligibility</div>
                       <div>✓ Safe & Supportive</div>
                     </div>
+                  </div>
+
+                  {/* Toggle between Full Month and Special 15 Days */}
+                  <div className="mt-2 pt-2 border-t border-teal-200 flex gap-1" onClick={(e) => e.stopPropagation()}>
+                    <button
+                      type="button"
+                      onClick={() => handleCategorySelect('KIDS')}
+                      className={`flex-1 py-1 px-1 rounded-md text-[9px] font-extrabold transition cursor-pointer ${
+                        category === 'KIDS' ? 'bg-teal-600 text-white shadow-sm' : 'bg-white border border-teal-300 text-stone-800 hover:bg-teal-100'
+                      }`}
+                    >
+                      1-Mo (₹2000)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleCategorySelect('KIDS_15DAY')}
+                      className={`flex-1 py-1 px-1 rounded-md text-[9px] font-extrabold transition cursor-pointer ${
+                        category === 'KIDS_15DAY' ? 'bg-teal-600 text-white shadow-sm' : 'bg-white border border-teal-300 text-stone-800 hover:bg-teal-100'
+                      }`}
+                    >
+                      15-Day (₹1500)
+                    </button>
                   </div>
                 </div>
 
@@ -956,7 +1000,7 @@ export default function RegistrationModal({
                     <h5 className="text-sm font-bold text-maroon-950 mt-1">Boys Dandiya</h5>
                     <p className="text-[11px] text-red-700 mt-0.5 font-bold">(Age 8–40 Years)</p>
                     <div className="mt-2.5 pt-2 border-t border-stone-200 text-[10px] text-stone-700 space-y-0.5 font-medium">
-                      <div>✓ 15 Days • 27 Sep–11 Oct</div>
+                      <div>✓ 15 Days • 26 Sep–11 Oct</div>
                       <div>✓ 19 Oct Open Competition</div>
                       <div>✓ Manish & Neel Sir Guidance</div>
                     </div>
@@ -1012,9 +1056,9 @@ export default function RegistrationModal({
                 <h4 className="text-lg font-serif font-bold text-maroon-950">
                   {isGroup
                     ? `Step 2: Group Member Details (${membersCount} Members)`
-                    : (category === 'OLD_STUDENT' || isOldStudent)
-                    ? 'Step 2: Alumni Participant Information'
-                    : category === 'KIDS'
+                    : category === 'GROUP' && !isOldStudent
+                    ? 'Step 2: Group & Member Details'
+                    : category === 'KIDS' || category === 'KIDS_15DAY'
                     ? 'Step 2: Kids Participant & Parent Details'
                     : 'Step 2: Participant Information'}
                 </h4>
@@ -1191,7 +1235,7 @@ export default function RegistrationModal({
                   {/* Full Name */}
                   <div className="sm:col-span-2">
                     <label className="block text-maroon-950 font-bold mb-1">
-                      {category === 'KIDS' ? 'Child Full Name (Girl)' : 'Participant Full Name'} <span className="text-red-500">*</span>
+                      {category === 'KIDS' || category === 'KIDS_15DAY' ? 'Child Full Name (Girl)' : 'Participant Full Name'} <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
@@ -1377,11 +1421,11 @@ export default function RegistrationModal({
                       </label>
                       <input
                         type="number"
-                        min={category === 'KIDS' ? 7 : 14}
-                        max={category === 'KIDS' ? 16 : 80}
-                        value={category === 'KIDS' ? childAge : age}
+                        min={category === 'KIDS' || category === 'KIDS_15DAY' ? 7 : 14}
+                        max={category === 'KIDS' || category === 'KIDS_15DAY' ? 16 : 80}
+                        value={category === 'KIDS' || category === 'KIDS_15DAY' ? childAge : age}
                         onChange={(e) => {
-                          if (category === 'KIDS') setChildAge(e.target.value);
+                          if (category === 'KIDS' || category === 'KIDS_15DAY') setChildAge(e.target.value);
                           else setAge(e.target.value);
                         }}
                         className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl px-3 py-2.5 text-maroon-950 text-xs focus:outline-none focus:border-amber-500 font-bold"
@@ -1396,7 +1440,7 @@ export default function RegistrationModal({
                         className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl px-3 py-2.5 text-maroon-950 text-xs focus:outline-none focus:border-amber-500 font-medium"
                       >
                         <option value="Female">Female</option>
-                        {category !== 'KIDS' && category !== 'FEMALE' && <option value="Male">Male</option>}
+                        {category !== 'KIDS' && category !== 'KIDS_15DAY' && category !== 'FEMALE' && category !== 'FEMALE_15DAY' && <option value="Male">Male</option>}
                       </select>
                     </div>
                   </div>
@@ -1425,7 +1469,7 @@ export default function RegistrationModal({
                   </div>
 
                   {/* CONDITIONAL: KIDS SPECIFIC */}
-                  {category === 'KIDS' && (
+                  {(category === 'KIDS' || category === 'KIDS_15DAY') && (
                     <div className="sm:col-span-2 p-3.5 rounded-xl bg-garba-teal-50 border-2 border-garba-teal-300 space-y-3">
                       <div className="text-xs font-bold text-garba-teal-900 uppercase tracking-wide">
                         Parent / Guardian Information (Mandatory for Kids 7-16)
@@ -1499,17 +1543,38 @@ export default function RegistrationModal({
                   {slots.map((slot) => {
                     const remaining = Math.max(0, slot.capacity - slot.bookedSeats);
                     const isFull = slot.status === 'FULL' || remaining < count;
+                    const isBoysSlot = slot.batchName.toLowerCase().includes('boys');
+                    const isBoysCat = category === 'BOYS_DANDIYA';
+                    const isGenderMismatch = (isBoysCat && !isBoysSlot) || (!isBoysCat && isBoysSlot);
+                    const isDisabled = isFull || isGenderMismatch;
                     const isSelected = selectedSlot?.id === slot.id;
+
+                    const handleSlotClick = () => {
+                      if (isGenderMismatch) {
+                        if (isBoysCat) {
+                          setErrorMessage('Boys Dandiya participants can only register for dedicated Boys Dandiya batches.');
+                        } else {
+                          setErrorMessage('This batch is strictly reserved for Boys Dandiya participants. Please select a Girls Garba batch.');
+                        }
+                        return;
+                      }
+                      if (!isFull) {
+                        setErrorMessage('');
+                        setSelectedSlot(slot);
+                      }
+                    };
 
                     return (
                       <div
                         key={slot.id}
-                        onClick={() => !isFull && setSelectedSlot(slot)}
+                        onClick={handleSlotClick}
                         className={`p-3.5 rounded-2xl border-2 transition-all cursor-pointer flex flex-col justify-between ${
                           isFull
                             ? 'bg-stone-50 border-stone-300 opacity-60 cursor-not-allowed'
+                            : isGenderMismatch
+                            ? 'bg-stone-50 border-red-200 opacity-75'
                             : isSelected
-                            ? 'bg-amber-50/90 border-amber-500 shadow-md'
+                            ? 'bg-amber-50/90 border-amber-500 shadow-md ring-1 ring-amber-400'
                             : 'bg-white border-stone-200 hover:border-amber-400'
                         }`}
                       >
@@ -1524,9 +1589,13 @@ export default function RegistrationModal({
                               <span className="text-[10px] px-2 py-0.5 rounded-full bg-red-100 text-red-700 border border-red-300 font-bold">
                                 FULL
                               </span>
-                            ) : remaining <= 5 ? (
+                            ) : isGenderMismatch ? (
+                              <span className="text-[10px] px-2 py-0.5 rounded-full bg-red-50 text-red-800 border border-red-300 font-bold">
+                                {isBoysSlot ? 'Boys Only' : 'Girls Only'}
+                              </span>
+                            ) : slot.status === 'ALMOST_FULL' ? (
                               <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-300 font-bold">
-                                {remaining} left
+                                Few Spots Left
                               </span>
                             ) : (
                               <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold">
@@ -1544,7 +1613,7 @@ export default function RegistrationModal({
 
                         <div className="mt-3 pt-2 border-t border-stone-200 flex items-center justify-between text-[11px]">
                           <span className="text-stone-500 font-semibold">
-                            {slot.bookedSeats} / {slot.capacity} seats booked
+                            Batch Timing: {slot.startTime}
                           </span>
                           {isSelected && (
                             <span className="text-garba-orange-700 font-extrabold flex items-center gap-1">
@@ -1598,10 +1667,13 @@ export default function RegistrationModal({
                   <div>
                     <span className="text-stone-500 block text-[11px] font-semibold">Category:</span>
                     <strong className="text-maroon-950">
-                      {category === 'FEMALE' && 'Female Admission Fee'}
+                      {category === 'FEMALE' && 'Female Admission Fee (1 Month)'}
+                      {category === 'FEMALE_15DAY' && 'Special Girls Garba (15-Day Batch)'}
+                      {category === 'BOYS_DANDIYA' && 'Boys Dandiya Workshop'}
                       {(category === 'OLD_STUDENT' || isOldStudent) && 'Old TFN Student (Alumni)'}
                       {isGroup && `Group Registration (${count} Members)`}
-                      {category === 'KIDS' && `Kids Girls (Age 7-16)`}
+                      {category === 'KIDS' && `Kids Girls (1-Month Batch)`}
+                      {category === 'KIDS_15DAY' && `Kids Girls (15-Day Special Batch • ₹1500)`}
                     </strong>
                   </div>
 

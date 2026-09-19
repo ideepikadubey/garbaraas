@@ -83,7 +83,7 @@ export default function Footer({ onOpenRegister, onOpenLookup }: FooterProps) {
               </li>
               <li className="flex items-start gap-2">
                 <MapPin className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
-                <span>Bang Marriage Hall & TFN Studio</span>
+                <span>Bang Marriage Hall, TFN Studio & Kishangarh Cricket Academy</span>
               </li>
               <li className="pt-2 flex flex-col gap-2 border-t border-slate-100">
                 <a

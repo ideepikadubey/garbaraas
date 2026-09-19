@@ -75,8 +75,30 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: 'Please select a workshop location and batch slot' }, { status: 400 });
     }
 
+    // Gender/Category vs Slot Batch Name validation
+    const { getSlotById } = await import('@/lib/db');
+    const targetSlot = await getSlotById(slotId);
+    if (targetSlot) {
+      const isBoysSlot = targetSlot.batchName.toLowerCase().includes('boys');
+      const isBoysCategory = category === 'BOYS_DANDIYA';
+
+      if (isBoysCategory && !isBoysSlot) {
+        return NextResponse.json({
+          success: false,
+          error: 'Boys Dandiya participants can only register for dedicated Boys Dandiya workshop batches.',
+        }, { status: 400 });
+      }
+
+      if (!isBoysCategory && isBoysSlot) {
+        return NextResponse.json({
+          success: false,
+          error: 'This workshop batch is strictly reserved for Boys Dandiya participants. Please choose a Girls Garba batch.',
+        }, { status: 400 });
+      }
+    }
+
     // Kids validations
-    if (category === 'KIDS') {
+    if (category === 'KIDS' || category === 'KIDS_15DAY') {
       if (!guardianName || !guardianName.trim()) {
         return NextResponse.json({ success: false, error: "Parent or Guardian's name is required for kids category" }, { status: 400 });
       }
@@ -121,7 +143,10 @@ export async function POST(req: Request) {
       categoryLabel = 'Special Girls Garba (26 Sep–11 Oct • ₹1800)';
     } else if (category === 'BOYS_DANDIYA') {
       feePerPerson = settings.priceBoysDandiya || 1600;
-      categoryLabel = 'Boys Dandiya Workshop (27 Sep–11 Oct • ₹1600)';
+      categoryLabel = 'Boys Dandiya Workshop (26 Sep–11 Oct • ₹1600)';
+    } else if (category === 'KIDS_15DAY') {
+      feePerPerson = settings.priceKids15Day || 1500;
+      categoryLabel = 'Kids Special 15 Days Batch (26 Sep–11 Oct • ₹1500)';
     } else if (category === 'KIDS') {
       feePerPerson = settings.priceKids; // 2000
       categoryLabel = 'Kids Girls (7–16 Years)';
@@ -144,12 +169,12 @@ export async function POST(req: Request) {
       whatsapp: (whatsapp || cleanMobile).replace(/\D/g, ''),
       email: (email || '').trim().toLowerCase(),
       age: parseInt(age, 10) || 20,
-      gender: gender || (category === 'FEMALE' || category === 'KIDS' ? 'Female' : 'Female'),
+      gender: gender || (category === 'FEMALE' || category === 'FEMALE_15DAY' || category === 'KIDS' || category === 'KIDS_15DAY' ? 'Female' : 'Female'),
       city: city ? city.trim() : 'Kishangarh',
       address: (address || '').trim(),
       emergencyName: (emergencyName || '').trim(),
       emergencyPhone: (emergencyPhone || '').replace(/\D/g, ''),
-      isKids: !!isKids,
+      isKids: category === 'KIDS' || category === 'KIDS_15DAY' || !!isKids,
       guardianName: (guardianName || '').trim(),
       guardianPhone: (guardianPhone || '').replace(/\D/g, ''),
       childAge: childAge ? parseInt(childAge, 10) : undefined,

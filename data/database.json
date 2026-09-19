@@ -160,8 +160,9 @@
     "priceFemale": 2500,
     "priceOldStudentGroup": 2200,
     "priceKids": 2000,
+    "priceKids15Day": 1500,
     "workshopDates": "13th September to 11th October",
-    "bookingDates": "9th September to 19th September",
+    "bookingDates": "9th September to 25th September",
     "announcement": "Every participant gets a Free Family Pass for one day! Competition rounds on 18th October."
   }
 }

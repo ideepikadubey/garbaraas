@@ -189,10 +189,11 @@ export default function PricingSection({ onSelectCategory }: PricingSectionProps
 
               <div className="my-5 pb-3 border-b border-slate-100">
                 <div className="flex items-baseline gap-1">
-                  <span className="text-3xl sm:text-4xl font-serif font-black text-emerald-600">₹2000</span>
-                  <span className="text-xs font-semibold text-slate-500">/ 1 Month</span>
+                  <span className="text-3xl sm:text-4xl font-serif font-black text-emerald-600">₹1500</span>
+                  <span className="text-xs font-semibold text-slate-500">/ 15 Days</span>
+                  <span className="text-xs font-bold text-slate-400 ml-1">or ₹2000 / 1-Mo</span>
                 </div>
-                <p className="text-[11px] text-slate-500 mt-1 font-medium">Specially tailored kid-friendly pacing</p>
+                <p className="text-[11px] text-emerald-700 mt-1 font-bold">Special 15 Days Batch @ ₹1500 Available!</p>
               </div>
 
               <ul className="space-y-2.5 text-xs text-slate-700 font-medium mb-6">
@@ -215,12 +216,20 @@ export default function PricingSection({ onSelectCategory }: PricingSectionProps
               </ul>
             </div>
 
-            <button
-              onClick={() => onSelectCategory('KIDS')}
-              className="w-full py-2.5 px-3 rounded-2xl bg-gradient-to-r from-emerald-600 via-teal-500 to-emerald-600 text-white font-black text-xs sm:text-sm shadow-md hover:scale-[1.02] active:scale-95 transition cursor-pointer"
-            >
-              Register Kids (₹2000)
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={() => onSelectCategory('KIDS_15DAY')}
+                className="flex-1 py-2 px-2 rounded-xl bg-emerald-700 text-white font-black text-xs shadow-md hover:scale-[1.02] active:scale-95 transition cursor-pointer"
+              >
+                15-Day (₹1500)
+              </button>
+              <button
+                onClick={() => onSelectCategory('KIDS')}
+                className="flex-1 py-2 px-2 rounded-xl bg-emerald-100 border border-emerald-400 text-emerald-950 font-black text-xs hover:bg-emerald-200 transition cursor-pointer"
+              >
+                1-Mo (₹2000)
+              </button>
+            </div>
           </div>
 
           {/* Card 4: Boys Dandiya Special (Royal Blue & Navy Theme) */}
@@ -248,7 +257,7 @@ export default function PricingSection({ onSelectCategory }: PricingSectionProps
                   <span className="text-3xl sm:text-4xl font-serif font-black text-blue-600">₹1600</span>
                   <span className="text-xs font-semibold text-slate-500">/ 15 Days</span>
                 </div>
-                <p className="text-[11px] text-blue-700 mt-1 font-bold">Starts 27th Sept • 27 Sep - 11 Oct</p>
+                <p className="text-[11px] text-blue-700 mt-1 font-bold">Starts 26th Sept • 26 Sep - 11 Oct</p>
               </div>
 
               <ul className="space-y-2.5 text-xs text-slate-700 font-medium mb-6">

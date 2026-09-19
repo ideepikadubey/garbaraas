@@ -1,4 +1,4 @@
-export type CategoryType = 'FEMALE' | 'FEMALE_15DAY' | 'BOYS_DANDIYA' | 'OLD_STUDENT' | 'GROUP' | 'KIDS';
+export type CategoryType = 'FEMALE' | 'FEMALE_15DAY' | 'BOYS_DANDIYA' | 'OLD_STUDENT' | 'GROUP' | 'KIDS' | 'KIDS_15DAY';
 
 export type PaymentStatus = 
   | 'PAYMENT_PENDING' 
@@ -96,6 +96,7 @@ export interface AdminSettings {
   priceFemale15Day?: number;
   priceOldStudentGroup: number;
   priceKids: number;
+  priceKids15Day?: number;
   priceBoysDandiya?: number;
   workshopDates: string;
   bookingDates: string;
