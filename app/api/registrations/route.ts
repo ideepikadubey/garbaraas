@@ -188,7 +188,9 @@ export async function POST(req: Request) {
       slotId,
       locationName: locationName || 'TFN Studio',
       batchTime: batchTime || 'Batch Slot',
-      workshopDate: workshopDate || settings.workshopDates,
+      workshopDate: (category === 'FEMALE_15DAY' || category === 'KIDS_15DAY' || category === 'BOYS_DANDIYA') 
+        ? '26th September to 11th October' 
+        : (workshopDate || settings.workshopDates || '13th September to 11th October'),
       feePerPerson,
       totalAmount,
       hasFreeFamilyPass: true,

@@ -346,6 +346,10 @@ export default function RegistrationModal({
 
   const { pricePerPerson, count, total } = calculatePricing();
 
+  const is15DayBatch = category === 'FEMALE_15DAY' || category === 'KIDS_15DAY' || category === 'BOYS_DANDIYA';
+  const activeWorkshopDate = is15DayBatch ? '26th September to 11th October' : '13th September to 11th October';
+  const activeWorkshopDateShort = is15DayBatch ? '26th Sept to 11th Oct (15-Day Batch)' : '13th Sept to 11th Oct (1-Month Batch)';
+
   // Generate dynamic UPI QR Code when reaching Payment step
   useEffect(() => {
     if (step === 5) {
@@ -621,7 +625,7 @@ export default function RegistrationModal({
           slotId: selectedSlot?.id,
           locationName: selectedSlot?.locationName,
           batchTime: `${selectedSlot?.batchName}: ${selectedSlot?.startTime} – ${selectedSlot?.endTime}`,
-          workshopDate: '13th Sept to 11th Oct',
+          workshopDate: activeWorkshopDate,
         }),
       });
 
@@ -1523,13 +1527,15 @@ export default function RegistrationModal({
                 </p>
               </div>
 
-              {/* Fixed Dates Banner */}
+              {/* Dynamic Workshop Dates Banner */}
               <div className="flex items-center justify-between p-3 rounded-xl bg-amber-50 border border-amber-300 text-xs">
                 <div className="flex items-center gap-2 text-maroon-950 font-bold">
-                  <Calendar className="w-4 h-4 text-garba-orange-600" />
-                  <span>Workshop Duration: <strong>13th September to 11th October</strong></span>
+                  <Calendar className="w-4 h-4 text-garba-orange-600 flex-shrink-0" />
+                  <span>Workshop Duration: <strong>{activeWorkshopDate}</strong></span>
                 </div>
-                <span className="text-[11px] text-stone-600 font-semibold">1 Month Everyday</span>
+                <span className="text-[11px] font-extrabold text-amber-900 px-2.5 py-0.5 rounded-full bg-amber-200/80 border border-amber-400">
+                  {is15DayBatch ? '15-Day Fast-Track' : '1-Month Full Workshop'}
+                </span>
               </div>
 
               {/* Slot Cards List */}
@@ -1679,7 +1685,7 @@ export default function RegistrationModal({
 
                   <div>
                     <span className="text-stone-500 block text-[11px] font-semibold">Workshop Dates:</span>
-                    <strong className="text-maroon-950">13th Sept to 11th Oct</strong>
+                    <strong className="text-maroon-950">{activeWorkshopDateShort}</strong>
                   </div>
 
                   <div>
