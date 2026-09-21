@@ -460,6 +460,9 @@ export default function RegistrationModal({
     });
   };
 
+  // Regex for 10-digit Indian mobile numbers (must start with 6, 7, 8, or 9)
+  const INDIAN_MOBILE_REGEX = /^[6-9]\d{9}$/;
+
   // Step 2 validation
   const validateStep2 = () => {
     setErrorMessage('');
@@ -474,8 +477,8 @@ export default function RegistrationModal({
         return false;
       }
       const cleanMob = mobile.replace(/\D/g, '');
-      if (cleanMob.length !== 10) {
-        setErrorMessage('Please enter a valid 10-digit Indian mobile number');
+      if (!INDIAN_MOBILE_REGEX.test(cleanMob)) {
+        setErrorMessage('Please enter a valid 10-digit mobile number starting with 6, 7, 8, or 9');
         return false;
       }
 
@@ -509,8 +512,8 @@ export default function RegistrationModal({
       }
 
       const mem1Mob = (mem1?.mobile || mobile || groupLeaderPhone).replace(/\D/g, '');
-      if (mem1Mob.length !== 10) {
-        setErrorMessage('Please enter a valid 10-digit mobile number for Member 1 (Group Leader)');
+      if (!INDIAN_MOBILE_REGEX.test(mem1Mob)) {
+        setErrorMessage('Please enter a valid 10-digit mobile number for Member 1 (Group Leader) starting with 6, 7, 8, or 9');
         return false;
       }
 
@@ -520,6 +523,13 @@ export default function RegistrationModal({
         if (!member || !member.name.trim()) {
           setErrorMessage(`Please enter the full name for Member ${i + 1}`);
           return false;
+        }
+        if (member.mobile) {
+          const cleanMemMob = member.mobile.replace(/\D/g, '');
+          if (cleanMemMob && !INDIAN_MOBILE_REGEX.test(cleanMemMob)) {
+            setErrorMessage(`Please enter a valid 10-digit mobile number starting with 6, 7, 8, or 9 for Member ${i + 1}`);
+            return false;
+          }
         }
       }
 
@@ -536,22 +546,22 @@ export default function RegistrationModal({
         return false;
       }
       const cleanGuardMob = guardianPhone.replace(/\D/g, '');
-      if (cleanGuardMob.length !== 10) {
-        setErrorMessage("Please enter a valid 10-digit parent/guardian mobile number");
+      if (!INDIAN_MOBILE_REGEX.test(cleanGuardMob)) {
+        setErrorMessage("Please enter a valid 10-digit parent/guardian mobile number starting with 6, 7, 8, or 9");
         return false;
       }
       return true;
     }
 
-    // Default FEMALE
+    // Default FEMALE / Category
     if (!participantName.trim()) {
       setErrorMessage('Please enter the participant full name');
       return false;
     }
 
     const cleanMob = mobile.replace(/\D/g, '');
-    if (cleanMob.length !== 10) {
-      setErrorMessage('Please enter a valid 10-digit Indian mobile number');
+    if (!INDIAN_MOBILE_REGEX.test(cleanMob)) {
+      setErrorMessage('Please enter a valid 10-digit mobile number starting with 6, 7, 8, or 9');
       return false;
     }
 
@@ -837,56 +847,100 @@ export default function RegistrationModal({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 
-                {/* 1. Female Admission */}
+                {/* 1. Female Admission (1 Month) */}
                 <div
-                  onClick={() => handleCategorySelect(category === 'FEMALE_15DAY' ? 'FEMALE_15DAY' : 'FEMALE')}
+                  onClick={() => handleCategorySelect('FEMALE')}
                   className={`p-3.5 rounded-2xl border-2 cursor-pointer transition-all flex flex-col justify-between ${
-                    (category === 'FEMALE' || category === 'FEMALE_15DAY') && !isOldStudent && !isGroup
+                    category === 'FEMALE' && !isOldStudent && !isGroup
                       ? 'bg-amber-50/80 border-amber-500 shadow-md ring-1 ring-amber-400'
                       : 'bg-white border-amber-200 hover:border-amber-400'
                   }`}
                 >
                   <div>
                     <div className="flex justify-between items-start">
-                      <span className="text-[10px] font-extrabold uppercase tracking-wider text-amber-800">Cat A</span>
-                      <span className="text-lg font-black font-serif text-amber-600">
-                        {category === 'FEMALE_15DAY' ? '₹1800' : '₹2500'}
-                      </span>
+                      <span className="text-[10px] font-extrabold uppercase tracking-wider text-amber-800">Cat A • Full Month</span>
+                      <span className="text-lg font-black font-serif text-amber-600">₹2500</span>
                     </div>
                     <h5 className="text-sm font-bold text-stone-950 mt-1">Female Admission</h5>
-                    <p className="text-[11px] text-stone-600 mt-0.5 font-medium">
-                      {category === 'FEMALE_15DAY' ? '(Girls Batch • 26 Sep–11 Oct)' : '(Full 1-Month Workshop)'}
-                    </p>
+                    <p className="text-[11px] text-stone-600 mt-0.5 font-medium">(1 Month • 13 Sep – 11 Oct)</p>
                     <div className="mt-2.5 pt-2 border-t border-stone-200 text-[10px] text-stone-700 space-y-0.5 font-medium">
                       <div>✓ 18 Oct Competition Included</div>
                       <div>✓ Free 1-Day Family Pass</div>
                     </div>
                   </div>
+                </div>
 
-                  {/* Toggle between Full Month and Girls Special */}
-                  <div className="mt-2 pt-2 border-t border-amber-200 flex gap-1" onClick={(e) => e.stopPropagation()}>
-                    <button
-                      type="button"
-                      onClick={() => handleCategorySelect('FEMALE')}
-                      className={`flex-1 py-1 px-1 rounded-md text-[9px] font-extrabold transition cursor-pointer ${
-                        category === 'FEMALE' && !isOldStudent && !isGroup ? 'bg-amber-500 text-stone-950 shadow-sm' : 'bg-white border border-amber-300 text-stone-800 hover:bg-amber-100'
-                      }`}
-                    >
-                      1-Mo (₹2500)
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleCategorySelect('FEMALE_15DAY')}
-                      className={`flex-1 py-1 px-1 rounded-md text-[9px] font-extrabold transition cursor-pointer ${
-                        category === 'FEMALE_15DAY' ? 'bg-amber-500 text-stone-950 shadow-sm' : 'bg-white border border-amber-300 text-stone-800 hover:bg-amber-100'
-                      }`}
-                    >
-                      Girls (₹1800)
-                    </button>
+                {/* 2. Special Girls Garba (15-Day Batch) */}
+                <div
+                  onClick={() => handleCategorySelect('FEMALE_15DAY')}
+                  className={`p-3.5 rounded-2xl border-2 cursor-pointer transition-all flex flex-col justify-between ${
+                    category === 'FEMALE_15DAY'
+                      ? 'bg-amber-100/90 border-amber-500 shadow-md ring-1 ring-amber-400'
+                      : 'bg-white border-amber-200 hover:border-amber-400'
+                  }`}
+                >
+                  <div>
+                    <div className="flex justify-between items-start">
+                      <span className="text-[10px] font-extrabold uppercase tracking-wider text-amber-900 bg-amber-200 px-2 py-0.5 rounded-full">15-Day Fast Track</span>
+                      <span className="text-lg font-black font-serif text-amber-900">₹1800</span>
+                    </div>
+                    <h5 className="text-sm font-bold text-stone-950 mt-1">Special Girls Garba</h5>
+                    <p className="text-[11px] text-amber-800 font-bold mt-0.5">(15 Days • 26 Sep – 11 Oct)</p>
+                    <div className="mt-2.5 pt-2 border-t border-stone-200 text-[10px] text-stone-700 space-y-0.5 font-medium">
+                      <div>✓ 2 Fast-Track Patterns Taught</div>
+                      <div>✓ Free 1-Day Family Pass</div>
+                    </div>
                   </div>
                 </div>
 
-                {/* 2. Season 2 Alumni (Old Student) */}
+                {/* 3. Kids 15-Day Special Workshop (₹1500) */}
+                <div
+                  onClick={() => handleCategorySelect('KIDS_15DAY')}
+                  className={`p-3.5 rounded-2xl border-2 cursor-pointer transition-all flex flex-col justify-between ${
+                    category === 'KIDS_15DAY'
+                      ? 'bg-emerald-100/90 border-emerald-500 shadow-md ring-2 ring-emerald-400'
+                      : 'bg-white border-emerald-300 hover:border-emerald-500'
+                  }`}
+                >
+                  <div>
+                    <div className="flex justify-between items-start">
+                      <span className="text-[10px] font-extrabold uppercase tracking-wider text-emerald-900 bg-emerald-200 px-2 py-0.5 rounded-full">Kids Special • ₹1500</span>
+                      <span className="text-lg font-black font-serif text-emerald-700">₹1500</span>
+                    </div>
+                    <h5 className="text-sm font-bold text-stone-950 mt-1">Kids 15-Day Workshop</h5>
+                    <p className="text-[11px] text-emerald-800 font-bold mt-0.5">(Age 7–16 • 26 Sep – 11 Oct)</p>
+                    <div className="mt-2.5 pt-2 border-t border-stone-200 text-[10px] text-stone-700 space-y-0.5 font-medium">
+                      <div>✓ Special 15 Days Fast-Track Batch</div>
+                      <div>✓ Princess Title Eligibility</div>
+                      <div>✓ Free 1-Day Family Pass</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 4. Kids Girls (1 Month Workshop) */}
+                <div
+                  onClick={() => handleCategorySelect('KIDS')}
+                  className={`p-3.5 rounded-2xl border-2 cursor-pointer transition-all flex flex-col justify-between ${
+                    category === 'KIDS'
+                      ? 'bg-garba-teal-50/80 border-garba-teal-500 shadow-md ring-1 ring-teal-400'
+                      : 'bg-white border-garba-teal-200 hover:border-garba-teal-400'
+                  }`}
+                >
+                  <div>
+                    <div className="flex justify-between items-start">
+                      <span className="text-[10px] font-extrabold uppercase tracking-wider text-garba-teal-700">Cat C • Full Month</span>
+                      <span className="text-lg font-black font-serif text-garba-teal-700">₹2000</span>
+                    </div>
+                    <h5 className="text-sm font-bold text-maroon-950 mt-1">Kids Girls (1 Month)</h5>
+                    <p className="text-[11px] text-stone-600 mt-0.5 font-medium">(Age 7–16 • 13 Sep – 11 Oct)</p>
+                    <div className="mt-2.5 pt-2 border-t border-stone-200 text-[10px] text-stone-700 space-y-0.5 font-medium">
+                      <div>✓ Full 30-Day Comprehensive Learning</div>
+                      <div>✓ Princess Title Eligibility</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 5. Season 2 Alumni (Old Student) */}
                 <div
                   onClick={() => handleCategorySelect('OLD_STUDENT')}
                   className={`p-3.5 rounded-2xl border-2 cursor-pointer transition-all flex flex-col justify-between ${
@@ -905,18 +959,11 @@ export default function RegistrationModal({
                     <div className="mt-2.5 pt-2 border-t border-stone-200 text-[10px] text-stone-700 space-y-0.5 font-medium">
                       <div>✓ Season 2 Database Verified</div>
                       <div>✓ Free 1-Day Family Pass</div>
-                      <div>✓ Full Workshop Access</div>
                     </div>
-                  </div>
-                  <div className="mt-2 pt-2 border-t border-amber-200">
-                    <span className="text-[10px] font-bold text-amber-900 flex items-center gap-1">
-                      <Sparkles className="w-3 h-3 text-amber-600" />
-                      Requires Name & Guardian Check
-                    </span>
                   </div>
                 </div>
 
-                {/* 3. Group Admission (5+ Members) */}
+                {/* 6. Group Admission (5+ Members) */}
                 <div
                   onClick={() => handleCategorySelect('GROUP')}
                   className={`p-3.5 rounded-2xl border-2 cursor-pointer transition-all flex flex-col justify-between ${
@@ -939,56 +986,7 @@ export default function RegistrationModal({
                   </div>
                 </div>
 
-                {/* 4. Kids Girls */}
-                <div
-                  onClick={() => handleCategorySelect(category === 'KIDS_15DAY' ? 'KIDS_15DAY' : 'KIDS')}
-                  className={`p-3.5 rounded-2xl border-2 cursor-pointer transition-all flex flex-col justify-between ${
-                    category === 'KIDS' || category === 'KIDS_15DAY'
-                      ? 'bg-garba-teal-50/80 border-garba-teal-500 shadow-md ring-1 ring-teal-400'
-                      : 'bg-white border-garba-teal-200 hover:border-garba-teal-400'
-                  }`}
-                >
-                  <div>
-                    <div className="flex justify-between items-start">
-                      <span className="text-[10px] font-extrabold uppercase tracking-wider text-garba-teal-700">Cat C</span>
-                      <span className="text-lg font-black font-serif text-garba-teal-700">
-                        {category === 'KIDS_15DAY' ? '₹1500' : '₹2000'}
-                      </span>
-                    </div>
-                    <h5 className="text-sm font-bold text-maroon-950 mt-1">Kids Girls</h5>
-                    <p className="text-[11px] text-stone-600 mt-0.5 font-medium">
-                      {category === 'KIDS_15DAY' ? '(15-Day Batch • 26 Sep–11 Oct)' : '(Age 7–16 Years)'}
-                    </p>
-                    <div className="mt-2.5 pt-2 border-t border-stone-200 text-[10px] text-stone-700 space-y-0.5 font-medium">
-                      <div>✓ Princess Title Eligibility</div>
-                      <div>✓ Safe & Supportive</div>
-                    </div>
-                  </div>
-
-                  {/* Toggle between Full Month and Special 15 Days */}
-                  <div className="mt-2 pt-2 border-t border-teal-200 flex gap-1" onClick={(e) => e.stopPropagation()}>
-                    <button
-                      type="button"
-                      onClick={() => handleCategorySelect('KIDS')}
-                      className={`flex-1 py-1 px-1 rounded-md text-[9px] font-extrabold transition cursor-pointer ${
-                        category === 'KIDS' ? 'bg-teal-600 text-white shadow-sm' : 'bg-white border border-teal-300 text-stone-800 hover:bg-teal-100'
-                      }`}
-                    >
-                      1-Mo (₹2000)
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleCategorySelect('KIDS_15DAY')}
-                      className={`flex-1 py-1 px-1 rounded-md text-[9px] font-extrabold transition cursor-pointer ${
-                        category === 'KIDS_15DAY' ? 'bg-teal-600 text-white shadow-sm' : 'bg-white border border-teal-300 text-stone-800 hover:bg-teal-100'
-                      }`}
-                    >
-                      15-Day (₹1500)
-                    </button>
-                  </div>
-                </div>
-
-                {/* 5. Boys Dandiya Special */}
+                {/* 7. Boys Dandiya Special */}
                 <div
                   onClick={() => handleCategorySelect('BOYS_DANDIYA')}
                   className={`p-3.5 rounded-2xl border-2 cursor-pointer transition-all flex flex-col justify-between ${
@@ -1003,11 +1001,10 @@ export default function RegistrationModal({
                       <span className="text-lg font-black font-serif text-red-600">₹1600</span>
                     </div>
                     <h5 className="text-sm font-bold text-maroon-950 mt-1">Boys Dandiya</h5>
-                    <p className="text-[11px] text-red-700 mt-0.5 font-bold">(Age 8–40 Years)</p>
+                    <p className="text-[11px] text-red-700 mt-0.5 font-bold">(Age 8–40 Years • 26 Sep–11 Oct)</p>
                     <div className="mt-2.5 pt-2 border-t border-stone-200 text-[10px] text-stone-700 space-y-0.5 font-medium">
-                      <div>✓ 15 Days • 26 Sep–11 Oct</div>
+                      <div>✓ 15 Days Workshop</div>
                       <div>✓ 19 Oct Open Competition</div>
-                      <div>✓ Manish & Neel Sir Guidance</div>
                     </div>
                   </div>
                 </div>

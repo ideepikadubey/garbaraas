@@ -66,9 +66,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: 'Participant name is required' }, { status: 400 });
     }
 
+    const INDIAN_MOBILE_REGEX = /^[6-9]\d{9}$/;
     const cleanMobile = (mobile || '').replace(/\D/g, '');
-    if (cleanMobile.length !== 10) {
-      return NextResponse.json({ success: false, error: 'Please enter a valid 10-digit Indian mobile number' }, { status: 400 });
+    if (!INDIAN_MOBILE_REGEX.test(cleanMobile)) {
+      return NextResponse.json({ success: false, error: 'Please enter a valid 10-digit mobile number starting with 6, 7, 8, or 9' }, { status: 400 });
     }
 
     if (!slotId) {
@@ -103,8 +104,8 @@ export async function POST(req: Request) {
         return NextResponse.json({ success: false, error: "Parent or Guardian's name is required for kids category" }, { status: 400 });
       }
       const cleanGuardianPhone = (guardianPhone || '').replace(/\D/g, '');
-      if (cleanGuardianPhone.length !== 10) {
-        return NextResponse.json({ success: false, error: "Parent or Guardian's 10-digit mobile number is required" }, { status: 400 });
+      if (!INDIAN_MOBILE_REGEX.test(cleanGuardianPhone)) {
+        return NextResponse.json({ success: false, error: "Please enter a valid 10-digit parent or guardian mobile number starting with 6, 7, 8, or 9" }, { status: 400 });
       }
     }
 
