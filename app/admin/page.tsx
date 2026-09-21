@@ -409,16 +409,15 @@ export default function AdminPage() {
         
         {/* ================= 6 STATS CARDS ================= */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
-          
-          {/* Total Registrations */}
-          <div className="bg-white border-2 border-stone-200 hover:border-amber-300 rounded-2xl p-4 shadow-2xs transition">
+           {/* Total Valid Registrations */}
+          <div className="bg-white border-2 border-stone-200 hover:border-stone-400 rounded-2xl p-4 shadow-2xs transition">
             <span className="text-[10px] uppercase font-bold tracking-wider text-stone-500">
-              Total Registrations
+              Valid Registrations
             </span>
             <div className="text-2xl sm:text-3xl font-serif font-black text-stone-950 mt-1">
               {metrics ? metrics.totalRegistrations : '...'}
             </div>
-            <div className="text-[11px] text-amber-800 font-semibold mt-0.5">All categories</div>
+            <div className="text-[11px] text-amber-800 font-semibold mt-0.5">Submitted & Verified</div>
           </div>
 
           {/* Paid Registrations */}
@@ -429,18 +428,18 @@ export default function AdminPage() {
             <div className="text-2xl sm:text-3xl font-serif font-black text-emerald-700 mt-1">
               {metrics ? metrics.paidCount : '...'}
             </div>
-            <div className="text-[11px] text-emerald-600 font-semibold mt-0.5">Confirmed passes</div>
+            <div className="text-[11px] text-emerald-600 font-semibold mt-0.5">Confirmed Passes</div>
           </div>
 
-          {/* Pending Payments */}
+          {/* Pending Verification */}
           <div className="bg-white border-2 border-amber-200 hover:border-amber-400 rounded-2xl p-4 shadow-2xs transition">
             <span className="text-[10px] uppercase font-bold tracking-wider text-amber-700">
-              Pending Payments
+              Submitted (Pending Check)
             </span>
             <div className="text-2xl sm:text-3xl font-serif font-black text-amber-700 mt-1">
               {metrics ? metrics.pendingCount : '...'}
             </div>
-            <div className="text-[11px] text-amber-600 font-semibold mt-0.5">Needs Verification</div>
+            <div className="text-[11px] text-amber-600 font-semibold mt-0.5">UTR Submitted</div>
           </div>
 
           {/* Today's Bookings */}
@@ -451,19 +450,19 @@ export default function AdminPage() {
             <div className="text-2xl sm:text-3xl font-serif font-black text-amber-800 mt-1">
               {metrics ? metrics.todayBookings : '...'}
             </div>
-            <div className="text-[11px] text-stone-500 font-semibold mt-0.5">Past 24 hours</div>
+            <div className="text-[11px] text-stone-500 font-semibold mt-0.5">Submitted / Verified (24h)</div>
           </div>
 
           {/* Total Revenue */}
           <div className="bg-white border-2 border-amber-300 hover:border-amber-500 rounded-2xl p-4 shadow-2xs transition bg-gradient-to-br from-white to-amber-50/50">
             <span className="text-[10px] uppercase font-bold tracking-wider text-amber-900">
-              Total Revenue
+              Verified Revenue
             </span>
             <div className="text-2xl sm:text-3xl font-serif font-black text-amber-800 mt-1">
               ₹{metrics ? metrics.totalRevenue : '0'}
             </div>
             <div className="text-[10px] text-stone-500 font-medium mt-0.5">
-              Pending: ₹{metrics ? metrics.pendingRevenue : '0'}
+              Pending Verification: ₹{metrics ? metrics.pendingRevenue : '0'}
             </div>
           </div>
 

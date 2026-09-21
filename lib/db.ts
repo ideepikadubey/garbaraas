@@ -380,10 +380,17 @@ export async function getSlots(): Promise<Slot[]> {
     });
   }
 
-  // Calculate real live booked seats from all active registrations
+  // Calculate real live booked seats from submitted & verified registrations
   const regs = await getRegistrations();
   return baseSlots.map((slot) => {
-    const slotRegs = regs.filter((r) => r.slotId === slot.id && r.bookingStatus !== 'CANCELLED');
+    const slotRegs = regs.filter(
+      (r) =>
+        r.slotId === slot.id &&
+        r.bookingStatus !== 'CANCELLED' &&
+        (r.paymentStatus === 'PAYMENT_VERIFIED' ||
+          r.paymentStatus === 'PAYMENT_SUBMITTED' ||
+          (r.utrNumber && r.utrNumber.trim().length > 0))
+    );
     const realBooked = slotRegs.reduce((acc, r) => acc + (r.membersCount || 1), 0);
     const capacity = slot.capacity || 40;
     let status: SlotStatus = 'AVAILABLE';
@@ -1023,15 +1030,35 @@ export async function getDashboardMetrics(): Promise<{
 }> {
   const [allRegs, allSlots] = await Promise.all([getRegistrations(), getSlots()]);
 
-  const totalRegistrations = allRegs.length;
-  const paidRegs = allRegs.filter((r) => r.paymentStatus === 'PAYMENT_VERIFIED');
+  // Valid registrations: Payment submitted by user or verified by Admin
+  const submittedOrVerifiedRegs = allRegs.filter(
+    (r) =>
+      r.bookingStatus !== 'CANCELLED' &&
+      (r.paymentStatus === 'PAYMENT_VERIFIED' ||
+        r.paymentStatus === 'PAYMENT_SUBMITTED' ||
+        (r.utrNumber && r.utrNumber.trim().length > 0))
+  );
+
+  const totalRegistrations = submittedOrVerifiedRegs.length;
+
+  // Paid and Admin Verified registrations
+  const paidRegs = allRegs.filter(
+    (r) => r.paymentStatus === 'PAYMENT_VERIFIED' && r.bookingStatus !== 'CANCELLED'
+  );
   const paidCount = paidRegs.length;
-  const pendingRegs = allRegs.filter((r) => r.paymentStatus !== 'PAYMENT_VERIFIED' && r.bookingStatus !== 'CANCELLED');
+
+  // Pending verification (Payment submitted by user with UTR, awaiting admin check)
+  const pendingRegs = allRegs.filter(
+    (r) =>
+      r.paymentStatus !== 'PAYMENT_VERIFIED' &&
+      r.bookingStatus !== 'CANCELLED' &&
+      (r.paymentStatus === 'PAYMENT_SUBMITTED' || (r.utrNumber && r.utrNumber.trim().length > 0))
+  );
   const pendingCount = pendingRegs.length;
 
   const now = new Date();
   const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-  const todayBookings = allRegs.filter((r) => new Date(r.createdAt) >= oneDayAgo).length;
+  const todayBookings = submittedOrVerifiedRegs.filter((r) => new Date(r.createdAt) >= oneDayAgo).length;
 
   const totalRevenue = paidRegs.reduce((acc, r) => acc + (r.totalAmount || 0), 0);
   const pendingRevenue = pendingRegs.reduce((acc, r) => acc + (r.totalAmount || 0), 0);

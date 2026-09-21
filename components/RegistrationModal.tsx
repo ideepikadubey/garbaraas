@@ -20,6 +20,7 @@ import {
   Users,
   Calendar,
   CheckCircle2,
+  QrCode,
 } from 'lucide-react';
 import { CategoryType, Slot, Registration } from '@/lib/types';
 import { downloadRegistrationReceipt } from '@/lib/receipt-generator';
@@ -1766,12 +1767,12 @@ export default function RegistrationModal({
             </div>
           )}
 
-          {/* ================= STEP 5: SECURE PAYMENT GATEWAY ================= */}
+          {/* ================= STEP 5: SECURE QR CODE & AUTOMATED PAYMENT ================= */}
           {step === 5 && (
             <div className="space-y-4">
               <div className="text-center mb-2">
                 <h4 className="text-xl font-heading font-black text-slate-900">
-                  Complete Online Payment
+                  Scan QR Code to Pay
                 </h4>
                 <p className="text-xs text-slate-500 font-medium mt-1">
                   Registration ID: <span className="font-mono font-bold text-slate-900">{createdRegistration?.id}</span>
@@ -1779,7 +1780,7 @@ export default function RegistrationModal({
               </div>
 
               {/* Minimal & Clean Payment Card */}
-              <div className="p-5 sm:p-7 rounded-2xl bg-white border-2 border-slate-200 shadow-lg space-y-6">
+              <div className="p-5 sm:p-7 rounded-2xl bg-white border-2 border-slate-200 shadow-lg space-y-5">
                 <div className="flex items-center justify-between pb-4 border-b border-slate-100">
                   <div>
                     <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
@@ -1796,6 +1797,29 @@ export default function RegistrationModal({
                   </div>
                 </div>
 
+                {/* Dynamic QR Code Box */}
+                <div className="flex flex-col items-center justify-center p-4 rounded-2xl bg-amber-50/70 border border-amber-200/90 text-center space-y-2.5">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-amber-900">
+                    <QrCode className="w-4 h-4 text-amber-600 flex-shrink-0" />
+                    <span>Scan & Pay via GPay / PhonePe / Paytm / BHIM</span>
+                  </div>
+
+                  {qrDataUrl ? (
+                    <div className="p-2 bg-white rounded-2xl shadow-sm border border-amber-200">
+                      <img src={qrDataUrl} alt="UPI Payment QR Code" className="w-44 h-44 sm:w-48 sm:h-48 mx-auto" />
+                    </div>
+                  ) : (
+                    <div className="w-44 h-44 sm:w-48 sm:h-48 bg-stone-100 rounded-2xl flex items-center justify-center text-xs text-stone-400">
+                      Generating QR...
+                    </div>
+                  )}
+
+                  <div className="p-2 rounded-xl bg-emerald-50 border border-emerald-300 text-emerald-900 text-[11px] font-bold flex items-center justify-center gap-1.5 w-full">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                    <span>Instant Auto-Verification • No UTR entry required</span>
+                  </div>
+                </div>
+
                 {/* Direct Pay Button */}
                 <button
                   type="button"
@@ -1808,7 +1832,7 @@ export default function RegistrationModal({
                   ) : (
                     <Sparkles className="w-5 h-5 text-yellow-300" />
                   )}
-                  <span>PAY ₹{total} SECURELY NOW</span>
+                  <span>PAY ₹{total} VIA GATEWAY / UPI</span>
                 </button>
 
                 <div className="flex items-center justify-center gap-2 text-xs text-slate-500 font-medium pt-1">
