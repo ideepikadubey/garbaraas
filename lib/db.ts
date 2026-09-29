@@ -11,17 +11,18 @@ interface DatabaseSchema {
 
 // Default Seed Slots matching Poster 4
 const DEFAULT_SLOTS: Slot[] = [
+  // --- PREVIOUS BATCHES (NOW FULLY BOOKED / HOUSEFULL) ---
   {
     id: 'slot-tfn-1',
     locationId: 'loc-tfn',
     locationName: 'TFN Studio',
     locationAddress: 'The Frozen Night Dance Academy Studio, Kishangarh',
-    batchName: 'Batch 1',
+    batchName: 'Morning Batch 1 (13 Sep – 11 Oct)',
     startTime: '09:00 AM',
     endTime: '10:00 AM',
     capacity: 35,
-    bookedSeats: 0,
-    status: 'AVAILABLE',
+    bookedSeats: 35,
+    status: 'FULL',
     isActive: true,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -31,12 +32,12 @@ const DEFAULT_SLOTS: Slot[] = [
     locationId: 'loc-tfn',
     locationName: 'TFN Studio',
     locationAddress: 'The Frozen Night Dance Academy Studio, Kishangarh',
-    batchName: 'Batch 2',
+    batchName: 'Morning Batch 2 (13 Sep – 11 Oct)',
     startTime: '10:00 AM',
     endTime: '11:00 AM',
     capacity: 35,
-    bookedSeats: 0,
-    status: 'AVAILABLE',
+    bookedSeats: 35,
+    status: 'FULL',
     isActive: true,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -46,12 +47,12 @@ const DEFAULT_SLOTS: Slot[] = [
     locationId: 'loc-bang',
     locationName: 'Bang Marriage Hall',
     locationAddress: 'Near City Station, Kishangarh',
-    batchName: 'Batch 1',
+    batchName: 'Afternoon Batch 1 (13 Sep – 11 Oct)',
     startTime: '12:00 PM',
     endTime: '01:00 PM',
     capacity: 50,
-    bookedSeats: 0,
-    status: 'AVAILABLE',
+    bookedSeats: 50,
+    status: 'FULL',
     isActive: true,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -61,12 +62,12 @@ const DEFAULT_SLOTS: Slot[] = [
     locationId: 'loc-bang',
     locationName: 'Bang Marriage Hall',
     locationAddress: 'Near City Station, Kishangarh',
-    batchName: 'Batch 2',
+    batchName: 'Afternoon Batch 2 (13 Sep – 11 Oct)',
     startTime: '01:00 PM',
     endTime: '02:00 PM',
     capacity: 50,
-    bookedSeats: 0,
-    status: 'AVAILABLE',
+    bookedSeats: 50,
+    status: 'FULL',
     isActive: true,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -76,12 +77,12 @@ const DEFAULT_SLOTS: Slot[] = [
     locationId: 'loc-bang',
     locationName: 'Bang Marriage Hall',
     locationAddress: 'Near City Station, Kishangarh',
-    batchName: 'Batch 3',
+    batchName: 'Afternoon Batch 3 (13 Sep – 11 Oct)',
     startTime: '02:00 PM',
     endTime: '03:00 PM',
     capacity: 50,
-    bookedSeats: 0,
-    status: 'AVAILABLE',
+    bookedSeats: 50,
+    status: 'FULL',
     isActive: true,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -91,12 +92,12 @@ const DEFAULT_SLOTS: Slot[] = [
     locationId: 'loc-bang',
     locationName: 'Bang Marriage Hall',
     locationAddress: 'Near City Station, Kishangarh',
-    batchName: 'Batch 4',
+    batchName: 'Afternoon Batch 4 (13 Sep – 11 Oct)',
     startTime: '03:00 PM',
     endTime: '04:00 PM',
     capacity: 50,
-    bookedSeats: 0,
-    status: 'AVAILABLE',
+    bookedSeats: 50,
+    status: 'FULL',
     isActive: true,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -106,12 +107,12 @@ const DEFAULT_SLOTS: Slot[] = [
     locationId: 'loc-bang',
     locationName: 'Bang Marriage Hall',
     locationAddress: 'Near City Station, Kishangarh',
-    batchName: 'Batch 5',
+    batchName: 'Afternoon Batch 5 (13 Sep – 11 Oct)',
     startTime: '04:00 PM',
     endTime: '05:00 PM',
     capacity: 50,
-    bookedSeats: 0,
-    status: 'AVAILABLE',
+    bookedSeats: 50,
+    status: 'FULL',
     isActive: true,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -121,12 +122,12 @@ const DEFAULT_SLOTS: Slot[] = [
     locationId: 'loc-cricket',
     locationName: 'Cricket Academy (Turf, Kishangarh)',
     locationAddress: 'Opposite Crystal Park, Kishangarh',
-    batchName: 'Batch 1',
+    batchName: 'Evening Batch 1 (13 Sep – 11 Oct)',
     startTime: '06:00 PM',
     endTime: '07:00 PM',
     capacity: 60,
-    bookedSeats: 0,
-    status: 'AVAILABLE',
+    bookedSeats: 60,
+    status: 'FULL',
     isActive: true,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -136,12 +137,12 @@ const DEFAULT_SLOTS: Slot[] = [
     locationId: 'loc-cricket',
     locationName: 'Cricket Academy (Turf, Kishangarh)',
     locationAddress: 'Opposite Crystal Park, Kishangarh',
-    batchName: 'Batch 2',
+    batchName: 'Evening Batch 2 (13 Sep – 11 Oct)',
     startTime: '07:00 PM',
     endTime: '08:00 PM',
     capacity: 60,
-    bookedSeats: 0,
-    status: 'AVAILABLE',
+    bookedSeats: 60,
+    status: 'FULL',
     isActive: true,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -151,12 +152,12 @@ const DEFAULT_SLOTS: Slot[] = [
     locationId: 'loc-bang',
     locationName: 'Bang Marriage Hall',
     locationAddress: 'Near City Station, Kishangarh',
-    batchName: 'Evening Batch',
+    batchName: 'Night Batch (13 Sep – 11 Oct)',
     startTime: '08:00 PM',
     endTime: '09:00 PM',
     capacity: 60,
-    bookedSeats: 0,
-    status: 'AVAILABLE',
+    bookedSeats: 60,
+    status: 'FULL',
     isActive: true,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -170,8 +171,8 @@ const DEFAULT_SLOTS: Slot[] = [
     startTime: '05:00 PM',
     endTime: '06:00 PM',
     capacity: 50,
-    bookedSeats: 0,
-    status: 'AVAILABLE',
+    bookedSeats: 50,
+    status: 'FULL',
     isActive: true,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -185,8 +186,8 @@ const DEFAULT_SLOTS: Slot[] = [
     startTime: '07:00 PM',
     endTime: '08:00 PM',
     capacity: 50,
-    bookedSeats: 0,
-    status: 'AVAILABLE',
+    bookedSeats: 50,
+    status: 'FULL',
     isActive: true,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -196,10 +197,72 @@ const DEFAULT_SLOTS: Slot[] = [
     locationId: 'loc-bang',
     locationName: 'Bang Marriage Hall',
     locationAddress: 'Near City Station, Kishangarh',
-    batchName: 'Special Girls Garba Workshop (26 Sep – 11 Oct)',
+    batchName: 'Special Girls Workshop (26 Sep – 11 Oct)',
     startTime: '04:00 PM',
     endTime: '05:00 PM',
     capacity: 50,
+    bookedSeats: 50,
+    status: 'FULL',
+    isActive: true,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+
+  // --- ⭐ SPECIAL & FINAL BATCHES: 1 TO 11 OCT (FEMALES ONLY • ₹1800 • GARBA, DANDIYA & MAHA ARTI) ---
+  {
+    id: 'slot-oct-bang-eve1',
+    locationId: 'loc-bang',
+    locationName: 'Bang Marriage Hall',
+    locationAddress: 'Near City Station, Kishangarh',
+    batchName: 'Batch 1 (1 to 11 Oct) • Garba, Dandiya & Maha Arti',
+    startTime: '05:00 PM',
+    endTime: '06:00 PM',
+    capacity: 50,
+    bookedSeats: 0,
+    status: 'AVAILABLE',
+    isActive: true,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: 'slot-oct-bang-eve2',
+    locationId: 'loc-bang',
+    locationName: 'Bang Marriage Hall',
+    locationAddress: 'Near City Station, Kishangarh',
+    batchName: 'Batch 2 (1 to 11 Oct) • Garba, Dandiya & Maha Arti',
+    startTime: '06:00 PM',
+    endTime: '07:00 PM',
+    capacity: 50,
+    bookedSeats: 0,
+    status: 'AVAILABLE',
+    isActive: true,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: 'slot-oct-tfn-morning',
+    locationId: 'loc-tfn',
+    locationName: 'The Frozen Studio',
+    locationAddress: 'The Frozen Night Dance Academy Studio, Kishangarh',
+    batchName: 'Morning Batch (1 to 11 Oct) • Garba, Dandiya & Maha Arti',
+    startTime: '11:00 AM',
+    endTime: '12:00 PM',
+    capacity: 35,
+    bookedSeats: 0,
+    status: 'AVAILABLE',
+    isActive: true,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: 'slot-oct-tfn-afternoon',
+    locationId: 'loc-tfn',
+    locationName: 'The Frozen Studio',
+    locationAddress: 'The Frozen Night Dance Academy Studio, Kishangarh',
+    batchName: 'Afternoon Batch (1 to 11 Oct) • Garba, Dandiya & Maha Arti',
+    startTime: '12:00 PM',
+    endTime: '01:00 PM',
+    capacity: 35,
     bookedSeats: 0,
     status: 'AVAILABLE',
     isActive: true,
@@ -214,14 +277,15 @@ const DEFAULT_SETTINGS: AdminSettings = {
   supportPhone1: '8385969285', // Neel Sir (Primary)
   supportPhone2: '8432223222', // Manish Sir (Call Only)
   priceFemale: 2500,
+  priceFemaleOctSpecial: 1800,
   priceFemale15Day: 1800,
   priceOldStudentGroup: 2200,
   priceKids: 2000,
   priceKids15Day: 1500,
   priceBoysDandiya: 1600,
-  workshopDates: '13th September to 11th October',
-  bookingDates: '9th September to 25th September',
-  announcement: 'Special Girls Workshop (26 Sep–11 Oct @ ₹1800), Kids 15-Day Batch (@ ₹1500) & Boys Dandiya (26 Sep–11 Oct @ ₹1600) open for registrations! Grand Competitions on 18th & 19th Oct.',
+  workshopDates: '1st October to 11th October',
+  bookingDates: 'Open Now for 1 to 11 Oct Special & Final Batch',
+  announcement: '🚨 ALL PREVIOUS SLOTS ARE FULLY BOOKED! Special & Final 1 to 11 Oct Batch for Females (₹1800 • The Frozen Studio • 5 to 6 PM) is NOW OPEN!',
 };
 
 const DEFAULT_REGISTRATIONS: Registration[] = [];
@@ -318,6 +382,13 @@ function ensureDbFile(): DatabaseSchema {
       const content = fs.readFileSync(DB_FILE, 'utf-8');
       const data = JSON.parse(content) as DatabaseSchema;
       if (Array.isArray(data.slots) && data.slots.length > 0) {
+        // Ensure all Special & Final 1-11 Oct slots exist and fully booked status reflects
+        const hasOctSpecial = data.slots.some((s) => s.id.startsWith('slot-oct-'));
+        if (!hasOctSpecial || data.slots.length !== DEFAULT_SLOTS.length) {
+          data.slots = DEFAULT_SLOTS;
+          data.settings = { ...DEFAULT_SETTINGS, ...data.settings };
+          writeDbFile(data);
+        }
         inMemoryDb = data;
         return inMemoryDb;
       }
@@ -351,22 +422,13 @@ export async function getSlots(): Promise<Slot[]> {
       const { data, error } = await supabase.from('slots').select('*').order('id', { ascending: true });
       if (!error && Array.isArray(data) && data.length > 0) {
         baseSlots = data.map(mapDbSlot);
-      } else if (!error && Array.isArray(data) && data.length === 0) {
-        const seedRows = DEFAULT_SLOTS.map((s) => ({
-          id: s.id,
-          location_id: s.locationId,
-          location_name: s.locationName,
-          location_address: s.locationAddress,
-          batch_name: s.batchName,
-          start_time: s.startTime,
-          end_time: s.endTime,
-          capacity: s.capacity,
-          booked_seats: 0,
-          status: 'AVAILABLE',
-          is_active: s.isActive,
-        }));
-        await supabase.from('slots').insert(seedRows);
-        baseSlots = DEFAULT_SLOTS;
+        const octDefaults = DEFAULT_SLOTS.filter(s => s.id.startsWith('slot-oct-'));
+        for (const defaultOct of octDefaults) {
+          const exists = baseSlots.some(s => s.id === defaultOct.id || (s.startTime === defaultOct.startTime && s.locationName === defaultOct.locationName));
+          if (!exists) {
+            baseSlots.unshift(defaultOct);
+          }
+        }
       }
     } catch (e) {
       console.warn('Supabase getSlots fallback to local DB:', e);
@@ -380,9 +442,26 @@ export async function getSlots(): Promise<Slot[]> {
     });
   }
 
+  // Ensure Special & Final slots are at the beginning
+  const octSlots = baseSlots.filter(s => s.id.startsWith('slot-oct-') || s.batchName.toLowerCase().includes('special & final') || s.batchName.toLowerCase().includes('1 to 11 oct'));
+  const otherSlots = baseSlots.filter(s => !s.id.startsWith('slot-oct-') && !s.batchName.toLowerCase().includes('special & final') && !s.batchName.toLowerCase().includes('1 to 11 oct'));
+  baseSlots = [...octSlots, ...otherSlots];
+
   // Calculate real live booked seats from submitted & verified registrations
   const regs = await getRegistrations();
   return baseSlots.map((slot) => {
+    const isSpecialFinalBatch = slot.id.startsWith('slot-oct-') || slot.batchName.toLowerCase().includes('special & final') || slot.batchName.toLowerCase().includes('1 to 11 oct');
+    
+    // Past registration slots are strictly HOUSEFULL
+    if (!isSpecialFinalBatch) {
+      return {
+        ...slot,
+        bookedSeats: slot.capacity,
+        status: 'FULL' as SlotStatus,
+      };
+    }
+
+    // Special & Final 1-11 Oct Batches
     const slotRegs = regs.filter(
       (r) =>
         r.slotId === slot.id &&
@@ -392,13 +471,14 @@ export async function getSlots(): Promise<Slot[]> {
           (r.utrNumber && r.utrNumber.trim().length > 0))
     );
     const realBooked = slotRegs.reduce((acc, r) => acc + (r.membersCount || 1), 0);
-    const capacity = slot.capacity || 40;
+    const capacity = slot.capacity || 35;
     let status: SlotStatus = 'AVAILABLE';
     if (realBooked >= capacity) {
       status = 'FULL';
     } else if (capacity - realBooked <= 5 && realBooked > 0) {
       status = 'ALMOST_FULL';
     }
+
     return {
       ...slot,
       bookedSeats: realBooked,

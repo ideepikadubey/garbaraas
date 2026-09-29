@@ -1,4 +1,12 @@
-export type CategoryType = 'FEMALE' | 'FEMALE_15DAY' | 'BOYS_DANDIYA' | 'OLD_STUDENT' | 'GROUP' | 'KIDS' | 'KIDS_15DAY';
+export type CategoryType = 
+  | 'FEMALE_OCT_SPECIAL'
+  | 'FEMALE' 
+  | 'FEMALE_15DAY' 
+  | 'BOYS_DANDIYA' 
+  | 'OLD_STUDENT' 
+  | 'GROUP' 
+  | 'KIDS' 
+  | 'KIDS_15DAY';
 
 export type PaymentStatus = 
   | 'PAYMENT_PENDING' 
@@ -93,6 +101,7 @@ export interface AdminSettings {
   supportPhone1: string;
   supportPhone2: string;
   priceFemale: number;
+  priceFemaleOctSpecial?: number;
   priceFemale15Day?: number;
   priceOldStudentGroup: number;
   priceKids: number;

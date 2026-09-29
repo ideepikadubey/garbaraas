@@ -14,11 +14,11 @@ export default function MobileStickyBar({ onOpenRegister }: MobileStickyBarProps
       <div className="p-3 px-4 flex items-center justify-between gap-3">
         <div>
           <div className="flex items-center gap-1.5 text-pink-700 text-[10px] font-black uppercase tracking-wider">
-            <span className="w-1.5 h-1.5 rounded-full bg-pink-500 animate-ping"></span>
-            <span>Slots Open • Kishangarh</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
+            <span>1–11 Oct Special • Females Only</span>
           </div>
           <div className="text-sm font-black text-slate-900 font-serif">
-            ₹2500 each <span className="text-xs font-bold text-pink-600">• Free Family Pass</span>
+            ₹1800 <span className="text-xs font-bold text-pink-600">• Garba, Dandiya & Arti</span>
           </div>
         </div>
 

@@ -134,12 +134,23 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: 'Group registrations require a minimum of 5 members' }, { status: 400 });
     }
 
+    // Female only validation for Female Special & Female standard categories
+    if ((category === 'FEMALE_OCT_SPECIAL' || category === 'FEMALE' || category === 'FEMALE_15DAY' || category === 'KIDS' || category === 'KIDS_15DAY') && gender === 'Male') {
+      return NextResponse.json({
+        success: false,
+        error: 'This workshop category is strictly for Females only. Male participants can register for Boys Dandiya.',
+      }, { status: 400 });
+    }
+
     // Pricing calculation
     const settings = await getAdminSettings();
     let feePerPerson = settings.priceFemale; // Default 2500
     let categoryLabel = 'Female Admission Fee';
 
-    if (category === 'FEMALE_15DAY') {
+    if (category === 'FEMALE_OCT_SPECIAL') {
+      feePerPerson = settings.priceFemaleOctSpecial || 1800;
+      categoryLabel = 'Special Females Workshop (1 to 11 Oct • ₹1800 • Garba, Dandiya & Maha Arti)';
+    } else if (category === 'FEMALE_15DAY') {
       feePerPerson = settings.priceFemale15Day || 1800;
       categoryLabel = 'Special Girls Garba (26 Sep–11 Oct • ₹1800)';
     } else if (category === 'BOYS_DANDIYA') {
@@ -161,6 +172,23 @@ export async function POST(req: Request) {
 
     const totalAmount = feePerPerson * numMembers;
 
+    // Resolve exact slot details if slotId is provided
+    let finalLocation = locationName || 'The Frozen Studio (TFN)';
+    let finalBatchTime = batchTime || '11:00 AM – 12:00 PM';
+    if (slotId) {
+      const slotObj = await getSlotById(slotId);
+      if (slotObj) {
+        finalLocation = `${slotObj.locationName} (${slotObj.locationAddress})`;
+        finalBatchTime = `${slotObj.startTime} – ${slotObj.endTime} • ${slotObj.batchName}`;
+      }
+    }
+
+    const finalWorkshopDate = category === 'FEMALE_OCT_SPECIAL'
+      ? '1st October to 11th October'
+      : (category === 'FEMALE_15DAY' || category === 'KIDS_15DAY' || category === 'BOYS_DANDIYA') 
+      ? '26th September to 11th October' 
+      : (workshopDate || settings.workshopDates || '13th September to 11th October');
+
     // 2. Perform Atomic Reservation
     const result = await createRegistrationAtomic({
       category: category as CategoryType,
@@ -170,7 +198,7 @@ export async function POST(req: Request) {
       whatsapp: (whatsapp || cleanMobile).replace(/\D/g, ''),
       email: (email || '').trim().toLowerCase(),
       age: parseInt(age, 10) || 20,
-      gender: gender || (category === 'FEMALE' || category === 'FEMALE_15DAY' || category === 'KIDS' || category === 'KIDS_15DAY' ? 'Female' : 'Female'),
+      gender: gender || (category === 'FEMALE_OCT_SPECIAL' || category === 'FEMALE' || category === 'FEMALE_15DAY' || category === 'KIDS' || category === 'KIDS_15DAY' ? 'Female' : 'Female'),
       city: city ? city.trim() : 'Kishangarh',
       address: (address || '').trim(),
       emergencyName: (emergencyName || '').trim(),
@@ -187,11 +215,9 @@ export async function POST(req: Request) {
       groupLeaderPhone: (groupLeaderPhone || '').replace(/\D/g, ''),
       groupMembers: Array.isArray(groupMembers) ? groupMembers : undefined,
       slotId,
-      locationName: locationName || 'TFN Studio',
-      batchTime: batchTime || 'Batch Slot',
-      workshopDate: (category === 'FEMALE_15DAY' || category === 'KIDS_15DAY' || category === 'BOYS_DANDIYA') 
-        ? '26th September to 11th October' 
-        : (workshopDate || settings.workshopDates || '13th September to 11th October'),
+      locationName: finalLocation,
+      batchTime: finalBatchTime,
+      workshopDate: finalWorkshopDate,
       feePerPerson,
       totalAmount,
       hasFreeFamilyPass: true,

@@ -196,16 +196,16 @@ export function generateRegistrationPDF(
   const col1X = margin + 3;
   const col2X = margin + contentWidth / 2 + 3;
 
-  const renderField = (label: string, value: string, xPos: number, yPos: number) => {
+  const renderField = (label: string, value: string, xPos: number, yPos: number, maxW?: number) => {
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(7.5);
     doc.setTextColor(100, 116, 139);
     doc.text(label, xPos, yPos);
 
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(9);
+    doc.setFontSize(8.5);
     doc.setTextColor(15, 23, 42);
-    doc.text(value || 'N/A', xPos, yPos + 4.5);
+    doc.text(value || 'N/A', xPos, yPos + 4.5, { maxWidth: maxW || (contentWidth / 2 - 6) });
   };
 
   renderField('Participant Name', registration.participantName, col1X, y);
@@ -226,11 +226,11 @@ export function generateRegistrationPDF(
   renderField('City / Address', `${registration.city || 'Kishangarh'} ${registration.address ? `(${registration.address})` : ''}`, col2X, y);
   y += 10.5;
 
-  renderField('Assigned Hall Location', registration.locationName, col1X, y);
-  renderField('Batch Timing', registration.batchTime, col2X, y);
+  renderField('Assigned Venue (Place)', registration.locationName, col1X, y);
+  renderField('Selected Timing (Time)', registration.batchTime, col2X, y);
   y += 10.5;
 
-  renderField('Workshop Duration', registration.workshopDate || 'Workshop Schedule', col1X, y);
+  renderField('Workshop Dates (Date)', registration.workshopDate || '1st October to 11th October', col1X, y);
   renderField('Instructors / Mentors', 'Neel Sir & Manish Sir (TFN)', col2X, y);
   y += 11;
 

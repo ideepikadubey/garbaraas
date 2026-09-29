@@ -546,6 +546,7 @@ export default function AdminPage() {
                   className="bg-stone-50 border-2 border-stone-200 rounded-xl px-3 py-2 text-stone-800 focus:outline-none focus:border-amber-500 font-semibold"
                 >
                   <option value="ALL">All Categories</option>
+                  <option value="FEMALE_OCT_SPECIAL">Special Females 1–11 Oct (₹1800)</option>
                   <option value="FEMALE">Female (₹2500)</option>
                   <option value="FEMALE_15DAY">Special Girls 15-Day (₹1800)</option>
                   <option value="OLD_STUDENT">Old TFN Student (₹2200)</option>
@@ -949,7 +950,21 @@ export default function AdminPage() {
 
                 <div>
                   <label className="block text-stone-700 font-bold mb-1">
-                    Female Admission Fee (₹)
+                    Special Females (1–11 Oct) Fee (₹)
+                  </label>
+                  <input
+                    type="number"
+                    value={settings.priceFemaleOctSpecial || 1800}
+                    onChange={(e) =>
+                      setSettings({ ...settings, priceFemaleOctSpecial: parseInt(e.target.value, 10) || 0 })
+                    }
+                    className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl px-3.5 py-2.5 text-stone-950 text-xs focus:outline-none focus:border-amber-500 font-bold text-pink-700"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-stone-700 font-bold mb-1">
+                    Female Admission Fee (1-Mo) (₹)
                   </label>
                   <input
                     type="number"

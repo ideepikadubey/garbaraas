@@ -26,7 +26,7 @@ export default function HomePage() {
   const [preSelectedSlot, setPreSelectedSlot] = useState<Slot | undefined>(undefined);
 
   const handleOpenRegister = (category?: CategoryType) => {
-    setPreSelectedCategory(category);
+    setPreSelectedCategory(category || 'FEMALE_OCT_SPECIAL');
     setPreSelectedSlot(undefined);
     setRegisterModalOpen(true);
   };
@@ -37,7 +37,7 @@ export default function HomePage() {
     if (isBoysSlot) {
       setPreSelectedCategory('BOYS_DANDIYA');
     } else {
-      setPreSelectedCategory('FEMALE');
+      setPreSelectedCategory('FEMALE_OCT_SPECIAL');
     }
     setRegisterModalOpen(true);
   };
