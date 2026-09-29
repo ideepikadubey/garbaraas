@@ -208,13 +208,13 @@ const DEFAULT_SLOTS: Slot[] = [
     updatedAt: new Date().toISOString(),
   },
 
-  // --- ⭐ SPECIAL & FINAL BATCHES: 1 TO 11 OCT (FEMALES ONLY • ₹1800 • GARBA, DANDIYA & MAHA ARTI) ---
+  // --- ⭐ SPECIAL & FINAL BATCHES: 1 TO 11 OCT (FEMALE: ₹1500 | MALE: ₹1400) ---
   {
     id: 'slot-oct-bang-eve1',
     locationId: 'loc-bang',
     locationName: 'Bang Marriage Hall',
     locationAddress: 'Near City Station, Kishangarh',
-    batchName: 'Batch 1 (1 to 11 Oct) • Garba, Dandiya & Maha Arti',
+    batchName: 'Batch 1 (1 to 11 Oct) • Garba & Dandiya',
     startTime: '05:00 PM',
     endTime: '06:00 PM',
     capacity: 50,
@@ -229,7 +229,7 @@ const DEFAULT_SLOTS: Slot[] = [
     locationId: 'loc-bang',
     locationName: 'Bang Marriage Hall',
     locationAddress: 'Near City Station, Kishangarh',
-    batchName: 'Batch 2 (1 to 11 Oct) • Garba, Dandiya & Maha Arti',
+    batchName: 'Batch 2 (1 to 11 Oct) • Garba & Dandiya',
     startTime: '06:00 PM',
     endTime: '07:00 PM',
     capacity: 50,
@@ -244,7 +244,7 @@ const DEFAULT_SLOTS: Slot[] = [
     locationId: 'loc-tfn',
     locationName: 'The Frozen Studio',
     locationAddress: 'The Frozen Night Dance Academy Studio, Kishangarh',
-    batchName: 'Morning Batch (1 to 11 Oct) • Garba, Dandiya & Maha Arti',
+    batchName: 'Morning Batch (1 to 11 Oct) • Garba & Dandiya',
     startTime: '11:00 AM',
     endTime: '12:00 PM',
     capacity: 35,
@@ -259,7 +259,7 @@ const DEFAULT_SLOTS: Slot[] = [
     locationId: 'loc-tfn',
     locationName: 'The Frozen Studio',
     locationAddress: 'The Frozen Night Dance Academy Studio, Kishangarh',
-    batchName: 'Afternoon Batch (1 to 11 Oct) • Garba, Dandiya & Maha Arti',
+    batchName: 'Afternoon Batch (1 to 11 Oct) • Garba & Dandiya',
     startTime: '12:00 PM',
     endTime: '01:00 PM',
     capacity: 35,
@@ -277,15 +277,15 @@ const DEFAULT_SETTINGS: AdminSettings = {
   supportPhone1: '8385969285', // Neel Sir (Primary)
   supportPhone2: '8432223222', // Manish Sir (Call Only)
   priceFemale: 2500,
-  priceFemaleOctSpecial: 1800,
-  priceFemale15Day: 1800,
+  priceFemaleOctSpecial: 1500,
+  priceFemale15Day: 1500,
   priceOldStudentGroup: 2200,
   priceKids: 2000,
   priceKids15Day: 1500,
-  priceBoysDandiya: 1600,
+  priceBoysDandiya: 1400,
   workshopDates: '1st October to 11th October',
-  bookingDates: 'Open Now for 1 to 11 Oct Special & Final Batch',
-  announcement: '🚨 ALL PREVIOUS SLOTS ARE FULLY BOOKED! Special & Final 1 to 11 Oct Batch for Females (₹1800 • The Frozen Studio • 5 to 6 PM) is NOW OPEN!',
+  bookingDates: 'Open Now for 1 to 11 Oct Special & Final Batches',
+  announcement: '🚨 ALL PREVIOUS SLOTS ARE FULLY BOOKED! Special 1 to 11 Oct Batches for Females (₹1500) & Boys (₹1400) are NOW OPEN!',
 };
 
 const DEFAULT_REGISTRATIONS: Registration[] = [];

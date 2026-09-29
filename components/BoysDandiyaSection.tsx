@@ -121,7 +121,7 @@ export default function BoysDandiyaSection({
               </div>
 
               <div className="flex items-baseline justify-center gap-1.5 my-2">
-                <span className="text-4xl sm:text-6xl font-serif font-black garba-gradient-text">₹1600</span>
+                <span className="text-4xl sm:text-6xl font-serif font-black garba-gradient-text">₹1400</span>
                 <span className="text-xs sm:text-sm font-bold text-amber-200">/ 15 Days</span>
               </div>
 
@@ -135,7 +135,7 @@ export default function BoysDandiyaSection({
                   className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-950 font-black text-sm shadow-lg shadow-amber-500/30 ring-2 ring-amber-300 hover:scale-[1.02] transition-all flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <Sparkles className="w-4 h-4 text-stone-950" />
-                  <span>ENROLL FOR BOYS DANDIYA (₹1600)</span>
+                  <span>ENROLL FOR BOYS DANDIYA (₹1400)</span>
                   <ChevronRight className="w-4 h-4 text-stone-950" />
                 </button>
 

@@ -75,7 +75,7 @@ export default function SlotsSection({ onSelectSlot }: SlotsSectionProps) {
                 Notice: All Regular Workshop Batches Are Fully Booked!
               </h4>
               <p className="text-xs text-slate-700 font-medium mt-0.5">
-                Newly Added Active Batches: <strong className="text-pink-700">1 to 11 Oct Special Females Workshop (₹1800)</strong> at <strong className="text-pink-700">Bang Marriage Hall (5–6 PM & 6–7 PM)</strong> & <strong className="text-pink-700">The Frozen Studio (11 AM–12 PM & 12–1 PM)</strong>.
+                Newly Added Active Batches: <strong className="text-pink-700">1 to 11 Oct Special Batches (Female: ₹1500 | Male: ₹1400)</strong> at <strong className="text-pink-700">Bang Marriage Hall (5–6 PM & 6–7 PM)</strong> & <strong className="text-pink-700">The Frozen Studio (11 AM–12 PM & 12–1 PM)</strong>.
               </p>
             </div>
           </div>
@@ -184,7 +184,7 @@ export default function SlotsSection({ onSelectSlot }: SlotsSectionProps) {
                             {/* Batch Timing Card */}
                             <div className="rounded-2xl p-4 border border-pink-300 bg-pink-100/70 my-3">
                               <div className="inline-block px-2.5 py-0.5 rounded-full bg-pink-600 text-white font-black text-[10px] uppercase tracking-wider mb-1.5">
-                                1 to 11 Oct (11 Days Masterclass • ₹1800)
+                                1 to 11 Oct • Female (₹1500) | Male (₹1400)
                               </div>
                               <div className="text-xs uppercase font-black text-pink-950 tracking-wide">
                                 {slot.batchName}
@@ -194,7 +194,7 @@ export default function SlotsSection({ onSelectSlot }: SlotsSectionProps) {
                                 <span>{slot.startTime} – {slot.endTime}</span>
                               </div>
                               <p className="text-[11px] text-pink-800 font-bold mt-1">
-                                Females Only • Includes Garba, Dandiya & Maha Arti
+                                Open for Both Female & Male Registrations
                               </p>
                             </div>
 
@@ -215,7 +215,7 @@ export default function SlotsSection({ onSelectSlot }: SlotsSectionProps) {
                               className="w-full py-3 px-4 rounded-2xl font-black text-xs sm:text-sm bg-gradient-to-r from-pink-600 via-rose-500 to-amber-500 text-white shadow-lg shadow-pink-500/30 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer ring-2 ring-pink-300"
                             >
                               <Sparkles className="w-4 h-4 text-yellow-300" />
-                              <span>Select & Book 1–11 Oct Batch (₹1800)</span>
+                              <span>Select & Book 1–11 Oct Batch</span>
                             </button>
                           </div>
                         </div>

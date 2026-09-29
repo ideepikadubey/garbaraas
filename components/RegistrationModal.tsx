@@ -326,13 +326,13 @@ export default function RegistrationModal({
 
   // Pricing calculations
   const calculatePricing = () => {
-    let pricePerPerson = 1800; // Default special price
+    let pricePerPerson = 1500; // Default special price
     if (category === 'FEMALE_OCT_SPECIAL') {
-      pricePerPerson = 1800;
+      pricePerPerson = 1500;
     } else if (category === 'BOYS_DANDIYA') {
-      pricePerPerson = 1600;
+      pricePerPerson = 1400;
     } else if (category === 'FEMALE_15DAY') {
-      pricePerPerson = 1800;
+      pricePerPerson = 1500;
     } else if (category === 'KIDS_15DAY') {
       pricePerPerson = 1500;
     } else if (category === 'KIDS') {
@@ -351,15 +351,15 @@ export default function RegistrationModal({
 
   const { pricePerPerson, count, total } = calculatePricing();
 
-  const isOctSpecial = category === 'FEMALE_OCT_SPECIAL';
-  const is15DayBatch = category === 'FEMALE_15DAY' || category === 'KIDS_15DAY' || category === 'BOYS_DANDIYA';
+  const isOctSpecial = category === 'FEMALE_OCT_SPECIAL' || category === 'BOYS_DANDIYA';
+  const is15DayBatch = category === 'FEMALE_15DAY' || category === 'KIDS_15DAY';
   const activeWorkshopDate = isOctSpecial
-    ? '1st October to 11th October (Special Females Batch)'
+    ? (category === 'BOYS_DANDIYA' ? '1st October to 11th October (Boys Dandiya Masterclass)' : '1st October to 11th October (Special Females Batch)')
     : is15DayBatch 
     ? '26th September to 11th October' 
     : '13th September to 11th October';
   const activeWorkshopDateShort = isOctSpecial
-    ? '1st to 11th Oct (Special Females Batch)'
+    ? (category === 'BOYS_DANDIYA' ? '1st to 11th Oct (Boys Dandiya)' : '1st to 11th Oct (Special Females)')
     : is15DayBatch 
     ? '26th Sept to 11th Oct (15-Day Batch)' 
     : '13th Sept to 11th Oct (1-Month Batch)';
@@ -404,7 +404,7 @@ export default function RegistrationModal({
       setIsOldStudent(false);
       setIsGroup(false);
       setGender('Male');
-      setAge('18');
+      if (!age) setAge('18');
     } else if (selectedCat === 'FEMALE_15DAY' || selectedCat === 'FEMALE_OCT_SPECIAL') {
       setIsOldStudent(false);
       setIsGroup(false);
@@ -566,7 +566,7 @@ export default function RegistrationModal({
       return true;
     }
 
-    // Default FEMALE / Category
+    // Default FEMALE / BOYS_DANDIYA / Category
     if (!participantName.trim()) {
       setErrorMessage('Please enter the participant full name');
       return false;
@@ -586,16 +586,6 @@ export default function RegistrationModal({
     setErrorMessage('');
     if (!selectedSlot) {
       setErrorMessage('Please select an available workshop batch');
-      return false;
-    }
-    const isBoysSlot = selectedSlot.batchName.toLowerCase().includes('boys');
-    const isBoysCat = category === 'BOYS_DANDIYA';
-    if (isBoysCat && !isBoysSlot) {
-      setErrorMessage('Boys Dandiya participants can only register for dedicated Boys Dandiya workshop batches.');
-      return false;
-    }
-    if (!isBoysCat && isBoysSlot) {
-      setErrorMessage('This batch is strictly reserved for Boys Dandiya participants. Please choose a Girls Garba batch.');
       return false;
     }
 
@@ -630,7 +620,7 @@ export default function RegistrationModal({
           whatsapp: whatsapp || primaryMobile,
           email,
           age: isGroup ? (groupMembers[0]?.age || age) : age,
-          gender: category === 'KIDS' || category === 'KIDS_15DAY' || category === 'FEMALE' || category === 'FEMALE_15DAY' || category === 'FEMALE_OCT_SPECIAL' ? 'Female' : gender,
+          gender: category === 'BOYS_DANDIYA' ? (gender || 'Male') : (category === 'KIDS' || category === 'KIDS_15DAY' || category === 'FEMALE' || category === 'FEMALE_15DAY' || category === 'FEMALE_OCT_SPECIAL' ? 'Female' : gender),
           city,
           address,
           emergencyName,
@@ -862,68 +852,137 @@ export default function RegistrationModal({
                 </p>
               </div>
 
-              {/* 🌟 STAR FEATURED ACTIVE CATEGORY: 1 TO 11 OCT SPECIAL (FEMALES ONLY) 🌟 */}
-              <div
-                onClick={() => handleCategorySelect('FEMALE_OCT_SPECIAL')}
-                className={`relative p-4 sm:p-5 rounded-3xl border-2 cursor-pointer transition-all duration-300 shadow-lg ${
-                  category === 'FEMALE_OCT_SPECIAL'
-                    ? 'bg-gradient-to-br from-pink-50 via-rose-50 to-amber-50 border-pink-500 ring-2 ring-pink-400 shadow-pink-500/20'
-                    : 'bg-white border-pink-300 hover:border-pink-500 hover:shadow-md'
-                }`}
-              >
-                {/* Glowing Badge */}
-                <div className="absolute -top-3 left-6 px-3.5 py-0.5 rounded-full bg-gradient-to-r from-pink-600 via-rose-500 to-amber-500 text-white font-black text-[10px] uppercase tracking-wider shadow-md flex items-center gap-1">
-                  <Sparkles className="w-3 h-3 text-yellow-300 animate-pulse" />
-                  <span>⭐ NEW BATCH • OPEN FOR REGISTRATION</span>
-                </div>
+              {/* 🌟 2 ACTIVE OPEN WORKSHOP CATEGORIES: FEMALE (₹1500) & MALE (₹1400) 🌟 */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                
+                {/* 1. Female Special Workshop (₹1500) */}
+                <div
+                  onClick={() => handleCategorySelect('FEMALE_OCT_SPECIAL')}
+                  className={`relative p-4 sm:p-5 rounded-3xl border-2 cursor-pointer transition-all duration-300 shadow-md flex flex-col justify-between ${
+                    category === 'FEMALE_OCT_SPECIAL'
+                      ? 'bg-gradient-to-br from-pink-50 via-rose-50 to-amber-50 border-pink-500 ring-2 ring-pink-400 shadow-pink-500/20'
+                      : 'bg-white border-pink-300 hover:border-pink-500 hover:shadow-lg'
+                  }`}
+                >
+                  {/* Glowing Badge */}
+                  <div className="absolute -top-3 left-4 px-3 py-0.5 rounded-full bg-gradient-to-r from-pink-600 via-rose-500 to-amber-500 text-white font-black text-[10px] uppercase tracking-wider shadow-md flex items-center gap-1">
+                    <Sparkles className="w-3 h-3 text-yellow-300 animate-pulse" />
+                    <span>🌸 FEMALE ADMISSION</span>
+                  </div>
 
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
                   <div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-black uppercase tracking-wider text-pink-700">
-                        1 to 11 Oct Festive Intensive
+                    <div className="flex items-center justify-between gap-2 pt-1 mb-1">
+                      <span className="text-[10px] font-black uppercase tracking-wider text-pink-700">
+                        1 to 11 Oct (11 Days)
                       </span>
                       <span className="text-[10px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-300 px-2 py-0.5 rounded-full">
-                        🟢 SLOTS AVAILABLE
+                        🟢 OPEN
                       </span>
                     </div>
-                    <h5 className="text-base sm:text-lg font-serif font-black text-slate-950 mt-0.5">
-                      Special Females Workshop (1 to 11 Oct)
+
+                    <h5 className="text-base sm:text-lg font-serif font-black text-slate-950">
+                      Special Females Workshop
                     </h5>
                     <p className="text-xs text-pink-800 font-bold mt-0.5">
-                      (Females Only • Open Age • 1st October to 11th October)
+                      Garba, Dandiya & Maha Arti (All Ages)
                     </p>
+
+                    {/* Price */}
+                    <div className="my-2.5 p-2.5 rounded-xl bg-pink-100/60 border border-pink-200 flex items-baseline justify-between">
+                      <span className="text-2xl font-serif font-black text-pink-600">₹1500</span>
+                      <span className="text-[11px] text-slate-600 font-semibold">/ 11 Days Batch</span>
+                    </div>
+
+                    {/* Syllabus */}
+                    <div className="space-y-1.5 text-xs text-slate-700 font-medium pt-1">
+                      <div className="flex items-center gap-1.5 font-bold text-pink-900">
+                        <Check className="w-3.5 h-3.5 text-pink-600 flex-shrink-0" />
+                        <span>Garba + Dandiya + Maha Arti</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <Check className="w-3.5 h-3.5 text-pink-600 flex-shrink-0" />
+                        <span>Free 1-Day Family Pass</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <Check className="w-3.5 h-3.5 text-pink-600 flex-shrink-0" />
+                        <span>Bang Hall & TFN Studio</span>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="sm:text-right flex sm:flex-col items-baseline sm:items-end justify-between border-t sm:border-t-0 pt-2 sm:pt-0 border-pink-200">
-                    <span className="text-2xl sm:text-3xl font-serif font-black text-pink-600">₹1800</span>
-                    <span className="text-[11px] text-slate-500 font-semibold">/ 11 Days Masterclass</span>
+                  <div className="mt-3 pt-2.5 border-t border-pink-200 text-center">
+                    <span className="inline-block w-full py-2 rounded-xl bg-gradient-to-r from-pink-600 to-rose-600 text-white font-black text-xs shadow-xs hover:brightness-105">
+                      Select Female Category (₹1500) →
+                    </span>
                   </div>
                 </div>
 
-                {/* Syllabus & Inclusions */}
-                <div className="mt-3 pt-3 border-t border-pink-200/80 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-700 font-medium">
-                  <div className="flex items-center gap-1.5 font-bold text-pink-900">
-                    <Check className="w-4 h-4 text-pink-600 flex-shrink-0" />
-                    <span>Includes: Garba, Dandiya & Maha Arti</span>
+                {/* 2. Male / Boys Dandiya Workshop (₹1400) */}
+                <div
+                  onClick={() => handleCategorySelect('BOYS_DANDIYA')}
+                  className={`relative p-4 sm:p-5 rounded-3xl border-2 cursor-pointer transition-all duration-300 shadow-md flex flex-col justify-between ${
+                    category === 'BOYS_DANDIYA'
+                      ? 'bg-gradient-to-br from-blue-50 via-indigo-50 to-slate-50 border-blue-500 ring-2 ring-blue-400 shadow-blue-500/20'
+                      : 'bg-white border-blue-300 hover:border-blue-500 hover:shadow-lg'
+                  }`}
+                >
+                  {/* Glowing Badge */}
+                  <div className="absolute -top-3 left-4 px-3 py-0.5 rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-emerald-500 text-white font-black text-[10px] uppercase tracking-wider shadow-md flex items-center gap-1">
+                    <Sparkles className="w-3 h-3 text-yellow-300 animate-pulse" />
+                    <span>🕺 MALE / BOYS ADMISSION</span>
                   </div>
-                  <div className="flex items-center gap-1.5 font-bold text-emerald-800">
-                    <Check className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                    <span>4 Batches: Bang Marriage Hall & TFN Studio</span>
+
+                  <div>
+                    <div className="flex items-center justify-between gap-2 pt-1 mb-1">
+                      <span className="text-[10px] font-black uppercase tracking-wider text-blue-700">
+                        1 to 11 Oct (11 Days)
+                      </span>
+                      <span className="text-[10px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-300 px-2 py-0.5 rounded-full">
+                        🟢 OPEN
+                      </span>
+                    </div>
+
+                    <h5 className="text-base sm:text-lg font-serif font-black text-slate-950">
+                      Boys Dandiya Workshop
+                    </h5>
+                    <p className="text-xs text-blue-800 font-bold mt-0.5">
+                      Dandiya Masterclass & Formations (All Ages)
+                    </p>
+
+                    {/* Price */}
+                    <div className="my-2.5 p-2.5 rounded-xl bg-blue-100/60 border border-blue-200 flex items-baseline justify-between">
+                      <span className="text-2xl font-serif font-black text-blue-600">₹1400</span>
+                      <span className="text-[11px] text-slate-600 font-semibold">/ 11 Days Batch</span>
+                    </div>
+
+                    {/* Syllabus */}
+                    <div className="space-y-1.5 text-xs text-slate-700 font-medium pt-1">
+                      <div className="flex items-center gap-1.5 font-bold text-blue-900">
+                        <Check className="w-3.5 h-3.5 text-blue-600 flex-shrink-0" />
+                        <span>Formations + Speed Steps + Dhol Beats</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <Check className="w-3.5 h-3.5 text-blue-600 flex-shrink-0" />
+                        <span>Free 1-Day Family Pass</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <Check className="w-3.5 h-3.5 text-blue-600 flex-shrink-0" />
+                        <span>Bang Hall & TFN Studio</span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-1.5">
-                    <Check className="w-4 h-4 text-pink-600 flex-shrink-0" />
-                    <span>Free 1-Day Family Pass Included</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <Check className="w-4 h-4 text-pink-600 flex-shrink-0" />
-                    <span>18 Oct Grand Competition Round Eligibility</span>
+
+                  <div className="mt-3 pt-2.5 border-t border-blue-200 text-center">
+                    <span className="inline-block w-full py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black text-xs shadow-xs hover:brightness-105">
+                      Select Male / Boys Category (₹1400) →
+                    </span>
                   </div>
                 </div>
+
               </div>
 
               {/* Notice Header for Fully Booked Batches */}
-              <div className="pt-2">
+              <div className="pt-3">
                 <div className="flex items-center gap-2 text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
                   <span className="w-2 h-2 rounded-full bg-red-500"></span>
                   <span>Previous Workshop Batches (All Fully Booked / Housefull)</span>
@@ -935,7 +994,7 @@ export default function RegistrationModal({
                 {/* 1. Female Admission (1 Month) - FULL */}
                 <div
                   onClick={() => {
-                    setErrorMessage('⚠️ Slots for 1-Month Female Admission are completely Full. Please select the 1 to 11 Oct Special Females Batch (₹1800).');
+                    setErrorMessage('⚠️ Slots for 1-Month Female Admission are completely Full. Please select the 1 to 11 Oct Female Workshop (₹1500) or Male Dandiya (₹1400).');
                   }}
                   className="p-3.5 rounded-2xl border-2 border-slate-200 bg-slate-50/80 opacity-75 cursor-not-allowed flex flex-col justify-between relative overflow-hidden"
                 >
@@ -958,7 +1017,7 @@ export default function RegistrationModal({
                 {/* 2. Special Girls Garba (15-Day Batch) - FULL */}
                 <div
                   onClick={() => {
-                    setErrorMessage('⚠️ Earlier 26 Sep batch is completely Full. Please register for the new 1 to 11 Oct Special Females Batch (₹1800).');
+                    setErrorMessage('⚠️ Earlier 26 Sep batch is completely Full. Please register for the new 1 to 11 Oct Batch.');
                   }}
                   className="p-3.5 rounded-2xl border-2 border-slate-200 bg-slate-50/80 opacity-75 cursor-not-allowed flex flex-col justify-between relative overflow-hidden"
                 >
@@ -968,7 +1027,7 @@ export default function RegistrationModal({
                   <div>
                     <div className="flex justify-between items-start">
                       <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">15-Day Fast Track</span>
-                      <span className="text-lg font-black font-serif text-slate-400">₹1800</span>
+                      <span className="text-lg font-black font-serif text-slate-400">₹1500</span>
                     </div>
                     <h5 className="text-sm font-bold text-slate-700 mt-1">Special Girls (26 Sep Batch)</h5>
                     <p className="text-[11px] text-slate-500 font-medium mt-0.5">(26 Sep – 11 Oct)</p>
@@ -1027,7 +1086,7 @@ export default function RegistrationModal({
                 {/* 5. Season 2 Alumni (Old Student) - FULL */}
                 <div
                   onClick={() => {
-                    setErrorMessage('⚠️ Alumni regular quota slots are fully booked. Please join the 1 to 11 Oct Special Females Batch (₹1800).');
+                    setErrorMessage('⚠️ Alumni regular quota slots are fully booked. Please join the 1 to 11 Oct Special Batches.');
                   }}
                   className="p-3.5 rounded-2xl border-2 border-slate-200 bg-slate-50/80 opacity-75 cursor-not-allowed flex flex-col justify-between relative overflow-hidden"
                 >
@@ -1050,7 +1109,7 @@ export default function RegistrationModal({
                 {/* 6. Group Admission (5+ Members) - FULL */}
                 <div
                   onClick={() => {
-                    setErrorMessage('⚠️ Regular group quota slots are fully booked. Please register individual members under the 1 to 11 Oct Special Females Batch.');
+                    setErrorMessage('⚠️ Regular group quota slots are fully booked. Please register individual members under the 1 to 11 Oct Batches.');
                   }}
                   className="p-3.5 rounded-2xl border-2 border-slate-200 bg-slate-50/80 opacity-75 cursor-not-allowed flex flex-col justify-between relative overflow-hidden"
                 >
@@ -1064,29 +1123,6 @@ export default function RegistrationModal({
                     </div>
                     <h5 className="text-sm font-bold text-slate-700 mt-1">Group Booking</h5>
                     <p className="text-[11px] text-slate-500 font-medium mt-0.5">(Minimum 5 Members)</p>
-                    <div className="mt-2.5 pt-2 border-t border-slate-200 text-[10px] text-red-600 font-bold">
-                      ⛔ All Seats Booked
-                    </div>
-                  </div>
-                </div>
-
-                {/* 7. Boys Dandiya Special - FULL */}
-                <div
-                  onClick={() => {
-                    setErrorMessage('⚠️ Boys Dandiya workshop slots are completely Housefull.');
-                  }}
-                  className="p-3.5 rounded-2xl border-2 border-slate-200 bg-slate-50/80 opacity-75 cursor-not-allowed flex flex-col justify-between relative overflow-hidden"
-                >
-                  <div className="absolute top-2 right-2 bg-red-600 text-white font-black text-[9px] uppercase px-2 py-0.5 rounded-full shadow">
-                    HOUSEFULL
-                  </div>
-                  <div>
-                    <div className="flex justify-between items-start">
-                      <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">Boys Dandiya</span>
-                      <span className="text-lg font-black font-serif text-slate-400">₹1600</span>
-                    </div>
-                    <h5 className="text-sm font-bold text-slate-700 mt-1">Boys Dandiya</h5>
-                    <p className="text-[11px] text-slate-500 font-medium mt-0.5">(26 Sep – 11 Oct)</p>
                     <div className="mt-2.5 pt-2 border-t border-slate-200 text-[10px] text-red-600 font-bold">
                       ⛔ All Seats Booked
                     </div>
@@ -1525,8 +1561,17 @@ export default function RegistrationModal({
                         onChange={(e) => setGender(e.target.value)}
                         className="w-full bg-stone-50 border-2 border-stone-200 rounded-xl px-3 py-2.5 text-maroon-950 text-xs focus:outline-none focus:border-amber-500 font-medium"
                       >
-                        <option value="Female">Female</option>
-                        {category !== 'KIDS' && category !== 'KIDS_15DAY' && category !== 'FEMALE' && category !== 'FEMALE_15DAY' && category !== 'FEMALE_OCT_SPECIAL' && <option value="Male">Male</option>}
+                        {category === 'BOYS_DANDIYA' ? (
+                          <>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                          </>
+                        ) : (
+                          <>
+                            <option value="Female">Female</option>
+                            {category !== 'KIDS' && category !== 'KIDS_15DAY' && category !== 'FEMALE' && category !== 'FEMALE_15DAY' && category !== 'FEMALE_OCT_SPECIAL' && <option value="Male">Male</option>}
+                          </>
+                        )}
                       </select>
                     </div>
                   </div>
@@ -1755,10 +1800,10 @@ export default function RegistrationModal({
                   <div>
                     <span className="text-stone-500 block text-[11px] font-semibold">Category:</span>
                     <strong className="text-maroon-950">
-                      {category === 'FEMALE_OCT_SPECIAL' && 'Special Females Workshop (1 to 11 Oct • ₹1800 • Garba, Dandiya & Maha Arti)'}
+                      {category === 'FEMALE_OCT_SPECIAL' && 'Special Females Workshop (1 to 11 Oct • ₹1500 • Garba, Dandiya & Maha Arti)'}
                       {category === 'FEMALE' && 'Female Admission Fee (1 Month)'}
-                      {category === 'FEMALE_15DAY' && 'Special Girls Garba (15-Day Batch)'}
-                      {category === 'BOYS_DANDIYA' && 'Boys Dandiya Workshop'}
+                      {category === 'FEMALE_15DAY' && 'Special Girls Garba (15-Day Batch • ₹1500)'}
+                      {category === 'BOYS_DANDIYA' && 'Boys Dandiya Workshop (₹1400)'}
                       {(category === 'OLD_STUDENT' || isOldStudent) && 'Old TFN Student (Alumni)'}
                       {isGroup && `Group Registration (${count} Members)`}
                       {category === 'KIDS' && `Kids Girls (1-Month Batch)`}

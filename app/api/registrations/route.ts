@@ -148,14 +148,14 @@ export async function POST(req: Request) {
     let categoryLabel = 'Female Admission Fee';
 
     if (category === 'FEMALE_OCT_SPECIAL') {
-      feePerPerson = settings.priceFemaleOctSpecial || 1800;
-      categoryLabel = 'Special Females Workshop (1 to 11 Oct • ₹1800 • Garba, Dandiya & Maha Arti)';
-    } else if (category === 'FEMALE_15DAY') {
-      feePerPerson = settings.priceFemale15Day || 1800;
-      categoryLabel = 'Special Girls Garba (26 Sep–11 Oct • ₹1800)';
+      feePerPerson = settings.priceFemaleOctSpecial || 1500;
+      categoryLabel = 'Special Females Workshop (1 to 11 Oct • ₹1500 • Garba, Dandiya & Maha Arti)';
     } else if (category === 'BOYS_DANDIYA') {
-      feePerPerson = settings.priceBoysDandiya || 1600;
-      categoryLabel = 'Boys Dandiya Workshop (26 Sep–11 Oct • ₹1600)';
+      feePerPerson = settings.priceBoysDandiya || 1400;
+      categoryLabel = 'Boys Dandiya Workshop (1 to 11 Oct • ₹1400)';
+    } else if (category === 'FEMALE_15DAY') {
+      feePerPerson = settings.priceFemale15Day || 1500;
+      categoryLabel = 'Special Girls Garba (26 Sep–11 Oct • ₹1500)';
     } else if (category === 'KIDS_15DAY') {
       feePerPerson = settings.priceKids15Day || 1500;
       categoryLabel = 'Kids Special 15 Days Batch (26 Sep–11 Oct • ₹1500)';
@@ -183,9 +183,9 @@ export async function POST(req: Request) {
       }
     }
 
-    const finalWorkshopDate = category === 'FEMALE_OCT_SPECIAL'
+    const finalWorkshopDate = (category === 'FEMALE_OCT_SPECIAL' || category === 'BOYS_DANDIYA')
       ? '1st October to 11th October'
-      : (category === 'FEMALE_15DAY' || category === 'KIDS_15DAY' || category === 'BOYS_DANDIYA') 
+      : (category === 'FEMALE_15DAY' || category === 'KIDS_15DAY') 
       ? '26th September to 11th October' 
       : (workshopDate || settings.workshopDates || '13th September to 11th October');
 

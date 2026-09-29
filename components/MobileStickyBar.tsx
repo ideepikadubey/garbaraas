@@ -15,10 +15,10 @@ export default function MobileStickyBar({ onOpenRegister }: MobileStickyBarProps
         <div>
           <div className="flex items-center gap-1.5 text-pink-700 text-[10px] font-black uppercase tracking-wider">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
-            <span>1–11 Oct Special • Females Only</span>
+            <span>1–11 Oct Batches Open</span>
           </div>
-          <div className="text-sm font-black text-slate-900 font-serif">
-            ₹1800 <span className="text-xs font-bold text-pink-600">• Garba, Dandiya & Arti</span>
+          <div className="text-xs sm:text-sm font-black text-slate-900 font-serif">
+            Female: <span className="text-pink-600 font-black">₹1500</span> | Male: <span className="text-blue-600 font-black">₹1400</span>
           </div>
         </div>
 

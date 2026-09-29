@@ -25,14 +25,14 @@ export default function WorkshopHighlightsSection({
 
           <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
             <span className="px-3 py-1 rounded-full bg-gradient-to-r from-pink-600 to-rose-600 text-white text-[10px] sm:text-xs font-black uppercase tracking-wider shadow animate-pulse">
-              🚨 NEW SPECIAL BATCH OPEN
+              🚨 1 TO 11 OCT BATCHES OPEN
             </span>
             <span className="text-sm sm:text-base font-bold text-white">
-              Special Females Workshop (1 to 11 Oct • <strong className="text-yellow-300 font-extrabold">₹1800</strong>)
+              Special Batches: Female (<strong className="text-yellow-300 font-extrabold">₹1500</strong>) & Male Dandiya (<strong className="text-yellow-300 font-extrabold">₹1400</strong>)
             </span>
             <span className="text-slate-500 hidden sm:inline">•</span>
             <span className="text-xs sm:text-sm font-semibold text-pink-200">
-              Includes: Garba, Dandiya & Maha Arti (Females Only)
+              Garba, Dandiya & Maha Arti Tracks
             </span>
           </div>
 

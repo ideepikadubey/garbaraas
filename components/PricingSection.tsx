@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Check, Sparkles, Star } from 'lucide-react';
+import { Check, Sparkles, Star, ChevronRight } from 'lucide-react';
 import { CategoryType } from '@/lib/types';
 
 interface PricingSectionProps {
@@ -17,87 +17,156 @@ export default function PricingSection({ onSelectCategory }: PricingSectionProps
         <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-10">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-pink-50 border border-pink-200 text-xs text-pink-700 uppercase tracking-widest font-black mb-2 shadow-xs">
             <Sparkles className="w-3.5 h-3.5 text-pink-500 animate-pulse" />
-            Official Workshop Admissions
+            Active Workshop Categories
           </div>
           <h2 className="text-2xl sm:text-4xl md:text-5xl font-serif font-black text-slate-900 tracking-tight">
-            WORKSHOP <span className="festive-gradient-text">FEES & CATEGORIES</span>
+            WORKSHOP <span className="festive-gradient-text">CATEGORIES & FEES</span>
           </h2>
           <div className="h-[3.5px] w-24 sm:w-32 mx-auto my-3 rounded-full bg-gradient-to-r from-pink-500 via-yellow-400 via-emerald-400 to-blue-600"></div>
           <p className="text-xs sm:text-base text-slate-600 font-medium">
-            Learn authentic Gujarat steps, graceful spins, live dhol beats, and master skills under Kishangarh's top choreographers.
+            Open for both <strong>Females (₹1500)</strong> and <strong>Males / Boys (₹1400)</strong>. Choose your category to register for the 1 to 11 Oct intensive batches!
           </p>
         </div>
 
-        {/* 🚨 HOUSEFULL ALERT & NEW 1 TO 11 OCT SPECIAL SPOTLIGHT HERO BANNER 🚨 */}
-        <div className="mb-10 max-w-4xl mx-auto relative rounded-3xl overflow-hidden border-2 border-pink-500 shadow-2xl shadow-pink-500/20 bg-gradient-to-br from-pink-950 via-slate-900 to-indigo-950 text-white p-6 sm:p-8">
+        {/* 🌟 DUAL ACTIVE SPOTLIGHT HERO CARDS: FEMALE (₹1500) & MALE (₹1400) 🌟 */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 mb-10 max-w-5xl mx-auto">
           
-          {/* Top Decorative Festive Ribbon */}
-          <div className="h-1.5 w-full bg-gradient-to-r from-pink-500 via-yellow-400 via-emerald-400 to-blue-600 absolute top-0 left-0 right-0"></div>
+          {/* Card 1: Female Masterclass (₹1500) */}
+          <div className="relative rounded-3xl overflow-hidden border-2 border-pink-500 shadow-2xl shadow-pink-500/20 bg-gradient-to-br from-pink-950 via-slate-900 to-rose-950 text-white p-6 sm:p-7 flex flex-col justify-between">
+            <div className="h-1.5 w-full bg-gradient-to-r from-pink-500 via-rose-400 to-amber-400 absolute top-0 left-0 right-0"></div>
 
-          {/* Floating Live Badge */}
-          <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-black text-[11px] uppercase tracking-wider shadow-md mb-3">
-            <Sparkles className="w-3.5 h-3.5 text-yellow-300 animate-pulse" />
-            <span>🟢 NEW SPECIAL BATCH OPEN • REGISTER NOW</span>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-            <div className="lg:col-span-8 text-left space-y-2">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="px-2.5 py-0.5 rounded-full bg-pink-500/30 border border-pink-400 text-pink-300 text-xs font-bold">
-                  1st to 11th Oct (11 Days)
+            <div>
+              {/* Category Tag */}
+              <div className="flex items-center justify-between gap-2 mb-3">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-pink-600 to-rose-600 text-white font-black text-[10px] sm:text-[11px] uppercase tracking-wider shadow">
+                  <Sparkles className="w-3 h-3 text-yellow-300 animate-pulse" />
+                  <span>🌸 FEMALE ADMISSION</span>
                 </span>
-                <span className="px-2.5 py-0.5 rounded-full bg-amber-500/30 border border-amber-400 text-yellow-300 text-xs font-bold">
-                  Females Only • Open Age
-                </span>
-                <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/30 border border-emerald-400 text-emerald-300 text-xs font-bold">
-                  Venues: Bang Marriage Hall (5–6 PM & 6–7 PM) & TFN Studio (11 AM–12 PM & 12–1 PM)
+                <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/30 border border-emerald-400 text-emerald-300 text-[11px] font-bold">
+                  🟢 SLOTS OPEN
                 </span>
               </div>
-              <h3 className="text-2xl sm:text-3xl md:text-4xl font-serif font-black text-white leading-tight">
-                Special Female Workshop <span className="text-yellow-300">(1 to 11 Oct)</span>
+
+              <h3 className="text-xl sm:text-2xl font-serif font-black text-white">
+                Special Female Workshop
               </h3>
-              <p className="text-xs sm:text-sm text-pink-100/90 font-medium">
-                Specially introduced for new participants! Master <strong>Garba, Dandiya & Maha Arti</strong> with live dhol beats and qualify for the Kishangarh Grand Garba Competition.
+              <p className="text-xs text-pink-200 font-semibold mt-0.5">
+                1st to 11th Oct (11 Days Intensive • All Ages)
               </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2 text-xs text-slate-200">
-                <div className="flex items-center gap-1.5">
-                  <Check className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                  <span><strong>Garba + Dandiya + Maha Arti</strong> Included</span>
+
+              {/* Price Display */}
+              <div className="my-4 p-3.5 rounded-2xl bg-white/10 border border-pink-500/30 flex items-baseline justify-between">
+                <div>
+                  <span className="text-3xl sm:text-4xl font-serif font-black text-yellow-300">₹1500</span>
+                  <span className="text-xs text-pink-200 font-medium"> / Person</span>
                 </div>
-                <div className="flex items-center gap-1.5">
+                <span className="text-[11px] text-pink-200 font-bold bg-pink-500/30 px-2.5 py-1 rounded-full border border-pink-400">
+                  Full 11-Day Course
+                </span>
+              </div>
+
+              {/* Syllabus / Features */}
+              <div className="space-y-2 text-xs text-slate-200">
+                <div className="flex items-center gap-2 font-bold text-yellow-200">
                   <Check className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                  <span>Free 1-Day Family Pass for All</span>
+                  <span>Includes: Garba + Dandiya + Maha Arti</span>
                 </div>
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                  <span>Free 1-Day Family Pass Included</span>
+                </div>
+                <div className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-emerald-400 flex-shrink-0" />
                   <span>18 Oct Grand Competition Eligibility</span>
                 </div>
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                  <span>Neel Sir & Manish Sir Choreography</span>
+                  <span>Venues: Bang Marriage Hall & TFN Studio</span>
                 </div>
               </div>
             </div>
 
-            <div className="lg:col-span-4 flex flex-col items-center lg:items-end justify-center text-center lg:text-right border-t lg:border-t-0 lg:border-l border-pink-500/30 pt-4 lg:pt-0 lg:pl-6">
-              <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">
-                Special Admission Fee
-              </div>
-              <div className="flex items-baseline gap-1.5">
-                <span className="text-4xl sm:text-5xl font-serif font-black text-yellow-300">₹1800</span>
-                <span className="text-xs text-slate-300 font-semibold">/ Person</span>
-              </div>
-              <p className="text-[11px] text-emerald-300 font-bold mt-1">11-Day Complete Masterclass</p>
-              
+            {/* CTA Button */}
+            <div className="mt-6 pt-4 border-t border-pink-500/30">
               <button
                 onClick={() => onSelectCategory('FEMALE_OCT_SPECIAL')}
-                className="mt-4 w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-gradient-to-r from-pink-600 via-rose-500 to-amber-500 text-white font-black text-xs sm:text-sm shadow-xl shadow-pink-500/40 hover:scale-105 active:scale-95 transition cursor-pointer ring-2 ring-pink-300 flex items-center justify-center gap-2"
+                className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-pink-600 via-rose-500 to-amber-500 text-white font-black text-xs sm:text-sm shadow-xl hover:brightness-110 active:scale-95 transition flex items-center justify-center gap-2 cursor-pointer ring-2 ring-pink-300"
               >
                 <Sparkles className="w-4 h-4 text-yellow-300" />
-                <span>BOOK 1–11 OCT SPECIAL (₹1800)</span>
+                <span>BOOK FEMALE ADMISSION (₹1500)</span>
+                <ChevronRight className="w-4 h-4 text-white" />
               </button>
             </div>
           </div>
+
+          {/* Card 2: Male / Boys Dandiya Masterclass (₹1400) */}
+          <div className="relative rounded-3xl overflow-hidden border-2 border-blue-500 shadow-2xl shadow-blue-500/20 bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 text-white p-6 sm:p-7 flex flex-col justify-between">
+            <div className="h-1.5 w-full bg-gradient-to-r from-blue-500 via-indigo-400 to-emerald-400 absolute top-0 left-0 right-0"></div>
+
+            <div>
+              {/* Category Tag */}
+              <div className="flex items-center justify-between gap-2 mb-3">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black text-[10px] sm:text-[11px] uppercase tracking-wider shadow">
+                  <Sparkles className="w-3 h-3 text-yellow-300 animate-pulse" />
+                  <span>🕺 MALE / BOYS ADMISSION</span>
+                </span>
+                <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/30 border border-emerald-400 text-emerald-300 text-[11px] font-bold">
+                  🟢 SLOTS OPEN
+                </span>
+              </div>
+
+              <h3 className="text-xl sm:text-2xl font-serif font-black text-white">
+                Boys Dandiya Workshop
+              </h3>
+              <p className="text-xs text-blue-200 font-semibold mt-0.5">
+                1st to 11th Oct (11 Days Intensive • All Ages)
+              </p>
+
+              {/* Price Display */}
+              <div className="my-4 p-3.5 rounded-2xl bg-white/10 border border-blue-500/30 flex items-baseline justify-between">
+                <div>
+                  <span className="text-3xl sm:text-4xl font-serif font-black text-yellow-300">₹1400</span>
+                  <span className="text-xs text-blue-200 font-medium"> / Person</span>
+                </div>
+                <span className="text-[11px] text-blue-200 font-bold bg-blue-500/30 px-2.5 py-1 rounded-full border border-blue-400">
+                  Full 11-Day Course
+                </span>
+              </div>
+
+              {/* Syllabus / Features */}
+              <div className="space-y-2 text-xs text-slate-200">
+                <div className="flex items-center gap-2 font-bold text-yellow-200">
+                  <Check className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                  <span>Dandiya Masterclass + Formations + Fast Steps</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                  <span>Free 1-Day Family Pass Included</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                  <span>18 Oct Grand Competition Round Eligibility</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                  <span>Venues: Bang Marriage Hall & TFN Studio</span>
+                </div>
+              </div>
+            </div>
+
+            {/* CTA Button */}
+            <div className="mt-6 pt-4 border-t border-blue-500/30">
+              <button
+                onClick={() => onSelectCategory('BOYS_DANDIYA')}
+                className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-emerald-500 text-white font-black text-xs sm:text-sm shadow-xl hover:brightness-110 active:scale-95 transition flex items-center justify-center gap-2 cursor-pointer ring-2 ring-blue-300"
+              >
+                <Sparkles className="w-4 h-4 text-yellow-300" />
+                <span>BOOK MALE DANDIYA (₹1400)</span>
+                <ChevronRight className="w-4 h-4 text-white" />
+              </button>
+            </div>
+          </div>
+
         </div>
 
         {/* Free Family Pass Banner */}
@@ -118,3 +187,4 @@ export default function PricingSection({ onSelectCategory }: PricingSectionProps
     </section>
   );
 }
+
